@@ -503,7 +503,7 @@ RecommendedValue:  Success
 ```
 
 ```ps1
-auditpol /set /subcategory:"{0CCE9237-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+auditpol /set /subcategory:"{0CCE9237-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
 ```
 
 <img width="888" height="114" alt="image" src="https://github.com/user-attachments/assets/64aa189e-890f-4980-aa02-5b755dd7b5ed" />
@@ -644,7 +644,7 @@ RecommendedValue:  Success
 ```
 
 ```ps1
-auditpol /set /subcategory:"{0CCE9244-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+auditpol /set /subcategory:"{0CCE9244-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
 ```
 
 <img width="958" height="129" alt="image" src="https://github.com/user-attachments/assets/502676bb-cb4c-4dd9-a247-74d9c7b04840" />
