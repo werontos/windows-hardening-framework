@@ -418,3 +418,420 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptB
 ```
 
 <img width="1192" height="687" alt="image" src="https://github.com/user-attachments/assets/c03257f0-e6e2-46a6-a4d8-c774100bd2de" />
+
+# Audit
+
+```
+File ......machine
+Security Options	Audit: Force audit policy subcategory settings to override audit policy category settings
+RegistryPath:      HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:      SCENoApplyLegacyAuditPolicy
+DefaultValue:      1
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "SCENoApplyLegacyAuditPolicy" -Type DWord -Value 1
+```
+
+<img width="1219" height="698" alt="image" src="https://github.com/user-attachments/assets/0025c784-4269-4c6d-89d3-52e5f3f1e6df" />
+
+```
+File ......machine
+Security Options	Network security: Restrict NTLM: Audit Incoming NTLM Traffic
+RegistryPath:      HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0
+RegistryItem:      AuditReceivingNTLMTraffic
+DefaultValue:      0
+RecommendedValue:  2
+```
+
+```ps1
+New-Item -Path "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" -Name "AuditReceivingNTLMTraffic" -Type DWord -Value 2
+```
+
+<img width="1220" height="699" alt="image" src="https://github.com/user-attachments/assets/db5e80fc-d634-4844-843c-52614afd776d" />
+
+```
+File ......machine
+Security Options	Network security: Restrict NTLM: Audit NTLM authentication in this domain
+RegistryPath:      HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters
+RegistryItem:      AuditNTLMInDomain
+DefaultValue:      0
+RecommendedValue:  7
+```
+
+```ps1
+New-Item -Path "HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters" -Name "AuditNTLMInDomain" -Type DWord -Value 7
+```
+
+<img width="1220" height="696" alt="image" src="https://github.com/user-attachments/assets/4fbf02e9-2414-4d4d-b819-83a6f8df1e5a" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Credential Validation
+MethodArgument:    {0CCE923F-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure	
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE923F-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="958" height="128" alt="image" src="https://github.com/user-attachments/assets/5448cae7-a860-4436-95b3-3a01f7b65948" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Security Group Management
+MethodArgument:    {0CCE9237-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success	
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9237-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="888" height="114" alt="image" src="https://github.com/user-attachments/assets/64aa189e-890f-4980-aa02-5b755dd7b5ed" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	User Account Management
+MethodArgument:    {0CCE9235-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9235-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="961" height="131" alt="image" src="https://github.com/user-attachments/assets/a90748b1-7e37-4408-8088-741817af42d4" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	DPAPI Activity
+MethodArgument:    {0CCE922D-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE922D-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="959" height="127" alt="image" src="https://github.com/user-attachments/assets/cc9079c0-29e5-4369-9bce-31e52a0c80c5" />
+
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Plug and Play Events
+MethodArgument:    {0CCE9248-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9248-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="960" height="130" alt="image" src="https://github.com/user-attachments/assets/0450f8e0-1db2-44a4-a0cb-368fa44a283c" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Process Creation
+MethodArgument:    {0CCE922B-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE922B-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="960" height="161" alt="image" src="https://github.com/user-attachments/assets/81f7ab59-3700-4452-abf3-1099b42de3fb" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Account Lockout
+MethodArgument:    {0CCE9217-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9217-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
+```
+
+<img width="957" height="127" alt="image" src="https://github.com/user-attachments/assets/fd9ea45e-a9ef-4f18-91c6-8bb8cdf64431" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Group Membership
+MethodArgument:    {0CCE9249-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9249-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="961" height="130" alt="image" src="https://github.com/user-attachments/assets/9a82c0a4-8d3b-42e9-b151-c8ffd4abbe75" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Logon
+MethodArgument:    {0CCE9215-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success and Failure
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9215-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="960" height="143" alt="image" src="https://github.com/user-attachments/assets/1ba64a23-ee31-4f1d-ab2d-da7cff8addd3" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Other Logon/Logoff Events
+MethodArgument:    {0CCE921C-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE921C-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="959" height="126" alt="image" src="https://github.com/user-attachments/assets/1030ce85-4e6e-4043-9d67-7966159e13c3" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Special Logon
+MethodArgument:    {0CCE921B-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE921B-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="960" height="126" alt="image" src="https://github.com/user-attachments/assets/935f02e7-8488-48c8-ba96-68f440ff5278" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Detailed File Share
+MethodArgument:    {0CCE9244-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9244-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="958" height="129" alt="image" src="https://github.com/user-attachments/assets/502676bb-cb4c-4dd9-a247-74d9c7b04840" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Kernel Object
+MethodArgument:    {0CCE921F-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE921F-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="962" height="146" alt="image" src="https://github.com/user-attachments/assets/1458673b-3561-442e-b3f4-8bbb520be003" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Other Object Access Events
+MethodArgument:    {0CCE9227-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9227-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="960" height="141" alt="image" src="https://github.com/user-attachments/assets/ffb73054-70e1-4ca0-b70d-f2e6dc1ae390" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Removable Storage
+MethodArgument:    {0CCE9245-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9245-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="959" height="143" alt="image" src="https://github.com/user-attachments/assets/0cd4392f-41d9-46df-a6a5-1f98fe1a1a3d" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	SAM
+MethodArgument:    {0CCE9220-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9220-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="963" height="143" alt="image" src="https://github.com/user-attachments/assets/fec4137e-0086-4137-a1d9-e43fc0f57f80" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Audit Policy Change
+MethodArgument:    {0CCE922F-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE922F-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="957" height="141" alt="image" src="https://github.com/user-attachments/assets/90329b52-df50-4b5d-ae56-7a56a05ba04a" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Authentication Policy Change
+MethodArgument:    {0CCE9230-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9230-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="959" height="145" alt="image" src="https://github.com/user-attachments/assets/b0a5e1e1-0a6a-490b-932d-0fddf1a0b876" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	MPSSVC Rule-Level Policy Change
+MethodArgument:    {0CCE9232-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9232-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="958" height="144" alt="image" src="https://github.com/user-attachments/assets/1598462d-f64b-4078-a800-0bdc4f5bf0de" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Other Policy Change Events
+MethodArgument:    {0CCE9234-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9234-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
+```
+
+<img width="962" height="143" alt="image" src="https://github.com/user-attachments/assets/84a27811-ab6d-4f1c-9172-226d7cb427a5" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Sensitive Privilege Use
+MethodArgument:    {0CCE9228-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9228-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="959" height="146" alt="image" src="https://github.com/user-attachments/assets/ad6b35fe-b37c-444b-af29-aa6058adfe29" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Other System Events
+MethodArgument:    {0CCE9214-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success and Failure
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9214-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="956" height="146" alt="image" src="https://github.com/user-attachments/assets/a0b0fd44-5a43-488f-a34b-220be5493def" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Security State Change
+MethodArgument:    {0CCE9210-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9210-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="960" height="148" alt="image" src="https://github.com/user-attachments/assets/6c8a2f40-1a68-436c-a5c8-41f717501ed8" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	Security System Extension
+MethodArgument:    {0CCE9211-69AE-11D9-BED3-505054503030}
+DefaultValue:      No Auditing
+RecommendedValue:  Success
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9211-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
+```
+
+<img width="959" height="142" alt="image" src="https://github.com/user-attachments/assets/bcbca4d5-f766-40c7-a25f-2050e8d6d991" />
+
+```
+File ......machine
+Advanced Audit Policy Configuration	System Integrity
+MethodArgument:    {0CCE9212-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success and Failure
+RecommendedValue:  Success and Failure
+```
+
+```ps1
+auditpol /set /subcategory:"{0CCE9212-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+```
+
+<img width="960" height="143" alt="image" src="https://github.com/user-attachments/assets/7230c90d-791e-4ed9-aa66-8a454b043535" />
+
+```
+File ......machine
+Security Options	Network security: Restrict NTLM: Audit NTLM authentication in this domain
+RegistryPath:      HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe
+RegistryItem:      AuditLevel
+DefaultValue:      -
+RecommendedValue:  8
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" -Name "AuditLevel" -Type DWord -Value 8
+```
+
+<img width="1223" height="703" alt="image" src="https://github.com/user-attachments/assets/9bca3e57-ef7d-4601-a10b-d68360fe772e" />
