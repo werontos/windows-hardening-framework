@@ -113,4 +113,4 @@ Audit "{0CCE9210-69AE-11D9-BED3-505054503030}" enable disable
 Audit "{0CCE9211-69AE-11D9-BED3-505054503030}" enable disable
 Audit "{0CCE9212-69AE-11D9-BED3-505054503030}" enable enable
 
-Write-Host "✅ Done: Logging + Audit hardened"
+Write-Host "Done"
