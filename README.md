@@ -57,7 +57,7 @@ windows-hardening-framework/
 
 ```powershell
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/windows-hardening-framework.git
+git clone https://github.com/werontos/windows-hardening-framework.git
 cd windows-hardening-framework
 
 # 2. Dry run — see what WILL be changed, touches nothing
