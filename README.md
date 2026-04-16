@@ -127,7 +127,7 @@ Network: VirtualBox internal network `192.168.56.0/24` — fully isolated.
 
 ## 📚 Sources & References
 
-- [HardeningKitty](https://github.com/0x6d69636b/windows_hardening) — primary control reference
+- [HardeningKitty](https://github.com/scipag/HardeningKitty) — primary control reference
 - [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks) — Windows 10/11/Server 2022
 - [Microsoft SCT](https://www.microsoft.com/en-us/download/details.aspx?id=55319) — Security Compliance Toolkit
 - [DISA STIGs](https://public.cyber.mil/stigs/) — DoD hardening standards
