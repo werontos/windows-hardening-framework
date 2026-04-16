@@ -1,5 +1,18 @@
-Harden-Logging.ps1
-FireWall and Powershell
+# Harden-Logging.ps1 — Implementation Documentation
+
+Full evidence log of all controls applied, with before/after registry
+screenshots and auditpol verification.
+
+**Script:** `scripts/Harden-Logging.ps1`
+**Tested on:** Windows Server 2022 (VMware)
+**Date:** April 2026
+**Controls applied:** 40+
+
+---
+
+## Windows Firewall Logging
+
+### Domain Profile
 
 ```
 File ......machine
