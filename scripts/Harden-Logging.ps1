@@ -1,6 +1,4 @@
-# ================================
 # Ensure Registry Path Exists
-# ================================
 function Ensure-RegistryPath {
     param (
         [string]$Path
@@ -19,9 +17,7 @@ function Ensure-RegistryPath {
     }
 }
 
-# ================================
-# Helper: Set Registry Value
-# ================================
+# Set Registry Value
 function Set-RegValue {
     param (
         [string]$Path,
@@ -40,9 +36,7 @@ function Set-RegValue {
     Write-Host "[OK] $Path -> $Name = $Value"
 }
 
-# ================================
 # FIREWALL LOGGING (ALL PROFILES)
-# ================================
 $firewallPaths = @(
     "HKLM:\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging",
     "HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile\Logging",
@@ -60,9 +54,7 @@ foreach ($path in $firewallPaths) {
     Set-RegValue $path "LogSuccessfulConnections" 1
 }
 
-# ================================
 # POWERSHELL LOGGING
-# ================================
 
 # Windows PowerShell
 Set-RegValue "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging" "EnableModuleLogging" 1
@@ -77,9 +69,7 @@ Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLoggin
 Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "EnableScriptBlockInvocationLogging" 1
 Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "UseWindowsPowerShellPolicySetting" 1
 
-# ================================
 # SECURITY / NTLM AUDIT
-# ================================
 Set-RegValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SCENoApplyLegacyAuditPolicy" 1
 Set-RegValue "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "AuditReceivingNTLMTraffic" 2
 Set-RegValue "HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters" "AuditNTLMInDomain" 7
@@ -87,9 +77,7 @@ Set-RegValue "HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters" "Audi
 # LSASS audit
 Set-RegValue "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" "AuditLevel" 8
 
-# ================================
 # ADVANCED AUDIT POLICY
-# ================================
 $auditSettings = @(
     "{0CCE923F-69AE-11D9-BED3-505054503030}", # Credential Validation
     "{0CCE9235-69AE-11D9-BED3-505054503030}", # User Account Management
@@ -125,4 +113,4 @@ auditpol /set /subcategory:"{0CCE9211-69AE-11D9-BED3-505054503030}" /success:ena
 auditpol /set /subcategory:"{0CCE9244-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
 
 
-Write-Host "`n=== DONE ===" -ForegroundColor Green
+Write-Host "`nDONE" -ForegroundColor Green
