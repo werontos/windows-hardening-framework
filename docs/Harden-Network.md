@@ -24,6 +24,7 @@ S-1-5-20         = NETWORK SERVICE
 S-1-5-6          = SERVICE
 ```
 ---
+# User Rights Assignment
 ```
 Windows Server 2022 21H2
 User Rights Assignment	Access this computer from the network (DC)
