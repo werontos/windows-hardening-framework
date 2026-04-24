@@ -1,5 +1,18 @@
 # Harden-Network.ps1 — Implementation Documentation
 
+For User Rights Assignment(accesschk) + Security Options type of settings create a folder that you can access easy(in my case its C:\temp\) to write a scripts there
+In case you dont want to apply fully automized script to apply all necessary settings whic recommended by:
+You can start with:
+Exporting current politics
+```ps1
+secedit /export /cfg "C:\temp\policy.inf" /areas USER_RIGHTS
+```
+and take a look at the current politics in your comfortable text reader
+
+<img width="1177" height="670" alt="image" src="https://github.com/user-attachments/assets/b41fad0e-56a6-44ab-b20c-f504859d9b95" />
+
+Also you can edit it in your environment if you not familiar with powershell scripts
+---
 ```
 Windows Server 2022 21H2
 User Rights Assignment	Access this computer from the network 
