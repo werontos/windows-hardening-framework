@@ -2,7 +2,7 @@
 
 For User Rights Assignment(accesschk) + Security Options type of settings create a folder that you can access easy(in my case its C:\temp\) to write a scripts there.
 
-❕In case you dont want to apply fully automized script to apply all necessary settings whic recommended by:
+❕In case you dont want to apply fully automized script to apply all necessary settings which recommended by:
 
 You can start with:
 Exporting current politics
@@ -15,13 +15,16 @@ and take a look at the current politics in your comfortable text reader
 
 Also you can edit it in your environment if you not familiar with powershell scripts
 ```
-S-1-1-0          = Everyone
-S-1-5-32-544     = BUILTIN\Administrators
-S-1-5-32-545     = BUILTIN\Users
-S-1-5-32-546     = BUILTIN\Guests
-S-1-5-19         = LOCAL SERVICE
-S-1-5-20         = NETWORK SERVICE
-S-1-5-6          = SERVICE
+S-1-1-0      = Everyone
+S-1-5-9      = ENTERPRISE DOMAIN CONTROLLERS
+S-1-5-11     = Authenticated Users
+S-1-5-19     = LOCAL SERVICE
+S-1-5-20     = NETWORK SERVICE
+S-1-5-32-544 = BUILTIN\Administrators
+S-1-5-32-545 = BUILTIN\Users
+S-1-5-32-546 = BUILTIN\Guests
+S-1-5-113    = Local account
+S-1-5-114    = Local account and member of Administrators group
 ```
 ---
 # User Rights Assignment
@@ -69,6 +72,31 @@ signature="`$CHICAGO`$"
 Revision=1
 [Privilege Rights]
 SeNetworkLogonRight = *S-1-5-9,*S-1-5-32-544,*S-1-5-11
+"@
+
+$inf | Out-File "C:\temp\net.inf" -Encoding Unicode
+secedit /configure /db "C:\temp\sec.sdb" /cfg "C:\temp\net.inf" /areas USER_RIGHTS /quiet
+```
+<img width="773" height="198" alt="image" src="https://github.com/user-attachments/assets/dcbc1bd7-99f1-44d9-8708-7295832b359b" />
+
+---
+***User Rights Assignment	Deny access to this computer from the network (Member)****
+```
+Windows Server 2022 21H2
+accesschk:  SeDenyNetworkLogonRight
+DefaultValue:      BUILTIN\Guests
+RecommendedValue:  BUILTIN\Guests;NT AUTHORITY\Local account and member of Administrators group
+```
+
+```ps1
+$inf = @"
+[Unicode]
+Unicode=yes
+[Version]
+signature="`$CHICAGO`$"
+Revision=1
+[Privilege Rights]
+SeDenyNetworkLogonRight = *S-1-5-32-546,*S-1-5-114
 "@
 
 $inf | Out-File "C:\temp\net.inf" -Encoding Unicode
