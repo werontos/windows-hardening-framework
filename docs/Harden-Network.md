@@ -882,12 +882,61 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name 
 ***Administrative Templates: System	Sleep Settings: Allow network connectivity during connected-standby (on battery)***
 ```
 Windows Server 2022 21H2
-RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\System
-RegistryItem:   DontDisplayNetworkSelectionUI
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9
+RegistryItem:   DCSettingIndex
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9" -Name "DCSettingIndex" -Type DWord -Value 0
+```
+<img width="1267" height="592" alt="image" src="https://github.com/user-attachments/assets/978c30df-4b47-467d-9165-1c89f6630dee" />
+
+---
+***Administrative Templates: System	Sleep Settings: Allow network connectivity during connected-standby (plugged in)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9
+RegistryItem:   ACSettingIndex
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9" -Name "ACSettingIndex" -Type DWord -Value 0
+```
+<img width="1268" height="598" alt="image" src="https://github.com/user-attachments/assets/10049abe-a924-4c01-bf94-cc4390c6098f" />
+
+
+---
+***Microsoft Defender Exploit Guard	Network Protection: Prevent users and apps from accessing dangerous websites***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection
+RegistryItem:   EnableNetworkProtection
+DefaultValue:      -
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -Name "EnableNetworkProtection" -Type DWord -Value 1
+```
+<img width="1264" height="590" alt="image" src="https://github.com/user-attachments/assets/9aa41d85-2d3c-4b27-83da-51a0cda69b00" />
+
+---
+***Administrative Templates: Windows Components	Remote Desktop Session Host: Security: Require user authentication for remote connections by using Network Level Authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+RegistryItem:   EnableNetworkProtection
 DefaultValue:      0
 RecommendedValue:  1
 ```
 
 ```ps1
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "DontDisplayNetworkSelectionUI" -Type DWord -Value 1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "UserAuthentication" -Type DWord -Value 1
 ```
+<img width="1268" height="592" alt="image" src="https://github.com/user-attachments/assets/69f2b738-d6a2-4803-afe3-bb0370427bf9" />
