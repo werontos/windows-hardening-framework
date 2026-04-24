@@ -370,22 +370,7 @@ Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "LmCom
 <img width="1263" height="592" alt="image" src="https://github.com/user-attachments/assets/619544fc-ba76-478a-933a-b8193b8f0e8a" />
 
 ---
-***	Security Options	Network security: Minimum session security for NTLM SSP based clients***
-```
-Windows Server 2022 21H2
-RegistryPath:  	HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0
-RegistryItem:   LmCompatibilityLevel
-DefaultValue:      536870912
-RecommendedValue:  537395200
-```
-
-```ps1
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" -Name "NTLMMinClientSec" -Type DWord -Value 537395200
-```
-<img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/6985635f-8369-4b6b-9ab9-5a84697af076" />
-
----
-***	Security Options	Network security: Minimum session security for NTLM SSP based clients***
+***Security Options Network security: Minimum session security for NTLM SSP based clients***
 ```
 Windows Server 2022 21H2
 RegistryPath:  	HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0
@@ -396,4 +381,513 @@ RecommendedValue:  537395200
 
 ```ps1
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" -Name "NTLMMinClientSec" -Type DWord -Value 537395200
+```
+<img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/6985635f-8369-4b6b-9ab9-5a84697af076" />
+
+---
+***Security Options	Network security: Minimum session security for NTLM SSP based (including secure RPC) servers***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0
+RegistryItem:   NTLMMinServerSec
+DefaultValue:      536870912
+RecommendedValue:  537395200
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" -Name "NTLMMinServerSec" -Type DWord -Value 537395200
+```
+<img width="1269" height="598" alt="image" src="https://github.com/user-attachments/assets/2010aec5-b3e9-4b2d-92ff-d1bf3651fc21" />
+
+---
+***MS Security Guide Apply UAC restrictions to local accounts on network logons (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:   LocalAccountTokenFilterPolicy
+DefaultValue:      -
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "LocalAccountTokenFilterPolicy" -Type DWord -Value 0
+```
+<img width="1270" height="594" alt="image" src="https://github.com/user-attachments/assets/7feaffb1-a92e-49b0-a517-fc8f0ce80cce" />
+
+---
+***Administrative Templates: Network	DNS Client: Configure DNS over HTTPS (DoH) name resolution***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient
+RegistryItem:   DoHPolicy
+DefaultValue:      -
+RecommendedValue:  2
+```
+
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" -Name "DoHPolicy" -Type DWord -Value 2
+```
+<img width="1271" height="598" alt="image" src="https://github.com/user-attachments/assets/2c854f97-c39f-44e1-8a13-ece31d19ad31" />
+
+---
+***Administrative Templates: Network DNS Client: Turn off multicast name resolution (LLMNR)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient
+RegistryItem:   EnableMulticast
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" -Name "EnableMulticast" -Type DWord -Value 0
+```
+<img width="1271" height="594" alt="image" src="https://github.com/user-attachments/assets/17d948f3-7ce9-4c93-ae5a-fd310647614b" />
+
+---
+***Administrative Templates: Network Fonts: Enable Font Providers***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+RegistryItem:   EnableFontProviders
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableFontProviders" -Type DWord -Value 0
+```
+<img width="1266" height="595" alt="image" src="https://github.com/user-attachments/assets/3947a09c-e0e1-4f60-a420-836aeaa42ab6" />
+
+---
+***Administrative Templates: Network Lanman Workstation: Enable insecure guest logons***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\LanmanWorkstation
+RegistryItem:   AllowInsecureGuestAuth
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\LanmanWorkstation" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LanmanWorkstation" -Name "AllowInsecureGuestAuth" -Type DWord -Value 0
+```
+<img width="1269" height="595" alt="image" src="https://github.com/user-attachments/assets/6098fbeb-04b5-43c8-9476-3c21c7c82b4e" />
+
+---
+***Administrative Templates: Network Link-Layer Topology Discovery: Turn on Mapper I/O (LLTDIO) driver (AllowLLTDIOOndomain)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\LLTD
+RegistryItem:   AllowLLTDIOOndomain
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "AllowLLTDIOOndomain" -Type DWord -Value 0
+```
+<img width="1270" height="591" alt="image" src="https://github.com/user-attachments/assets/c1fcd7be-b398-4d27-8b66-1462692a1aae" />
+
+---
+***Administrative Templates: Network	Link-Layer Topology Discovery: Turn on Mapper I/O (LLTDIO) driver (AllowLLTDIOOnPublicNet)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\LLTD
+RegistryItem:   AllowLLTDIOOnPublicNet
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "AllowLLTDIOOnPublicNet" -Type DWord -Value 0
+```
+<img width="1267" height="595" alt="image" src="https://github.com/user-attachments/assets/fa310d68-0dc0-43d0-9cd2-1264a7531fb4" />
+
+---
+***Administrative Templates: Network	Link-Layer Topology Discovery: Turn on Mapper I/O (LLTDIO) driver (EnableLLTDIO)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\LLTD
+RegistryItem:   EnableLLTDIO
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "EnableLLTDIO" -Type DWord -Value 0
+```
+<img width="1269" height="595" alt="image" src="https://github.com/user-attachments/assets/898760e6-52be-4324-9790-13dc259ae622" />
+
+---
+***Administrative Templates: Network	Link-Layer Topology Discovery: Turn on Mapper I/O (LLTDIO) driver (ProhibitLLTDIOOnPrivateNet)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\LLTD
+RegistryItem:   ProhibitLLTDIOOnPrivateNet
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "ProhibitLLTDIOOnPrivateNet" -Type DWord -Value 0
+```
+<img width="1266" height="594" alt="image" src="https://github.com/user-attachments/assets/34178bc0-02cc-439a-9580-de77cf12dfe1" />
+
+---
+***Administrative Templates: Network	Turn on Responder (RSPNDR) driver (AllowRspndrOnDomain)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\LLTD
+RegistryItem:   AllowRspndrOnDomain
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "AllowRspndrOnDomain" -Type DWord -Value 0
+```
+<img width="1269" height="595" alt="image" src="https://github.com/user-attachments/assets/27f7f002-0fd9-4b0e-9144-326dfa387937" />
+
+---
+***Administrative Templates: Network	Turn on Responder (RSPNDR) driver (AllowRspndrOnPublicNet)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\LLTD
+RegistryItem:   AllowRspndrOnPublicNet
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "AllowRspndrOnPublicNet" -Type DWord -Value 0
+```
+<img width="1264" height="594" alt="image" src="https://github.com/user-attachments/assets/4694f268-4c85-4f42-93b8-6faef1596b26" />
+
+---
+***Administrative Templates: Network	Turn on Responder (RSPNDR) driver (EnableRspndr)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\LLTD
+RegistryItem:   EnableRspndr
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "EnableRspndr" -Type DWord -Value 0
+```
+<img width="1269" height="591" alt="image" src="https://github.com/user-attachments/assets/be08a1d1-d26f-4fc6-b5c0-79dfe45a20e8" />
+
+---
+***Administrative Templates: Network Turn on Responder (RSPNDR) driver (ProhibitRspndrOnPrivateNet)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\LLTD
+RegistryItem:   ProhibitRspndrOnPrivateNet
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\LLTD" -Name "ProhibitRspndrOnPrivateNet" -Type DWord -Value 0
+```
+<img width="1267" height="592" alt="image" src="https://github.com/user-attachments/assets/e154f4f5-7de6-4510-9ae7-269a13f80930" />
+
+---
+***Administrative Templates: Network Turn off Microsoft Peer-to-Peer Networking Services***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\policies\Microsoft\Peernet
+RegistryItem:   Disabled
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\Software\policies\Microsoft\Peernet" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\policies\Microsoft\Peernet" -Name "Disabled" -Type DWord -Value 0
+```
+<img width="1267" height="591" alt="image" src="https://github.com/user-attachments/assets/1ce20751-3956-432c-ba3b-bd90b975b15b" />
+
+---
+***Administrative Templates: Network Network Connections: Prohibit installation and configuration of Network Bridge on your DNS domain network***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\Network Connections
+RegistryItem:   NC_AllowNetBridge_NLA
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Network Connections" -Name "NC_AllowNetBridge_NLA" -Type DWord -Value 0
+```
+<img width="1267" height="593" alt="image" src="https://github.com/user-attachments/assets/f0e5c0e6-eb5b-46d9-bb0b-05c16c00d407" />
+
+---
+***Administrative Templates: Network Network Connections: Prohibit use of Internet Connection Sharing on your DNS domain network***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\Network Connections
+RegistryItem:   NC_ShowSharedAccessUI
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Network Connections" -Name "NC_ShowSharedAccessUI" -Type DWord -Value 1
+```
+<img width="1270" height="597" alt="image" src="https://github.com/user-attachments/assets/457c8206-c04f-498f-9ea3-44308528ce24" />
+
+---
+***Administrative Templates: Network Network Connections: Prohibit use of Internet Connection Sharing on your DNS domain network***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\Network Connections
+RegistryItem:   NC_StdDomainUserSetLocation
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Network Connections" -Name "NC_StdDomainUserSetLocation" -Type DWord -Value 1
+```
+<img width="1267" height="595" alt="image" src="https://github.com/user-attachments/assets/c42e1782-79bf-4dab-bb9e-5e16b44c5c48" />
+
+---
+***Administrative Templates: Network Network Provider: Hardened UNC Paths (NETLOGON)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
+RegistryItem:   \\*\NETLOGON
+DefaultValue:      -
+RecommendedValue:  RequireMutualAuthentication=1, RequireIntegrity=1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths" `
+    -Name "\\*\NETLOGON" `
+    -Type String `
+    -Value "RequireMutualAuthentication=1, RequireIntegrity=1"
+```
+<img width="1264" height="590" alt="image" src="https://github.com/user-attachments/assets/2d1e96c6-80ad-4025-90aa-ee89942bb404" />
+
+---
+***Administrative Templates: Network	Network Provider: Hardened UNC Paths (SYSVOL)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
+RegistryItem:   \\*\SYSVOL
+DefaultValue:      -
+RecommendedValue:  RequireMutualAuthentication=1, RequireIntegrity=1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths" `
+    -Name "\\*\SYSVOL" `
+    -Type String `
+    -Value "RequireMutualAuthentication=1, RequireIntegrity=1"
+```
+<img width="1270" height="597" alt="image" src="https://github.com/user-attachments/assets/961054b4-6a50-4bf6-bbdd-de8bbfb497a4" />
+
+---
+***Administrative Templates: Network Disable IPv6***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters
+RegistryItem:   DisabledComponents
+DefaultValue:      0
+RecommendedValue:  255
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters" -Name "DisabledComponents" -Type DWord -Value 255
+```
+<img width="1267" height="595" alt="image" src="https://github.com/user-attachments/assets/5acdd611-f38e-405b-9b08-8c0db8908e89" />
+
+---
+***Administrative Templates: Network	Windows Connect Now: Configuration of wireless settings using Windows Connect Now (EnableRegistrars)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisabledComponents
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "EnableRegistrars" -Type DWord -Value 0
+```
+<img width="1267" height="600" alt="image" src="https://github.com/user-attachments/assets/685569df-6e49-4de6-9236-ce752df456dd" />
+
+---
+***Administrative Templates: Network	Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableUPnPRegistrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableUPnPRegistrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableUPnPRegistrar" -Type DWord -Value 0
+```
+<img width="1263" height="601" alt="image" src="https://github.com/user-attachments/assets/4bd8511b-fbff-4bed-92d9-4478be20d62c" />
+
+---
+***Administrative Templates: Network	Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableInBand802DOT11Registrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableInBand802DOT11Registrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableInBand802DOT11Registrar" -Type DWord -Value 0
+```
+<img width="1267" height="595" alt="image" src="https://github.com/user-attachments/assets/9f1b317a-4874-4b60-b5b8-53ede8af4859" />
+
+---
+***Administrative Templates: Network	Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableFlashConfigRegistrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableFlashConfigRegistrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableFlashConfigRegistrar" -Type DWord -Value 0
+```
+<img width="1265" height="599" alt="image" src="https://github.com/user-attachments/assets/7f22686c-d748-4082-83e3-158d002f8d34" />
+
+---
+***Administrative Templates: Network	Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableWPDRegistrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableWPDRegistrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableWPDRegistrar" -Type DWord -Value 0
+```
+<img width="1263" height="591" alt="image" src="https://github.com/user-attachments/assets/bc06c524-4f87-4dd8-87ff-d48d88843615" />
+
+---
+***Administrative Templates: Network	Windows Connect Now: Prohibit access of the Windows Connect Now wizards***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI
+RegistryItem:   DisableWcnUi
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" -Name "DisableWcnUi" -Type DWord -Value 1
+```
+<img width="1266" height="594" alt="image" src="https://github.com/user-attachments/assets/0ca43659-3864-4bfe-92d2-4e07434ea118" />
+
+---
+***Administrative Templates: Network	Windows Connection Manager: Minimize the number of simultaneous connections to the Internet or a Windows Domain***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
+RegistryItem:   fMinimizeConnections
+DefaultValue:      1
+RecommendedValue:  3
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" -Name "fMinimizeConnections" -Type DWord -Value 3
+```
+<img width="1263" height="593" alt="image" src="https://github.com/user-attachments/assets/217f707e-acd6-4e91-a1d7-72fecec03611" />
+
+---
+***Windows Connection Manager: Prohibit connection to non-domain networks when connected to domain authenticated network***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
+RegistryItem:   fMinimizeConnections
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" -Name "fBlockNonDomain" -Type DWord -Value 1
+```
+<img width="1266" height="594" alt="image" src="https://github.com/user-attachments/assets/60887340-a7e1-43f5-b90a-e05e130c441c" />
+
+---
+***Administrative Templates: Start Menu and Taskbar	Notifications: Turn off notifications network usage***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications
+RegistryItem:   NoCloudApplicationNotification
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "NoCloudApplicationNotification" -Type DWord -Value 1
+```
+<img width="1265" height="596" alt="image" src="https://github.com/user-attachments/assets/a15e9494-cfe1-4251-a953-bbf32db04190" />
+
+---
+***Device Installation: Device Installation Restrictions: Prevent device metadata retrieval from the Internet***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata
+RegistryItem:   PreventDeviceMetadataFromNetwork
+DefaultValue:      -
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" -Name "PreventDeviceMetadataFromNetwork" -Type DWord -Value 1
+```
+<img width="1265" height="586" alt="image" src="https://github.com/user-attachments/assets/77b5f903-a6da-4574-a711-7fa081df2701" />
+
+---
+***Administrative Templates: System	Logon: Do not display network selection UI***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:   DontDisplayNetworkSelectionUI
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "DontDisplayNetworkSelectionUI" -Type DWord -Value 1
+```
+<img width="1268" height="592" alt="image" src="https://github.com/user-attachments/assets/593f3a78-8860-481d-a8e0-4b03be50b7c6" />
+
+---
+***Administrative Templates: System	Sleep Settings: Allow network connectivity during connected-standby (on battery)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:   DontDisplayNetworkSelectionUI
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "DontDisplayNetworkSelectionUI" -Type DWord -Value 1
 ```
