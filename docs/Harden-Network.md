@@ -1,7 +1,7 @@
 # Harden-Network.ps1 — Implementation Documentation
 
 For User Rights Assignment(accesschk) + Security Options type of settings create a folder that you can access easy(in my case its C:\temp\) to write a scripts there
-In case you dont want to apply fully automized script to apply all necessary settings whic recommended by:
+❕In case you dont want to apply fully automized script to apply all necessary settings whic recommended by:
 You can start with:
 Exporting current politics
 ```ps1
