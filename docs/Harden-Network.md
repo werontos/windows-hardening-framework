@@ -14,7 +14,7 @@ and take a look at the current politics in your comfortable text reader
 <img width="1177" height="670" alt="image" src="https://github.com/user-attachments/assets/b41fad0e-56a6-44ab-b20c-f504859d9b95" />
 
 Also you can edit it in your environment if you not familiar with powershell scripts
-
+```
 S-1-1-0          = Everyone
 S-1-5-32-544     = BUILTIN\Administrators
 S-1-5-32-545     = BUILTIN\Users
@@ -22,6 +22,7 @@ S-1-5-32-546     = BUILTIN\Guests
 S-1-5-19         = LOCAL SERVICE
 S-1-5-20         = NETWORK SERVICE
 S-1-5-6          = SERVICE
+```
 ---
 ```
 Windows Server 2022 21H2
