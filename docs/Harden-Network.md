@@ -102,3 +102,10 @@ SeDenyNetworkLogonRight = *S-1-5-32-546,*S-1-5-114
 $inf | Out-File "C:\temp\net.inf" -Encoding Unicode
 secedit /configure /db "C:\temp\sec.sdb" /cfg "C:\temp\net.inf" /areas USER_RIGHTS /quiet
 ```
+**Before:**
+<img width="803" height="37" alt="image" src="https://github.com/user-attachments/assets/e5d8b786-462b-4287-9a03-3a5d8de0a86d" />
+**After:**
+<img width="814" height="158" alt="image" src="https://github.com/user-attachments/assets/32ae4258-8926-4c26-a48d-8ac20a310728" />
+
+---
+
