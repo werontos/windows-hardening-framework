@@ -49,6 +49,7 @@ $inf | Out-File "C:\temp\net.inf" -Encoding Unicode
 secedit /configure /db "C:\temp\sec.sdb" /cfg "C:\temp\net.inf" /areas USER_RIGHTS /quiet
 ```
 <img width="775" height="195" alt="image" src="https://github.com/user-attachments/assets/17bb6936-b9b5-443c-872f-ddf02838bf9e" />
+
 ---
 ***User Rights Assignment	Access this computer from the network (Member)***
 ```
