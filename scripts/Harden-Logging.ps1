@@ -1,4 +1,3 @@
-# Ensure Registry Path Exists
 function Ensure-RegistryPath {
     param (
         [string]$Path
