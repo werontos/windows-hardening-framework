@@ -711,7 +711,7 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameter
 ```
 Windows Server 2022 21H2
 RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
-RegistryItem:   DisabledComponents
+RegistryItem:   EnableRegistrars
 DefaultValue:      1
 RecommendedValue:  0
 ```
