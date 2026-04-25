@@ -142,4 +142,4 @@ Set-Reg $power "DCSettingIndex" DWord 0
 Set-Reg $power "ACSettingIndex" DWord 0
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" "EnableNetworkProtection" DWord 1
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" "UserAuthentication" DWord 1
-Write-Host "Network hardening applied successfully"
+Write-Host "`nNetwork-Hardening DONE" -ForegroundColor Green
