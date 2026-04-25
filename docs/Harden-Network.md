@@ -2,7 +2,7 @@
 
 **Script:** `scripts/Harden-Network.ps1`
 **Tested on:** Windows Server 2022 21H2 (VMware)
-**Source:** [HardeningKitty](https://github.com/0x6d69636b/HardeningKitty)
+**Source:** [HardeningKitty](https://github.com/scipag/HardeningKitty/tree/master)
 **MITRE ATT&CK:** T1021, T1557, T1046, T1040, T1090
 
 ---
