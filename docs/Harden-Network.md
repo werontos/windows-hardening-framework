@@ -928,7 +928,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windo
 ```
 Windows Server 2022 21H2
 RegistryPath:  	HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
-RegistryItem:   EnableNetworkProtection
+RegistryItem:   UserAuthentication
 DefaultValue:      0
 RecommendedValue:  1
 ```
