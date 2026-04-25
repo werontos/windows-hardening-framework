@@ -1,31 +1,71 @@
 # Harden-Network.ps1 — Implementation Documentation
 
-For User Rights Assignment(accesschk) + Security Options(few) type of settings create a folder that you can access easy(in my case its C:\temp\) to write a scripts there.
+**Script:** `scripts/Harden-Network.ps1`
+**Tested on:** Windows Server 2022 21H2 (VMware)
+**Source:** [HardeningKitty](https://github.com/0x6d69636b/HardeningKitty)
+**MITRE ATT&CK:** T1021, T1557, T1046, T1040, T1090
 
-❕In case you dont want to apply fully automized script to apply all necessary settings which recommended by:
+---
 
-You can start with:
-Exporting current politics
-```ps1
+## Overview
+
+This document covers all network-related hardening controls applied to Windows Server 2022. Controls are grouped by type and include before/after evidence from a live VM environment.
+
+| Category | Controls Applied |
+|----------|-----------------|
+| User Rights Assignment | Network logon restrictions, Deny rules |
+| Security Options | SMB signing, NTLM restrictions, Anonymous access |
+| Administrative Templates | LLMNR, UNC paths, DNS, Firewall, RDP, WCN |
+| Defender | Network Protection |
+
+---
+
+## Prerequisites
+
+### Create working directory
+All `secedit` operations require a temp folder for `.inf` and `.sdb` files:
+
+```powershell
+New-Item -Path "C:\temp" -ItemType Directory -Force | Out-Null
+```
+
+### Export current policy (optional — for reference before changes)
+```powershell
 secedit /export /cfg "C:\temp\policy.inf" /areas USER_RIGHTS
+notepad "C:\temp\policy.inf"
 ```
-and take a look at the current politics in your comfortable text reader
 
-<img width="1177" height="670" alt="image" src="https://github.com/user-attachments/assets/b41fad0e-56a6-44ab-b20c-f504859d9b95" />
+---
 
-Also you can edit it in your environment if you not familiar with powershell scripts
-```
-S-1-1-0      = Everyone
-S-1-5-9      = ENTERPRISE DOMAIN CONTROLLERS
-S-1-5-11     = Authenticated Users
-S-1-5-19     = LOCAL SERVICE
-S-1-5-20     = NETWORK SERVICE
-S-1-5-32-544 = BUILTIN\Administrators
-S-1-5-32-545 = BUILTIN\Users
-S-1-5-32-546 = BUILTIN\Guests
-S-1-5-113    = Local account
-S-1-5-114    = Local account and member of Administrators group
-```
+## SID Reference
+
+Required for `secedit` User Rights Assignment scripts. SID values are used instead of group names inside `.inf` files:
+
+| SID | Group Name |
+|-----|-----------|
+| `S-1-1-0` | Everyone |
+| `S-1-5-9` | ENTERPRISE DOMAIN CONTROLLERS |
+| `S-1-5-11` | NT AUTHORITY\Authenticated Users |
+| `S-1-5-19` | LOCAL SERVICE |
+| `S-1-5-20` | NETWORK SERVICE |
+| `S-1-5-32-544` | BUILTIN\Administrators |
+| `S-1-5-32-545` | BUILTIN\Users |
+| `S-1-5-32-546` | BUILTIN\Guests |
+| `S-1-5-113` | Local account |
+| `S-1-5-114` | Local account and member of Administrators group |
+
+---
+
+## Control Types
+
+Three types of controls are used in this script — each requires a different implementation method:
+
+| Type | Method | Example |
+|------|--------|---------|
+| Registry | `Set-ItemProperty` | Firewall settings, SMB config |
+| User Rights (`Se*`) | `secedit` + `.inf` file | Network logon rights |
+| Security Options | `secedit` + `.inf` file | Force logoff, NTLM audit |
+
 ---
 # User Rights Assignment
 
