@@ -100,4 +100,4 @@ auditpol /set /subcategory:"{0CCE9211-69AE-11D9-BED3-505054503030}" /success:ena
 auditpol /set /subcategory:"{0CCE9244-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
 
 
-Write-Host "`nDONE" -ForegroundColor Green
+Write-Host "`nLogging-Hardening DONE" -ForegroundColor Green
