@@ -17,7 +17,6 @@ function Ensure-RegistryPath {
     }
 }
 
-# Set Registry Value
 function Set-RegValue {
     param (
         [string]$Path,
@@ -36,7 +35,6 @@ function Set-RegValue {
     Write-Host "[OK] $Path -> $Name = $Value"
 }
 
-# FIREWALL LOGGING (ALL PROFILES)
 $firewallPaths = @(
     "HKLM:\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging",
     "HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile\Logging",
@@ -54,30 +52,20 @@ foreach ($path in $firewallPaths) {
     Set-RegValue $path "LogSuccessfulConnections" 1
 }
 
-# POWERSHELL LOGGING
 
-# Windows PowerShell
 Set-RegValue "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging" "EnableModuleLogging" 1
 Set-RegValue "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" "EnableScriptBlockLogging" 1
 Set-RegValue "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" "EnableScriptBlockInvocationLogging" 1
-
-# PowerShell Core
 Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ModuleLogging" "EnableModuleLogging" 1
 Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ModuleLogging" "UseWindowsPowerShellPolicySetting" 1
-
 Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "EnableScriptBlockLogging" 1
 Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "EnableScriptBlockInvocationLogging" 1
 Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "UseWindowsPowerShellPolicySetting" 1
-
-# SECURITY / NTLM AUDIT
 Set-RegValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SCENoApplyLegacyAuditPolicy" 1
 Set-RegValue "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "AuditReceivingNTLMTraffic" 2
 Set-RegValue "HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters" "AuditNTLMInDomain" 7
-
-# LSASS audit
 Set-RegValue "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" "AuditLevel" 8
 
-# ADVANCED AUDIT POLICY
 $auditSettings = @(
     "{0CCE923F-69AE-11D9-BED3-505054503030}", # Credential Validation
     "{0CCE9235-69AE-11D9-BED3-505054503030}", # User Account Management
@@ -100,7 +88,6 @@ foreach ($id in $auditSettings) {
     auditpol /set /subcategory:$id /success:enable /failure:enable
 }
 
-# Special cases
 auditpol /set /subcategory:"{0CCE9217-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
 auditpol /set /subcategory:"{0CCE9237-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
 auditpol /set /subcategory:"{0CCE9248-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
