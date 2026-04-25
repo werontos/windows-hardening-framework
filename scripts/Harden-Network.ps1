@@ -9,6 +9,7 @@ function Ensure-RegistryPath {
 
     if (!(Test-Path $path)) {
         New-Item -Path $path -Force | Out-Null
+        Write-Host "[CREATED] $path"
     }
 }
 
@@ -22,10 +23,23 @@ function Set-Reg {
 
     Ensure-RegistryPath $path
 
-    switch ($type) {
-        "DWord"      { Set-ItemProperty -Path $path -Name $name -Type DWord -Value $value }
-        "String"     { Set-ItemProperty -Path $path -Name $name -Type String -Value $value }
-        "MultiString"{ Set-ItemProperty -Path $path -Name $name -Value $value }
+    try {
+        switch ($type) {
+            "DWord" {
+                Set-ItemProperty -Path $path -Name $name -Type DWord -Value $value
+            }
+            "String" {
+                Set-ItemProperty -Path $path -Name $name -Type String -Value $value
+            }
+            "MultiString" {
+                Set-ItemProperty -Path $path -Name $name -Value $value
+            }
+        }
+
+        Write-Host "[OK] $path -> $name = $value"
+    }
+    catch {
+        Write-Host "[ERROR] $path -> $name FAILED: $_"
     }
 }
 
