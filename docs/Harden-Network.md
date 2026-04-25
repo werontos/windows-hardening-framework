@@ -636,7 +636,7 @@ RecommendedValue:  0
 ```
 
 ```ps1
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Network Connections" -Name "NC_ShowSharedAccessUI" -Type DWord -Value 1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Network Connections" -Name "NC_ShowSharedAccessUI" -Type DWord -Value 0
 ```
 <img width="1270" height="597" alt="image" src="https://github.com/user-attachments/assets/457c8206-c04f-498f-9ea3-44308528ce24" />
 
