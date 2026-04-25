@@ -1,4 +1,3 @@
-# Hardening-Network.ps1
 $tempPath = "C:\temp"
 if (!(Test-Path $tempPath)) {
     New-Item -Path $tempPath -ItemType Directory -Force | Out-Null
