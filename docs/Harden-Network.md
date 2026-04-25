@@ -641,7 +641,7 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Network Connec
 <img width="1270" height="597" alt="image" src="https://github.com/user-attachments/assets/457c8206-c04f-498f-9ea3-44308528ce24" />
 
 ---
-***Administrative Templates: Network Network Connections: Prohibit use of Internet Connection Sharing on your DNS domain network***
+***Administrative Templates: Network	Network Connections: Require domain users to elevate when setting a network's location***
 ```
 Windows Server 2022 21H2
 RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\Network Connections
