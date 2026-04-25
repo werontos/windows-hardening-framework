@@ -120,7 +120,6 @@ RecommendedValue:  1
 ```
 
 ```ps1
-New-Item -Path "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters"
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "RequireSecuritySignature" -Type DWord -Value 1
 ```
 <img width="1268" height="592" alt="image" src="https://github.com/user-attachments/assets/fab41c72-bcf7-4b18-bb10-f3865f1ea51a" />
@@ -216,8 +215,6 @@ RecommendedValue:  netlogon;samr;lsarpc
 ```
 
 ```ps1
-New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Force | Out-Null
-
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
     -Name "NullSessionPipes" `
     -Type MultiString `
@@ -609,7 +606,7 @@ RecommendedValue:  1
 
 ```ps1
 New-Item -Path "HKLM:\Software\policies\Microsoft\Peernet" -Force | Out-Null
-Set-ItemProperty -Path "HKLM:\Software\policies\Microsoft\Peernet" -Name "Disabled" -Type DWord -Value 0
+Set-ItemProperty -Path "HKLM:\Software\policies\Microsoft\Peernet" -Name "Disabled" -Type DWord -Value 1
 ```
 <img width="1267" height="591" alt="image" src="https://github.com/user-attachments/assets/1ce20751-3956-432c-ba3b-bd90b975b15b" />
 
