@@ -818,7 +818,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPo
 ```
 Windows Server 2022 21H2
 RegistryPath:  	HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
-RegistryItem:   fMinimizeConnections
+RegistryItem:   fBlockNonDomain
 DefaultValue:      0
 RecommendedValue:  1
 ```
