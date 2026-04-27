@@ -363,3 +363,14 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows Defender\Windo
 ---
 # Microsoft Defender Exploit Guard (MpPreferenceAsr)
 ---
+***Microsoft Defender Exploit Guard	ASR: Block all Office applications from creating child processes***
+```
+Windows Server 2022 21H2
+MpPreferenceAsr:   d4f940ab-401b-4efc-aadc-ad5f3c50688a
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "d4f940ab-401b-4efc-aadc-ad5f3c50688a" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
