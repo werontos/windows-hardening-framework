@@ -506,3 +506,32 @@ RecommendedValue:  1
 Add-MpPreference -AttackSurfaceReductionRules_Ids "e6db77e5-3df2-4cf1-b95a-636979351e5b" `
                  -AttackSurfaceReductionRules_Actions Enabled
 ```
+---
+# Administrative Templates: System
+---
+***Administrative Templates: System	Device Guard: Credential Guard Configuration (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+RegistryItem:  DisableAntiSpyware
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -Type DWord -Value 1
+```
+---
+***	Administrative Templates: System	Device Guard: Credential Guard Configuration (DC)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+RegistryItem:  DisableAntiSpyware
+DefaultValue:      -
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -Type DWord -Value 0
+```
+<img width="1270" height="595" alt="image" src="https://github.com/user-attachments/assets/587e1b0e-542d-4ea4-aa0e-e15bf76d15d0" />
+
