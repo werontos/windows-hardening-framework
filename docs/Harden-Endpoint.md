@@ -365,12 +365,144 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows Defender\Windo
 ---
 ***Microsoft Defender Exploit Guard	ASR: Block all Office applications from creating child processes***
 ```
-Windows Server 2022 21H2
+Windows Server 2022 21H22
 MpPreferenceAsr:   d4f940ab-401b-4efc-aadc-ad5f3c50688a
 DefaultValue:      0
 RecommendedValue:  1
 ```
 ```ps1
 Add-MpPreference -AttackSurfaceReductionRules_Ids "d4f940ab-401b-4efc-aadc-ad5f3c50688a" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard ASR: Block Office applications from creating executable content***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   3b576869-a4ec-4529-8536-b80a7769e899
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "3b576869-a4ec-4529-8536-b80a7769e899" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard ASR: Block execution of potentially obfuscated scripts***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   5beb7efe-fd9a-4556-801d-275e5ffc04cc
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "5beb7efe-fd9a-4556-801d-275e5ffc04cc" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard	ASR: Block Office applications from injecting code into other processes***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard ASR: Block Adobe Reader from creating child processes***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard	ASR: Block Win32 API calls from Office macros***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard	ASR: Block credential stealing from the Windows local security authority subsystem (lsass.exe)***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard	ASR: Block untrusted and unsigned processes that run from USB***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard	ASR: Block executable content from email client and webmail***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   be9ba2d9-53ea-4cdc-84e5-9b1eeee46550
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard ASR: Block JavaScript or VBScript from launching downloaded executable content***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   d3e037e1-3eb8-44c8-a917-57927947596d
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "d3e037e1-3eb8-44c8-a917-57927947596d" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard ASR: Block Office communication application from creating child processes***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   26190899-1602-49e8-8b27-eb1d0a1ce869
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "26190899-1602-49e8-8b27-eb1d0a1ce869" `
+                 -AttackSurfaceReductionRules_Actions Enabled
+```
+---
+***Microsoft Defender Exploit Guard	ASR: Block persistence through WMI event subscription***
+```
+Windows Server 2022 21H22
+MpPreferenceAsr:   e6db77e5-3df2-4cf1-b95a-636979351e5b
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Add-MpPreference -AttackSurfaceReductionRules_Ids "e6db77e5-3df2-4cf1-b95a-636979351e5b" `
                  -AttackSurfaceReductionRules_Actions Enabled
 ```
