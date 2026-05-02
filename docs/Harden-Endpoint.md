@@ -521,7 +521,7 @@ RecommendedValue:  1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -Type DWord -Value 1
 ```
 ---
-***	Administrative Templates: System	Device Guard: Credential Guard Configuration (DC)***
+***Administrative Templates: System	Device Guard: Credential Guard Configuration (DC)***
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
@@ -535,3 +535,105 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -
 ```
 <img width="1270" height="595" alt="image" src="https://github.com/user-attachments/assets/587e1b0e-542d-4ea4-aa0e-e15bf76d15d0" />
 
+---
+# Security Options
+---
+***Security Options	Accounts: Limit local account use of blank passwords to console logon only***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  SCENoApplyLegacyAuditPolicy
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "SCENoApplyLegacyAuditPolicy" -Type DWord -Value 1
+```
+<img width="1268" height="596" alt="image" src="https://github.com/user-attachments/assets/d8322f65-8e86-488a-a45d-cbd7b9c30ace" />
+
+---
+***Security Options	Domain controller: Allow server operators to schedule tasks (DC)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  SubmitControl
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "SubmitControl" -Type DWord -Value 0
+```
+<img width="1268" height="589" alt="image" src="https://github.com/user-attachments/assets/d69d3e5d-991b-4b20-a7b6-925217e2c8d0" />
+
+---
+***Security Options	Network access: Do not allow anonymous enumeration of SAM accounts and shares (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  RestrictAnonymous
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "RestrictAnonymous" -Type DWord -Value 1
+```
+<img width="1271" height="594" alt="image" src="https://github.com/user-attachments/assets/736828f4-f402-4570-b0de-eef3e06e4d9f" />
+
+---
+***Security Options	Network access: Do not allow storage of passwords and credentials for network authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  DisableDomainCreds
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "DisableDomainCreds" -Type DWord -Value 1
+```
+<img width="1265" height="589" alt="image" src="https://github.com/user-attachments/assets/65908167-ed8a-42ba-bf94-25700958b935" />
+
+---
+***Security Options	Network access: Restrict clients allowed to make remote calls to SAM (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  RestrictRemoteSAM
+DefaultValue:      -
+RecommendedValue:  O:BAG:BAD:(A;;RC;;;BA)
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" `
+    -Name "RestrictRemoteSAM" `
+    -Type String `
+    -Value "O:BAG:BAD:(A;;RC;;;BA)"
+```
+<img width="1271" height="595" alt="image" src="https://github.com/user-attachments/assets/097ed1d4-d6b2-42b3-bbc9-6524a9d204b1" />
+
+---
+***Administrative Templates: System	Device Guard: Credential Guard Configuration (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+RegistryItem:  LsaCfgFlags
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -Type DWord -Value 1
+```
+<img width="1271" height="595" alt="image" src="https://github.com/user-attachments/assets/222d8155-414c-4087-8943-4549b9a88434" />
+
+---
+***Administrative Templates: System	Device Guard: Credential Guard Configuration (DC)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+RegistryItem:  LsaCfgFlags
+DefaultValue:      -
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -Type DWord -Value 0
+```
+<img width="1270" height="592" alt="image" src="https://github.com/user-attachments/assets/9a1ad61c-4e48-4594-b4c5-e2e2ee1be04f" />
