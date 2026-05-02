@@ -566,51 +566,6 @@ Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "Submi
 <img width="1268" height="589" alt="image" src="https://github.com/user-attachments/assets/d69d3e5d-991b-4b20-a7b6-925217e2c8d0" />
 
 ---
-***Security Options	Network access: Do not allow anonymous enumeration of SAM accounts and shares (Member)***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
-RegistryItem:  RestrictAnonymous
-DefaultValue:      0
-RecommendedValue:  1
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "RestrictAnonymous" -Type DWord -Value 1
-```
-<img width="1271" height="594" alt="image" src="https://github.com/user-attachments/assets/736828f4-f402-4570-b0de-eef3e06e4d9f" />
-
----
-***Security Options	Network access: Do not allow storage of passwords and credentials for network authentication***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
-RegistryItem:  DisableDomainCreds
-DefaultValue:      0
-RecommendedValue:  1
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "DisableDomainCreds" -Type DWord -Value 1
-```
-<img width="1265" height="589" alt="image" src="https://github.com/user-attachments/assets/65908167-ed8a-42ba-bf94-25700958b935" />
-
----
-***Security Options	Network access: Restrict clients allowed to make remote calls to SAM (Member)***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
-RegistryItem:  RestrictRemoteSAM
-DefaultValue:      -
-RecommendedValue:  O:BAG:BAD:(A;;RC;;;BA)
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" `
-    -Name "RestrictRemoteSAM" `
-    -Type String `
-    -Value "O:BAG:BAD:(A;;RC;;;BA)"
-```
-<img width="1271" height="595" alt="image" src="https://github.com/user-attachments/assets/097ed1d4-d6b2-42b3-bbc9-6524a9d204b1" />
-
----
 ***Administrative Templates: System	Device Guard: Credential Guard Configuration (Member)***
 ```
 Windows Server 2022 21H2
