@@ -181,7 +181,7 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows Defender" -Nam
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR
-RegistryItem:  DisableAntiSpyware
+RegistryItem:  ExploitGuard_ASR_Rules
 DefaultValue:      0
 RecommendedValue:  1
 ```
