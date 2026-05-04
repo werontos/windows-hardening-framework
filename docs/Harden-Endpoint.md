@@ -594,14 +594,52 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\k
 <img width="1219" height="544" alt="image" src="https://github.com/user-attachments/assets/c3625c9a-83bf-45ed-9e32-49acfc96c986" />
 
 ---
-***MS Security Guide	Enable Structured Exception Handling Overwrite Protection (SEHOP)***
+***Administrative Templates: System	Device Guard: Windows Defender Application Control deployed (Policy)***
 ```
 Windows Server 2022 21H2
-RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel
-RegistryItem:  DisableExceptionChainValidation
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+RegistryItem:  DeployConfigCIPolicy
 DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
+```
+<img width="1212" height="545" alt="image" src="https://github.com/user-attachments/assets/1762b6d0-cc32-4755-ae92-b1e07dfec79c" />
+
+---
+***Administrative Templates: Windows Components	App Package Deployment: Allow a Windows app to share application data between users***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager
+RegistryItem:  AllowSharedLocalAppData
+DefaultValue:      1
 RecommendedValue:  0
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name "DisableExceptionChainValidation" -Type DWord -Value 0
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" -Name "AllowSharedLocalAppData" -Type DWord -Value 0
+```
+<img width="1213" height="546" alt="image" src="https://github.com/user-attachments/assets/0b8c4ba9-69dc-4861-91d3-67d55d585c35" />
+
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Data Execution Prevention (DEP)***
+```
+Windows Server 2022 21H2
+Processmitigation:  DEP
+DefaultValue:      ON
+RecommendedValue:  ON
+```
+```ps1
+Set-ProcessMitigation -System -Enable DEP
+```
+---
+***Microsoft Defender Exploit Guard	Force use of Data Execution Prevention (DEP)***
+```
+Windows Server 2022 21H2
+bcdedit:           nx
+DefaultValue:      OptIn
+RecommendedValue:  AlwaysOn
+```
+```ps1
+bcdedit /set {current} nx AlwaysOn
 ```
