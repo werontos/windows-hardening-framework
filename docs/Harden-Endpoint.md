@@ -687,3 +687,47 @@ RecommendedValue:  ON
 ```ps1
 Set-ProcessMitigation -System -Enable ForceRelocateImages
 ```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Override force randomization for images (Mandatory ASLR)***
+```
+Windows Server 2022 21H2
+Processmitigation:    ASLR.OverrideForceRelocateImages
+DefaultValue:         False
+RecommendedValue:     False
+```
+```ps1
+-
+```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Randomize memory allocations (Bottom-up ASLR)***
+```
+Windows Server 2022 21H2
+Processmitigation:    ASLR.BottomUp
+DefaultValue:         ON
+RecommendedValue:     ON
+```
+```ps1
+Set-ProcessMitigation -System -Enable BottomUp
+```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Override randomize memory allocations (Bottom-up ASLR)***
+```
+Windows Server 2022 21H2
+Processmitigation:    ASLR.OverrideBottomUp
+DefaultValue:         ON
+RecommendedValue:     ON
+```
+```ps1
+-
+```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: High-entropy ASLR***
+```
+Windows Server 2022 21H2
+Processmitigation:    ASLR.HighEntropy
+DefaultValue:         ON
+RecommendedValue:     ON
+```
+```ps1
+Set-ProcessMitigation -System -Enable HighEntropy
+```
