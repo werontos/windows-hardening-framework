@@ -676,3 +676,14 @@ RecommendedValue:  False
 ```ps1
 Set-ProcessMitigation -System -Disable SEHOPOverrideSEHOP
 ```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Force randomization for images (Mandatory ASLR)***
+```
+Windows Server 2022 21H2
+Processmitigation:  ASLR.ForceRelocateImages
+DefaultValue:      OFF
+RecommendedValue:  ON
+```
+```ps1
+Set-ProcessMitigation -System -Enable ForceRelocateImages
+```
