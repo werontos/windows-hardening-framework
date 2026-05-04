@@ -563,3 +563,45 @@ RecommendedValue:  0
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -Type DWord -Value 0
 ```
 <img width="1270" height="592" alt="image" src="https://github.com/user-attachments/assets/9a1ad61c-4e48-4594-b4c5-e2e2ee1be04f" />
+
+---
+***Administrative Templates: Windows Components	App Package Deployment: Allow a Windows app to share application data between users***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager
+RegistryItem:  LsaCfgFlags
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" -Name "LsaCfgFlags" -Type DWord -Value 0
+```
+<img width="1215" height="547" alt="image" src="https://github.com/user-attachments/assets/57bce921-f73b-4baa-b6e2-6b07e2fea68c" />
+
+---
+***MS Security Guide	Enable Structured Exception Handling Overwrite Protection (SEHOP)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel
+RegistryItem:  DisableExceptionChainValidation
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name "DisableExceptionChainValidation" -Type DWord -Value 0
+```
+<img width="1219" height="544" alt="image" src="https://github.com/user-attachments/assets/c3625c9a-83bf-45ed-9e32-49acfc96c986" />
+
+---
+***MS Security Guide	Enable Structured Exception Handling Overwrite Protection (SEHOP)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel
+RegistryItem:  DisableExceptionChainValidation
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name "DisableExceptionChainValidation" -Type DWord -Value 0
+```
