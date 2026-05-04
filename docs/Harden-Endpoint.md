@@ -643,3 +643,36 @@ RecommendedValue:  AlwaysOn
 ```ps1
 bcdedit /set {current} nx AlwaysOn
 ```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Validate exception chains (SEHOP)***
+```
+Windows Server 2022 21H2
+Processmitigation:  SEHOP.Enable
+DefaultValue:      ON
+RecommendedValue:  ON
+```
+```ps1
+Set-ProcessMitigation -System -Enable SEHOP
+```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Validate exception chains (SEHOP (Telemetry only)***
+```
+Windows Server 2022 21H2
+Processmitigation:  SEHOP.TelemetryOnly
+DefaultValue:      NOTSET
+RecommendedValue:  OFF
+```
+```ps1
+Set-ProcessMitigation -System -Disable SEHOPTelemetry
+```
+---
+***Microsoft Defender Exploit Guard	Exploit protection: Override validate exception chains (SEHOP)***
+```
+Windows Server 2022 21H2
+Processmitigation:  SEHOP.OverrideSEHOP
+DefaultValue:      False
+RecommendedValue:  False
+```
+```ps1
+Set-ProcessMitigation -System -Disable SEHOPOverrideSEHOP
+```
