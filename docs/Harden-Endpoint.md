@@ -731,3 +731,61 @@ RecommendedValue:     ON
 ```ps1
 Set-ProcessMitigation -System -Enable HighEntropy
 ```
+---
+***MS Security Guide	LSA Protection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+RegistryItem:  AllowSharedLocalAppData
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "RunAsPPL" -Type DWord -Value 1
+```
+<img width="1268" height="596" alt="image" src="https://github.com/user-attachments/assets/96f7d15d-0c4d-4bc6-97f9-2d61aa8d4127" />
+
+---
+***PowerShell Constrained Language Mode***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\
+RegistryItem:  __PSLockdownPolicy
+DefaultValue:      -
+RecommendedValue:  4
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" -name __PSLockdownPolicy -Value 4
+```
+<img width="1266" height="594" alt="image" src="https://github.com/user-attachments/assets/5ecfb279-280e-4067-99ed-f9595e813bf6" />
+
+---
+***Administrative Templates: Windows Components	AutoPlay Policies: Disallow Autoplay for non-volume devices***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Explorer
+RegistryItem:  __PSLockdownPolicy
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -name "NoAutoplayfornonVolume" -Value 1
+```
+<img width="1267" height="587" alt="image" src="https://github.com/user-attachments/assets/f16be6cc-3179-467b-87ac-ac823adf956b" />
+
+---
+***Administrative Templates: Windows Components	AutoPlay Policies: Turn off Autoplay***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+RegistryItem:  __PSLockdownPolicy
+DefaultValue:      0
+RecommendedValue:  255
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -name "NoDriveTypeAutoRun" -Value 255
+```
+<img width="1267" height="594" alt="image" src="https://github.com/user-attachments/assets/a8872e5f-739f-4434-a324-a125c39e3b56" />
+
+---
