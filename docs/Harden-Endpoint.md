@@ -419,7 +419,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -
 <img width="1270" height="592" alt="image" src="https://github.com/user-attachments/assets/9a1ad61c-4e48-4594-b4c5-e2e2ee1be04f" />
 
 ---
-***Credential Guard / LSA protection***
+***MS Security Guide    Credential Guard / LSA: Enable Virtualization Based Security***
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
@@ -771,5 +771,19 @@ RecommendedValue:  1
 New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Name "DisableRunAs" -PropertyType DWord -Value 1 -Force
 ```
 <img width="1268" height="591" alt="image" src="https://github.com/user-attachments/assets/0e3beb44-6c93-4dc0-a867-2d83a75afe6d" />
+
+---
+***Windows Script Host***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings
+RegistryItem:  Enabled
+DefaultValue:      -
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" -Name "Enabled" -Type DWord -Value 0
+```
+<img width="1264" height="593" alt="image" src="https://github.com/user-attachments/assets/43c637f7-58d1-4166-994e-988f300efba9" />
 
 ---
