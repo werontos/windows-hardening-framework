@@ -789,20 +789,6 @@ Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies
 <img width="1267" height="594" alt="image" src="https://github.com/user-attachments/assets/a8872e5f-739f-4434-a324-a125c39e3b56" />
 
 ---
-***Administrative Templates: Windows Components	AutoPlay Policies: Disallow Autoplay for non-volume devices***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Explorer
-RegistryItem:  NoAutoplayfornonVolume
-DefaultValue:      0
-RecommendedValue:  1
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -name "NoAutoplayfornonVolume" -Value 1
-```
-<img width="1273" height="599" alt="image" src="https://github.com/user-attachments/assets/15aa6ed3-e474-40ab-a4be-1558342848b8" />
-
----
 ***Administrative Templates: Windows Components	WinRM Client: Allow Basic authentication***
 ```
 Windows Server 2022 21H2
