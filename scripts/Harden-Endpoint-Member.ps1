@@ -90,7 +90,7 @@ Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\AppMode
 
 Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "RunAsPPL" 1
 
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "__PSLockdownPolicy" 4
+Ensure-RegistryPath "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" New-ItemProperty ` -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" ` -Name "__PSLockdownPolicy" ` -PropertyType String ` -Value "4" ` -Force | Out-Null
 
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" "NoAutoplayfornonVolume" 1
 Set-DwordValue "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoDriveTypeAutoRun" 255
