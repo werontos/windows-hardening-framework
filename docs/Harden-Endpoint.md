@@ -565,19 +565,18 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -
 <img width="1270" height="592" alt="image" src="https://github.com/user-attachments/assets/9a1ad61c-4e48-4594-b4c5-e2e2ee1be04f" />
 
 ---
-***Administrative Templates: Windows Components	App Package Deployment: Allow a Windows app to share application data between users***
+***Credential Guard / LSA protection***
 ```
 Windows Server 2022 21H2
-RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
 RegistryItem:  LsaCfgFlags
-DefaultValue:      1
-RecommendedValue:  0
+DefaultValue:      0
+RecommendedValue:  1
 ```
 ```ps1
-New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" -Force | Out-Null
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" -Name "LsaCfgFlags" -Type DWord -Value 0
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "LsaCfgFlags" -Type DWord -Value 1
 ```
-<img width="1215" height="547" alt="image" src="https://github.com/user-attachments/assets/57bce921-f73b-4baa-b6e2-6b07e2fea68c" />
+<img width="1266" height="596" alt="image" src="https://github.com/user-attachments/assets/9601613f-b7c9-4b5d-92f1-e76f1148769a" />
 
 ---
 ***MS Security Guide	Enable Structured Exception Handling Overwrite Protection (SEHOP)***
@@ -770,7 +769,7 @@ RecommendedValue:  1
 ```
 ```ps1
 New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -Force | Out-Null
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -name "NoAutoplayfornonVolume" -Value 1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -name "NoAutoplayfornonVolume" -Type DWord -Value 1
 ```
 <img width="1267" height="587" alt="image" src="https://github.com/user-attachments/assets/f16be6cc-3179-467b-87ac-ac823adf956b" />
 
@@ -784,7 +783,7 @@ DefaultValue:      0
 RecommendedValue:  255
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -name "NoDriveTypeAutoRun" -Value 255
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -name "NoDriveTypeAutoRun" -Type DWord -Value 255
 ```
 <img width="1267" height="594" alt="image" src="https://github.com/user-attachments/assets/a8872e5f-739f-4434-a324-a125c39e3b56" />
 
@@ -799,7 +798,7 @@ RecommendedValue:  0
 ```
 ```ps1
 New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -Force | Out-Null
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -name "AllowBasic" -Value 0
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -name "AllowBasic" -Type DWord -Value 0
 ```
 <img width="1266" height="588" alt="image" src="https://github.com/user-attachments/assets/87f21634-5569-4190-b9c4-e938809223d3" />
 
@@ -814,7 +813,7 @@ RecommendedValue:  0
 ```
 ```ps1
 New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Force | Out-Null
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -name "AllowBasic" -Value 0
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -name "AllowBasic" -Type DWord -Value 0
 ```
 <img width="1268" height="595" alt="image" src="https://github.com/user-attachments/assets/bfb11a76-23d9-48b6-98ef-5d1138f7af13" />
 
@@ -828,7 +827,7 @@ DefaultValue:      1
 RecommendedValue:  0
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -name "AllowUnencryptedTraffic" -Value 0
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -name "AllowUnencryptedTraffic" -Type DWord -Value 0
 ```
 <img width="1267" height="593" alt="image" src="https://github.com/user-attachments/assets/0373bc31-53c0-443f-a5ed-8626110357f9" />
 
@@ -842,7 +841,7 @@ DefaultValue:      1
 RecommendedValue:  0
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -name "AllowUnencryptedTraffic" -Value 0
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -name "AllowUnencryptedTraffic" -Type DWord -Value 0
 ```
 <img width="1266" height="594" alt="image" src="https://github.com/user-attachments/assets/daec67d4-c0ee-4859-ac67-d568e95fb78e" />
 
@@ -856,7 +855,7 @@ DefaultValue:      0
 RecommendedValue:  1
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -name "SafeDLLSearchMode" -Value 1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -name "SafeDLLSearchMode" -Type DWord -Value 1
 ```
 <img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/a72191ff-806c-4340-8b95-304e3a187239" />
 
@@ -871,7 +870,7 @@ RecommendedValue:  1
 ```
 ```ps1
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -Force | Out-Null
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -name "EnableNetworkProtection" -Value 1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -name "EnableNetworkProtection" -Type DWord -Value 1
 ```
 <img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/f146de3b-c751-49f7-9cba-4c4fb7d977f1" />
 
