@@ -93,7 +93,7 @@ Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "RunAsPPL" 1
 
 # PowerShell Constrained Language Mode
 
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "__PSLockdownPolicy" 4
+Ensure-RegistryPath "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" New-ItemProperty ` -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" ` -Name "__PSLockdownPolicy" ` -PropertyType String ` -Value "4" ` -Force | Out-Null
 
 # AutoPlay Hardening
 
