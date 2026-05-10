@@ -736,7 +736,7 @@ Set-ProcessMitigation -System -Enable HighEntropy
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
-RegistryItem:  AllowSharedLocalAppData
+RegistryItem:  RunAsPPL
 DefaultValue:      -
 RecommendedValue:  1
 ```
@@ -764,7 +764,7 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\E
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Explorer
-RegistryItem:  __PSLockdownPolicy
+RegistryItem:  NoAutoplayfornonVolume
 DefaultValue:      0
 RecommendedValue:  1
 ```
