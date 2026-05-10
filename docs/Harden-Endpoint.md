@@ -779,7 +779,7 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -nam
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
-RegistryItem:  __PSLockdownPolicy
+RegistryItem:  NoDriveTypeAutoRun
 DefaultValue:      0
 RecommendedValue:  255
 ```
@@ -787,5 +787,106 @@ RecommendedValue:  255
 Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -name "NoDriveTypeAutoRun" -Value 255
 ```
 <img width="1267" height="594" alt="image" src="https://github.com/user-attachments/assets/a8872e5f-739f-4434-a324-a125c39e3b56" />
+
+---
+***Administrative Templates: Windows Components	AutoPlay Policies: Disallow Autoplay for non-volume devices***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Explorer
+RegistryItem:  NoAutoplayfornonVolume
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -name "NoAutoplayfornonVolume" -Value 1
+```
+<img width="1273" height="599" alt="image" src="https://github.com/user-attachments/assets/15aa6ed3-e474-40ab-a4be-1558342848b8" />
+
+---
+***Administrative Templates: Windows Components	WinRM Client: Allow Basic authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client
+RegistryItem:  AllowBasic
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -name "AllowBasic" -Value 0
+```
+<img width="1266" height="588" alt="image" src="https://github.com/user-attachments/assets/87f21634-5569-4190-b9c4-e938809223d3" />
+
+---
+***Administrative Templates: Windows Components	WinRM Service: Allow Basic authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service
+RegistryItem:  AllowBasic
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -name "AllowBasic" -Value 0
+```
+<img width="1268" height="595" alt="image" src="https://github.com/user-attachments/assets/bfb11a76-23d9-48b6-98ef-5d1138f7af13" />
+
+---
+***Administrative Templates: Windows Components	WinRM Client: Allow unencrypted traffic***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client
+RegistryItem:  AllowUnencryptedTraffic
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -name "AllowUnencryptedTraffic" -Value 0
+```
+<img width="1267" height="593" alt="image" src="https://github.com/user-attachments/assets/0373bc31-53c0-443f-a5ed-8626110357f9" />
+
+---
+***Administrative Templates: Windows Components	WinRM Service: Allow unencrypted traffic***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service
+RegistryItem:  AllowUnencryptedTraffic
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -name "AllowUnencryptedTraffic" -Value 0
+```
+<img width="1266" height="594" alt="image" src="https://github.com/user-attachments/assets/daec67d4-c0ee-4859-ac67-d568e95fb78e" />
+
+---
+***MSS (Legacy)	MSS: (SafeDllSearchMode) Enable Safe DLL search mode (recommended)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager
+RegistryItem:  SafeDLLSearchMode
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -name "SafeDLLSearchMode" -Value 1
+```
+<img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/a72191ff-806c-4340-8b95-304e3a187239" />
+
+---
+***Microsoft Defender Exploit Guard	Network Protection: Prevent users and apps from accessing dangerous websites***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection
+RegistryItem:  EnableNetworkProtection
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -name "EnableNetworkProtection" -Value 1
+```
+<img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/f146de3b-c751-49f7-9cba-4c4fb7d977f1" />
 
 ---
