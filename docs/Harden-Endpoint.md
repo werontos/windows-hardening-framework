@@ -695,7 +695,8 @@ DefaultValue:         False
 RecommendedValue:     False
 ```
 ```ps1
--
+Set-ProcessMitigation -System -Disable OverrideForceRelocateImages
+Set-ProcessMitigation -System -Disable OverrideBottomUp
 ```
 ---
 ***Microsoft Defender Exploit Guard	Exploit protection: Randomize memory allocations (Bottom-up ASLR)***
@@ -754,7 +755,7 @@ DefaultValue:      -
 RecommendedValue:  4
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" -name __PSLockdownPolicy -Value 4
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -name __PSLockdownPolicy -Type DWord -Value 4
 ```
 <img width="1266" height="594" alt="image" src="https://github.com/user-attachments/assets/5ecfb279-280e-4067-99ed-f9595e813bf6" />
 
@@ -850,12 +851,12 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service"
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager
-RegistryItem:  SafeDLLSearchMode
+RegistryItem:  SafeDllSearchMode
 DefaultValue:      0
 RecommendedValue:  1
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -name "SafeDLLSearchMode" -Type DWord -Value 1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -name "SafeDllSearchMode" -Type DWord -Value 1
 ```
 <img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/a72191ff-806c-4340-8b95-304e3a187239" />
 
@@ -873,5 +874,48 @@ New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defen
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" -name "EnableNetworkProtection" -Type DWord -Value 1
 ```
 <img width="1269" height="592" alt="image" src="https://github.com/user-attachments/assets/f146de3b-c751-49f7-9cba-4c4fb7d977f1" />
+
+---
+***Controlled Folder Access***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access
+RegistryItem:  EnableControlledFolderAccess
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" -Name "EnableControlledFolderAccess" -PropertyType DWord -Value 1 -Force
+```
+<img width="1263" height="597" alt="image" src="https://github.com/user-attachments/assets/4b75079d-0618-4a52-ae79-ba8c122f7b5c" />
+
+---
+***Administrative Templates: Windows Components	WinRM Client: Disallow Digest authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client
+RegistryItem:  AllowDigest
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -Name "AllowDigest" -PropertyType DWord -Value 0 -Force
+```
+<img width="1264" height="594" alt="image" src="https://github.com/user-attachments/assets/daff0bbd-346b-440e-8217-52506c649c16" />
+
+---
+***Administrative Templates: Windows Components	WinRM Service: Disallow WinRM from storing RunAs credentials***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service
+RegistryItem:  DisableRunAs
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Name "DisableRunAs" -PropertyType DWord -Value 1 -Force
+```
+<img width="1268" height="591" alt="image" src="https://github.com/user-attachments/assets/0e3beb44-6c93-4dc0-a867-2d83a75afe6d" />
 
 ---
