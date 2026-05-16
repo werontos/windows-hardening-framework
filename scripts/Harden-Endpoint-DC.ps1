@@ -147,6 +147,23 @@ Set-ProcessMitigation -System -Enable HighEntropy
 Write-Host "[*] Enabling DEP AlwaysOn..." -ForegroundColor Cyan
 bcdedit /set {current} nx AlwaysOn
 
+# WDigest Authentication
+
+Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" "UseLogonCredential" 0
+
+# Microsoft Defender Tamper Protection
+# NOTE:
+# Requires Tamper Protection management through Microsoft Defender portal,
+# Intune, or manual enablement in Windows Security.
+# Direct registry modification is often blocked by Windows.
+
+try {
+    Set-DwordValue "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" "TamperProtection" 5
+}
+catch {
+    Write-Host "[!] Tamper Protection registry change blocked by Windows." -ForegroundColor Yellow
+}
+
 Write-Host ""
 Write-Host "[+] Endpoint hardening completed successfully." -ForegroundColor Green
 Write-Host "[!] Reboot is recommended." -ForegroundColor Yellow
