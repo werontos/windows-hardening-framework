@@ -787,3 +787,29 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" -
 <img width="1264" height="593" alt="image" src="https://github.com/user-attachments/assets/43c637f7-58d1-4166-994e-988f300efba9" />
 
 ---
+***MS Security Guide WDigest Authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest
+RegistryItem:  UseLogonCredential
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" -Name "UseLogonCredential" -Type DWord -Value 0
+```
+<img width="1268" height="600" alt="image" src="https://github.com/user-attachments/assets/7239a88a-161f-4467-ac45-d59b4f68a014" />
+
+---
+***Microsoft Defender Configure Tamper Protection***
+```
+Windows Server 2022 21H2
+RegistryPath:      HKLM:\SOFTWARE\Microsoft\Windows Defender\Features
+RegistryItem:      TamperProtection
+DefaultValue:      0
+RecommendedValue:  5
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" -Name "TamperProtection" -Type DWord -Value 5
+```
+You can toggle it on manually
