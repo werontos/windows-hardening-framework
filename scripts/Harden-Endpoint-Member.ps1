@@ -76,7 +76,6 @@ foreach ($Rule in $ASRRules) {
 
 
 Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "SCENoApplyLegacyAuditPolicy" 1
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "SubmitControl" 0
 
 # MEMBER CONFIGURATION
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "LsaCfgFlags" 1
