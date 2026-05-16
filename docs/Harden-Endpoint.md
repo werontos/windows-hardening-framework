@@ -377,20 +377,6 @@ Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "SCENo
 <img width="1268" height="596" alt="image" src="https://github.com/user-attachments/assets/d8322f65-8e86-488a-a45d-cbd7b9c30ace" />
 
 ---
-***Security Options	Domain controller: Allow server operators to schedule tasks (DC)***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
-RegistryItem:  SubmitControl
-DefaultValue:      0
-RecommendedValue:  0
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "SubmitControl" -Type DWord -Value 0
-```
-<img width="1268" height="589" alt="image" src="https://github.com/user-attachments/assets/d69d3e5d-991b-4b20-a7b6-925217e2c8d0" />
-
----
 ***Administrative Templates: System	Device Guard: Credential Guard Configuration (Member)***
 ```
 Windows Server 2022 21H2
@@ -445,20 +431,6 @@ RecommendedValue:  0
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name "DisableExceptionChainValidation" -Type DWord -Value 0
 ```
 <img width="1219" height="544" alt="image" src="https://github.com/user-attachments/assets/c3625c9a-83bf-45ed-9e32-49acfc96c986" />
-
----
-***Administrative Templates: System	Device Guard: Windows Defender Application Control deployed (Policy)***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
-RegistryItem:  DeployConfigCIPolicy
-DefaultValue:      0
-RecommendedValue:  1
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
-```
-<img width="1212" height="545" alt="image" src="https://github.com/user-attachments/assets/1762b6d0-cc32-4755-ae92-b1e07dfec79c" />
 
 ---
 ***Administrative Templates: Windows Components	App Package Deployment: Allow a Windows app to share application data between users***
