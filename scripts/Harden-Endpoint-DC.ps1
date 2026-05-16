@@ -71,7 +71,6 @@ Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defen
 # Security Options
 
 Set-DwordValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SCENoApplyLegacyAuditPolicy" 1
-Set-DwordValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SubmitControl" 0
 
 # Device Guard / Credential Guard
 
