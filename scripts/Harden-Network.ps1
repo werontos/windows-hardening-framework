@@ -142,4 +142,12 @@ Set-Reg $power "DCSettingIndex" DWord 0
 Set-Reg $power "ACSettingIndex" DWord 0
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" "EnableNetworkProtection" DWord 1
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" "UserAuthentication" DWord 1
+Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters" "NodeType" DWord 2
+Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\MrxSmb10" "Start" DWord 4
+Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" "SMB1" DWord 0
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad" -Force | Out-Null
+Set-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad" "WpadOverride" DWord 1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" -Force | Out-Null
+Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "EnableAutoProxyResultCache" DWord 0
+Set-Reg "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" "EnableSecuritySignature" DWord 1
 Write-Host "`nNetwork-Hardening DONE" -ForegroundColor Green
