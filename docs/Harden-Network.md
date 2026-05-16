@@ -977,3 +977,80 @@ RecommendedValue:  1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "UserAuthentication" -Type DWord -Value 1
 ```
 <img width="1268" height="592" alt="image" src="https://github.com/user-attachments/assets/69f2b738-d6a2-4803-afe3-bb0370427bf9" />
+
+---
+***MS Security Guide	NetBT NodeType configuration***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters
+RegistryItem:   NodeType
+DefaultValue:      0
+RecommendedValue:  2
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters" -Name "NodeType" -Type DWord -Value 2
+```
+<img width="1266" height="602" alt="image" src="https://github.com/user-attachments/assets/3fc22364-e3b8-4d22-82b5-09a300dd0db7" />
+
+---
+***MS Security Guide Configure SMB v1 client driver***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SYSTEM\CurrentControlSet\Services\MrxSmb10
+RegistryItem:   Start
+DefaultValue:      1
+RecommendedValue:  4
+```
+
+```ps1
+New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MrxSmb10" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MrxSmb10" -Name "Start" -Type DWord -Value 4
+```
+<img width="1263" height="602" alt="image" src="https://github.com/user-attachments/assets/f7370f4e-6e00-45fe-8936-0cb7c5868dab" />
+
+---
+***MS Security Guide Configure SMB v1 server***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+RegistryItem:   SMB1
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "SMB1" -Type DWord -Value 0
+```
+<img width="1268" height="602" alt="image" src="https://github.com/user-attachments/assets/cb4b6adc-1ff4-40d0-8bcc-99a5655191e3" />
+
+---
+***MS Security Guide Configure WinHTTP Web Proxy Auto-Discovery Service (WPAD)***
+```
+Windows Server 2022 21H2
+RegistryPath:  	HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad
+RegistryItem:   WpadOverride
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad" -Name "WpadOverride" -Type DWord -Value 1
+```
+<img width="1265" height="602" alt="image" src="https://github.com/user-attachments/assets/3f07402a-f166-4d62-be8c-22f57db4defa" />
+
+---
+***MS Security Guide Disable caching of Auto-Proxy scripts***
+```
+Windows Server 2022 21H2
+RegistryPath:      HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings
+RegistryItem:      EnableAutoProxyResultCache
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "EnableAutoProxyResultCache" -Type DWord -Value 0
+```
+<img width="1266" height="607" alt="image" src="https://github.com/user-attachments/assets/3d9d61e5-5796-46aa-bbee-bb05534996cc" />
