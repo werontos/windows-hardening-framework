@@ -128,6 +128,23 @@ Set-ProcessMitigation -System -Disable OverrideBottomUp
 Set-ProcessMitigation -System -Enable BottomUp
 Set-ProcessMitigation -System -Enable HighEntropy
 
+# WDigest Authentication
+
+Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" "UseLogonCredential" 0
+
+# Microsoft Defender Tamper Protection
+# NOTE:
+# Requires Tamper Protection management through Microsoft Defender portal,
+# Intune, or manual enablement in Windows Security.
+# Direct registry modification is often blocked by Windows.
+
+try {
+    Set-DwordValue "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" "TamperProtection" 5
+}
+catch {
+    Write-Host "[!] Tamper Protection registry change blocked by Windows." -ForegroundColor Yellow
+}
+
 bcdedit /set {current} nx AlwaysOn
 
 Write-Host "MEMBER hardening complete. Reboot recommended." -ForegroundColor Green
