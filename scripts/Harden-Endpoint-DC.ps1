@@ -77,7 +77,7 @@ Set-DwordValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SubmitControl" 0
 
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "LsaCfgFlags" 0
 Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "LsaCfgFlags" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "DeployConfigCIPolicy" 1
+#Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "DeployConfigCIPolicy" 1
 
 # SEHOP / Kernel Protections
 
