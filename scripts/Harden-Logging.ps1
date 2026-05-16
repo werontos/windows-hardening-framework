@@ -98,5 +98,11 @@ auditpol /set /subcategory:"{0CCE9210-69AE-11D9-BED3-505054503030}" /success:ena
 auditpol /set /subcategory:"{0CCE9211-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
 auditpol /set /subcategory:"{0CCE9244-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
 
+Set-RegValue "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit" "ProcessCreationIncludeCmdLine_Enabled" 1
+
+wevtutil sl Security /ms:1073741824
+wevtutil sl System /ms:536870912
+wevtutil sl Application /ms:536870912
+wevtutil sl "Microsoft-Windows-PowerShell/Operational" /ms:104857600
 
 Write-Host "`nLogging-Hardening DONE" -ForegroundColor Green
