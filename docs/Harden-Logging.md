@@ -846,3 +846,22 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image
 ```
 
 <img width="1223" height="703" alt="image" src="https://github.com/user-attachments/assets/9bca3e57-ef7d-4601-a10b-d68360fe772e" />
+
+```
+File ......machine
+Administrative Templates: System	Audit Process Creation: Include command line in process creation events	
+RegistryPath:      HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit
+RegistryItem:      ProcessCreationIncludeCmdLine_Enabled
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit" -Name "ProcessCreationIncludeCmdLine_Enabled" -Type DWord -Value 1
+```
+<img width="1267" height="599" alt="image" src="https://github.com/user-attachments/assets/7008a25b-42be-4044-8064-bc62d79a7df7" />
+
+wevtutil sl Security /ms:1073741824
+wevtutil sl System /ms:536870912
+wevtutil sl Application /ms:536870912
+wevtutil sl "Microsoft-Windows-PowerShell/Operational" /ms:104857600
