@@ -862,6 +862,9 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 <img width="1267" height="599" alt="image" src="https://github.com/user-attachments/assets/7008a25b-42be-4044-8064-bc62d79a7df7" />
 
 wevtutil sl Security /ms:1073741824
+
 wevtutil sl System /ms:536870912
+
 wevtutil sl Application /ms:536870912
+
 wevtutil sl "Microsoft-Windows-PowerShell/Operational" /ms:104857600
