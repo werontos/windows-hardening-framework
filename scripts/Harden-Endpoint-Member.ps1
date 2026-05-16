@@ -82,7 +82,8 @@ Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "SubmitControl" 0
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "LsaCfgFlags" 1
 
 Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "LsaCfgFlags" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "DeployConfigCIPolicy" 1
+# Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "DeployConfigCIPolicy" 1
+# WARNING: Requires signed WDAC policy — dangerous without proper CI policy configured
 
 Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" "DisableExceptionChainValidation" 0
 
