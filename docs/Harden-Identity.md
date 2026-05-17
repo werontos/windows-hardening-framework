@@ -389,10 +389,10 @@ Remove-Item C:\secpol.cfg -Force
 Windows Server 2022 21H2
 accountpolicy
 DefaultValue:      30
-RecommendedValue:  15
+RecommendedValue:  30
 ```
 ```ps1
-net accounts /lockoutduration:15
+net accounts /lockoutduration:30
 ```
 ---
 ***Account Policies	Account lockout threshold***
