@@ -631,10 +631,10 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Paramet
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
-RegistryItem:  MaximumPasswordAge
+RegistryItem:  
 DefaultValue:      30
 RecommendedValue:  30
 ```
 ```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "MaximumPasswordAge" -Type DWord -Value 30
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "" -Type DWord -Value 30
 ```
