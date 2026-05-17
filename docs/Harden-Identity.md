@@ -1,4 +1,4 @@
-# Harden-Logging.ps1 — Implementation Documentation
+# Harden-Identity.ps1 — Implementation Documentation
 
 ---
 ***Account Policies	Length of password history maintained***
