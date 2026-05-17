@@ -106,6 +106,10 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableVirtualization" -Type DWord -Value 1
 
+# Accounts
+Rename-LocalUser -Name "Guest" -NewName "PUT_YOUR_GUEST_NAME"
+net user Guest /active:no
+
 # Audit Policies
 auditpol /set /subcategory:"Computer Account Management" /success:enable /failure:disable
 auditpol /set /subcategory:"Other Account Management Events" /success:enable /failure:enable
