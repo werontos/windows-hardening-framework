@@ -1,4 +1,4 @@
-# 🛡️ Windows Hardening Framework
+# Windows Hardening Framework
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%20Server%202022-blue)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
@@ -13,7 +13,7 @@
 
 ---
 
-## 📋 Overview
+## Overview
 
 This framework provides a complete set of PowerShell hardening scripts for Windows endpoints and servers. It is built by cross-referencing four industry sources:
 
@@ -26,16 +26,16 @@ Each script is modular, idempotent (safe to run multiple times), supports `-What
 
 ---
 
-## 🏗️ Repository Structure
+## Repository Structure
 
 ```
 windows-hardening-framework/
 │
 ├── scripts/
 │   ├── Harden-Logging.ps1       ✅ Complete
-│   ├── Harden-Network.ps1       🔄 In progress
-│   ├── Harden-Identity.ps1      ⏳ Planned
-│   ├── Harden-Endpoint.ps1      ⏳ Planned
+│   ├── Harden-Network.ps1       ✅ Complete
+│   ├── Harden-Identity.ps1      ✅ Complete
+│   ├── Harden-Endpoint.ps1      ✅ Complete
 │   ├── Harden-GPO.ps1           ⏳ Planned
 │   ├── Master-Harden.ps1        ⏳ Planned
 │   ├── Audit-Compliance.ps1     ⏳ Planned
@@ -43,8 +43,10 @@ windows-hardening-framework/
 │
 ├── docs/
 │   ├── Harden-Logging.md        ✅ Full documentation with evidence
-│   ├── Harden-Network.md        ⏳ Planned
-│   ├── Harden-Identity.md       ⏳ Planned
+│   ├── Harden-Network.md        ✅ Complete
+│   ├── Harden-Identity.md       ✅ Complete
+│   ├── Harden-Endpoint.md       ✅ Complete
+│   ├── Harden-GPO.md            ⏳ Planned
 │   └── mitre-mapping.md         ⏳ Planned
 │
 └── lab/
@@ -53,7 +55,7 @@ windows-hardening-framework/
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```powershell
 # 1. Clone the repository
@@ -67,23 +69,23 @@ cd windows-hardening-framework
 .\scripts\Harden-Logging.ps1
 ```
 
-> ⚠️ **Always run as Administrator.** Test in a VM before applying to production.
+> **Always run as Administrator.** Test in a VM before applying to production.
 
 ---
 
-## 📊 Coverage Status
+## Coverage Status
 
 | Script | Controls | Status | MITRE Techniques |
 |--------|----------|--------|-----------------|
 | Harden-Logging.ps1 | 40+ | ✅ Complete | T1059, T1078, T1070, T1562 |
-| Harden-Network.ps1 | — | 🔄 In progress | T1046, T1557, T1021 |
-| Harden-Identity.ps1 | — | ⏳ Planned | T1078, T1110, T1548 |
-| Harden-Endpoint.ps1 | — | ⏳ Planned | T1486, T1003, T1204 |
+| Harden-Network.ps1 | — | ✅ Complete | T1046, T1557, T1021 |
+| Harden-Identity.ps1 | — | ✅ Complete | T1078, T1110, T1548 |
+| Harden-Endpoint.ps1 | — | ✅ Complete | T1486, T1003, T1204 |
 | Harden-GPO.ps1 | — | ⏳ Planned | T1059, T1204, T1548 |
 
 ---
 
-## 🔍 What Harden-Logging.ps1 Covers
+## What Harden-Logging.ps1 Covers
 
 Full documentation with before/after evidence: [docs/Harden-Logging.md](docs/Harden-Logging.md)
 
@@ -97,7 +99,7 @@ Full documentation with before/after evidence: [docs/Harden-Logging.md](docs/Har
 
 ---
 
-## 🧪 Lab Environment
+## Lab Environment
 
 All controls tested on:
 
@@ -112,7 +114,7 @@ Network: VirtualBox internal network `192.168.56.0/24` — fully isolated.
 
 ---
 
-## 🗺️ MITRE ATT&CK Mapping
+## MITRE ATT&CK Mapping
 
 | Technique | ID | Mitigated by |
 |-----------|----|-------------|
@@ -125,7 +127,7 @@ Network: VirtualBox internal network `192.168.56.0/24` — fully isolated.
 
 ---
 
-## 📚 Sources & References
+## Sources & References
 
 - [HardeningKitty](https://github.com/scipag/HardeningKitty) — primary control reference
 - [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks) — Windows 10/11/Server 2022
@@ -135,6 +137,6 @@ Network: VirtualBox internal network `192.168.56.0/24` — fully isolated.
 
 ---
 
-## 📄 License
+## License
 
 MIT License — free to use, modify, and distribute with attribution.
