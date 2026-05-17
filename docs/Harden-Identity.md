@@ -732,7 +732,7 @@ DefaultValue:      Success
 RecommendedValue:  Success
 ```
 ```ps1
-auditpol /set /subcategory:"Other Account Management Events" /success:disable /failure:enable
+auditpol /set /subcategory:"Other Account Management Events" /success:enable /failure:enable
 ```
 <img width="960" height="126" alt="image" src="https://github.com/user-attachments/assets/bec4b0e9-d25e-4edf-9901-2208c63ef73c" />
 
