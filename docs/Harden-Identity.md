@@ -131,20 +131,6 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 <img width="1263" height="603" alt="image" src="https://github.com/user-attachments/assets/6e116bef-8295-47e5-9a92-580c4c92962e" />
 
 ---
-***Security Options	Interactive logon: Prompt user to change password before expiration (Min)***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
-RegistryItem:  PasswordExpiryWarning
-DefaultValue:      5
-RecommendedValue:  5
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PasswordExpiryWarning" -Type DWord -Value 5
-```
-<img width="1266" height="603" alt="image" src="https://github.com/user-attachments/assets/41205f2f-9f65-4120-ab03-cc8f1b0bdf43" />
-
----
 ***Security Options	Microsoft network client: Send unencrypted password to third-party SMB servers***
 ```
 Windows Server 2022 21H2
@@ -364,7 +350,7 @@ secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.c
 Remove-Item C:\secpol.cfg -Force
 ```
 ---
-***Account Policies	Password must meet complexity requirements***
+***Account Policies	Store passwords using reversible encryption***
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
@@ -936,3 +922,15 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 <img width="1250" height="603" alt="image" src="https://github.com/user-attachments/assets/c9220c21-a308-4788-a5b7-26f85ce15155" />
 
 ---
+***Security Options	Interactive logon: Don't display last signed-in***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  DontDisplayLastUserName
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DontDisplayLastUserName" -Type DWord -Value 1
+```
+<img width="1251" height="599" alt="image" src="https://github.com/user-attachments/assets/b3d9cde7-93d7-40e8-84fc-ace5d6459b6c" />
