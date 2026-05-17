@@ -906,3 +906,33 @@ RecommendedValue:  1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
 ```
 <img width="1212" height="545" alt="image" src="https://github.com/user-attachments/assets/1762b6d0-cc32-4755-ae92-b1e07dfec79c" />
+
+---
+***Security Options	Interactive logon: Do not require CTRL+ALT+DEL***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  DisableCAD
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableCAD" -Type DWord -Value 0
+```
+<img width="1253" height="602" alt="image" src="https://github.com/user-attachments/assets/1569cdd8-6d98-4675-aaac-7aaa19860be1" />
+
+---
+***Security Options	Interactive logon: Machine inactivity limit***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  InactivityTimeoutSecs
+DefaultValue:      900
+RecommendedValue:  900
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "InactivityTimeoutSecs" -Type DWord -Value 900
+```
+<img width="1250" height="603" alt="image" src="https://github.com/user-attachments/assets/c9220c21-a308-4788-a5b7-26f85ce15155" />
+
+---
