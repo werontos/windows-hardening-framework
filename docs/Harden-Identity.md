@@ -344,7 +344,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Se
 <img width="1265" height="601" alt="image" src="https://github.com/user-attachments/assets/073343dd-a088-4c27-8e8d-9ac695665163" />
 
 ---
-***	Account Policies	Password must meet complexity requirements***
+***Account Policies	Password must meet complexity requirements***
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
@@ -364,7 +364,7 @@ secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.c
 Remove-Item C:\secpol.cfg -Force
 ```
 ---
-***	Account Policies	Password must meet complexity requirements***
+***Account Policies	Password must meet complexity requirements***
 ```
 Windows Server 2022 21H2
 RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
