@@ -879,3 +879,30 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Nam
 ```
 <img width="1270" height="606" alt="image" src="https://github.com/user-attachments/assets/eed06ca4-4388-4277-bb56-e7a9a9e640eb" />
 
+---
+***Security Options    Domain controller: Allow server operators to schedule tasks (DC)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  SubmitControl
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "SubmitControl" -Type DWord -Value 0
+```
+<img width="1268" height="589" alt="image" src="https://github.com/user-attachments/assets/d69d3e5d-991b-4b20-a7b6-925217e2c8d0" />
+
+---
+***Administrative Templates: System    Device Guard: Windows Defender Application Control deployed (Policy)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard
+RegistryItem:  DeployConfigCIPolicy
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
+```
+<img width="1212" height="545" alt="image" src="https://github.com/user-attachments/assets/1762b6d0-cc32-4755-ae92-b1e07dfec79c" />
