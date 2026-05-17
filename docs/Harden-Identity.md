@@ -584,4 +584,298 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 ```
 <img width="1271" height="602" alt="image" src="https://github.com/user-attachments/assets/1b4e1284-0725-477c-85e0-53aead7e9c3c" />
 
+---
+***Security Options	Network access: Do not allow anonymous enumeration of SAM accounts (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  RestrictAnonymousSAM
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "RestrictAnonymousSAM" -Type DWord -Value 1
+```
+<img width="1265" height="599" alt="image" src="https://github.com/user-attachments/assets/53ae6607-24c6-46bd-b245-ce75135d6b0b" />
+
+---
+***Security Options	User Account Control: Admin Approval Mode for the Built-in Administrator account***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  FilterAdministratorToken
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "FilterAdministratorToken" -Type DWord -Value 1
+```
+<img width="1253" height="603" alt="image" src="https://github.com/user-attachments/assets/040cf2bb-723b-44a9-8f64-4e9deb06dcd0" />
+
+---
+***Security Options	User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  ConsentPromptBehaviorAdmin
+DefaultValue:      5
+RecommendedValue:  2
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 2
+```
+<img width="1255" height="605" alt="image" src="https://github.com/user-attachments/assets/aada0d61-de3f-445d-9b42-aae4e53bece3" />
+
+---
+***Security Options	User Account Control: Behavior of the elevation prompt for standard users***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  ConsentPromptBehaviorUser
+DefaultValue:      3
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorUser" -Type DWord -Value 0
+```
+<img width="1250" height="597" alt="image" src="https://github.com/user-attachments/assets/b906b8eb-9b4b-457a-8bef-217ce603d480" />
+
+---
+***Security Options	User Account Control: Detect application installations and prompt for elevation***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  EnableInstallerDetection
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableInstallerDetection" -Type DWord -Value 1
+```
+<img width="1255" height="608" alt="image" src="https://github.com/user-attachments/assets/f43a4caf-fe03-48a6-9748-39e3828c5f89" />
+
+---
+***Security Options	User Account Control: Only elevate UIAccess applications that are installed in secure locations***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  EnableSecureUIAPaths
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableSecureUIAPaths" -Type DWord -Value 1
+```
+<img width="1254" height="602" alt="image" src="https://github.com/user-attachments/assets/3489382e-a48e-477d-a2b7-19e784b6fd05" />
+
+---
+***Security Options	User Account Control: Run all administrators in Admin Approval Mode***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  EnableLUA
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -Type DWord -Value 1
+```
+<img width="1250" height="605" alt="image" src="https://github.com/user-attachments/assets/3db3c770-8c7d-4451-87d2-5611b046818d" />
+
+---
+***Security Options	User Account Control: Switch to the secure desktop when prompting for elevation***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  PromptOnSecureDesktop
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 1
+```
+<img width="1249" height="602" alt="image" src="https://github.com/user-attachments/assets/858a2d06-33be-4045-b90e-e16dbbfd9434" />
+
+---
+***Security Options	User Account Control: Virtualize file and registry write failures to per-user locations***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  EnableVirtualization
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableVirtualization" -Type DWord -Value 1
+```
+<img width="1252" height="605" alt="image" src="https://github.com/user-attachments/assets/72a6d934-e0b7-444a-aa64-12d8785515de" />
+
+---
+***Advanced Audit Policy Configuration	Computer Account Management***
+```
+Windows Server 2022 21H2
+auditpol:          {0CCE9236-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success
+```
+```ps1
+auditpol /set /subcategory:"Computer Account Management" /success:enable /failure:disable
+```
+<img width="931" height="127" alt="image" src="https://github.com/user-attachments/assets/07147944-4085-4f2a-bbf0-b1700c8690bc" />
+
+---
+***Advanced Audit Policy Configuration	Other Account Management Events***
+```
+Windows Server 2022 21H2
+auditpol:          {0CCE923A-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success
+```
+```ps1
+auditpol /set /subcategory:"Other Account Management Events" /success:disable /failure:enable
+```
+<img width="960" height="126" alt="image" src="https://github.com/user-attachments/assets/bec4b0e9-d25e-4edf-9901-2208c63ef73c" />
+
+---
+***Advanced Audit Policy Configuration	User Account Management***
+```
+Windows Server 2022 21H2
+auditpol:          {0CCE9235-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Success and Failure
+```
+```ps1
+auditpol /set /subcategory:"User Account Management" /success:enable /failure:enable
+```
+<img width="892" height="127" alt="image" src="https://github.com/user-attachments/assets/fa68dc42-895d-4018-a814-9d4f446a0073" />
+
+---
+***Advanced Audit Policy Configuration	Account Lockout***
+```
+Windows Server 2022 21H2
+auditpol:          {0CCE9217-69AE-11D9-BED3-505054503030}
+DefaultValue:      Success
+RecommendedValue:  Failure
+```
+```ps1
+auditpol /set /subcategory:"Account Lockout" /success:disable /failure:enable
+```
+<img width="833" height="111" alt="image" src="https://github.com/user-attachments/assets/395abdf3-64f6-4130-9438-49fe1dbfb9ae" />
+
+---
+***MS Security Guide	Apply UAC restrictions to local accounts on network logons (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  LocalAccountTokenFilterPolicy
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "LocalAccountTokenFilterPolicy" -Type DWord -Value 0
+```
+<img width="1251" height="604" alt="image" src="https://github.com/user-attachments/assets/2db9c5e5-6fad-47b6-86f6-16f552b3ec09" />
+
+---
+***Administrative Templates: System	Locale Services: Disallow copying of user input methods to the system account for sign-in***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International
+RegistryItem:  BlockUserInputMethodsForSignIn
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" -Name "BlockUserInputMethodsForSignIn" -Type DWord -Value 1
+```
+<img width="1268" height="601" alt="image" src="https://github.com/user-attachments/assets/75451ae1-d8f6-4ba4-a2c6-1729b4555125" />
+
+---
+***Administrative Templates: System	Logon: Block user from showing account details on sign-in***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+RegistryItem:  BlockUserFromShowingAccountDetailsOnSignin
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "BlockUserFromShowingAccountDetailsOnSignin" -Type DWord -Value 1
+```
+<img width="1269" height="604" alt="image" src="https://github.com/user-attachments/assets/db3b61fe-9b83-4de4-ae05-4b52cc06a436" />
+
+---
+***Administrative Templates: System	Security Account Manager: Configure validation of ROCA-vulnerable WHfB keys during authentication (DC only)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM
+RegistryItem:  SamNGCKeyROCAValidation
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM" -Name "SamNGCKeyROCAValidation" -Type DWord -Value 1
+```
+<img width="1266" height="603" alt="image" src="https://github.com/user-attachments/assets/b940dbf4-7976-4cfd-87b0-823f1c11211d" />
+
+---
+***Administrative Templates: Windows Components	App runtime: Allow Microsoft accounts to be optional***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  MSAOptional
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "MSAOptional" -Type DWord -Value 1
+```
+<img width="1252" height="604" alt="image" src="https://github.com/user-attachments/assets/f9449be5-9971-46bc-a7a4-fce461f03e72" />
+
+---
+***Administrative Templates: Windows Components	Cloud Content: Turn off cloud consumer account state content***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CloudContent
+RegistryItem:  DisableConsumerAccountStateContent
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Name "DisableConsumerAccountStateContent" -Type DWord -Value 1
+```
+<img width="1270" height="603" alt="image" src="https://github.com/user-attachments/assets/d9bf200a-1ced-45e6-a475-343390c2747c" />
+
+---
+***Administrative Templates: Windows Components	Credential User Interface: Enumerate administrator accounts on elevation***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI
+RegistryItem:  EnumerateAdministrators
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI" -Name "EnumerateAdministrators" -Type DWord -Value 0
+```
+<img width="1267" height="604" alt="image" src="https://github.com/user-attachments/assets/cc60c611-bff4-4ec8-b5f2-8bcec2f59ace" />
+
+---
+***Administrative Templates: Windows Components	Microsoft account: Block all consumer Microsoft account user authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount
+RegistryItem:  DisableUserAuth
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Name "DisableUserAuth" -Type DWord -Value 1
+```
+<img width="1270" height="606" alt="image" src="https://github.com/user-attachments/assets/eed06ca4-4388-4277-bb56-e7a9a9e640eb" />
 
