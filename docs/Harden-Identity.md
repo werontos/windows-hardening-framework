@@ -612,29 +612,3 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Paramet
 ```
 <img width="1268" height="601" alt="image" src="https://github.com/user-attachments/assets/5c59ea41-807f-41dc-862b-d1582791485f" />
 
----
-***Security Options	Domain member: Disable machine account password changes***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
-RegistryItem:  DisablePasswordChange
-DefaultValue:      0
-RecommendedValue:  0
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "DisablePasswordChange" -Type DWord -Value 0
-```
-<img width="1269" height="605" alt="image" src="https://github.com/user-attachments/assets/c0e30d34-5ebb-4b04-ba7a-7257b2bb94da" />
-
----
-***Security Options	Domain member: Maximum machine account password age***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
-RegistryItem:  
-DefaultValue:      30
-RecommendedValue:  30
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "" -Type DWord -Value 30
-```
