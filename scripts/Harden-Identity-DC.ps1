@@ -108,7 +108,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 
 # Accounts
 Rename-LocalUser -Name "Guest" -NewName "PUT_YOUR_GUEST_NAME"
-net user Guest /active:no
+net user "PUT_YOUR_GUEST_NAME" /active:no
 
 # Audit Policies
 auditpol /set /subcategory:"Computer Account Management" /success:enable /failure:disable
@@ -147,7 +147,8 @@ Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "Submi
 
 # Device Guard
 Ensure-RegistryPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
+# WARNING: Requires signed WDAC CI policy file configured before enabling
+#Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
 
 # CTRL+ALT+DEL
 Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableCAD" -Type DWord -Value 0
