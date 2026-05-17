@@ -113,10 +113,10 @@ secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.c
 Remove-Item C:\secpol.cfg -Force
 
 # Accounts
-net user Administrator /active:no
-net user Guest /active:no
 Rename-LocalUser -Name "Administrator" -NewName "PUT_NEW_ADMIN_NAME"
 Rename-LocalUser -Name "Guest" -NewName "PUT_YOUR_GUEST_NAME"
+net user "PUT_NEW_ADMIN_NAME" /active:no
+net user "PUT_YOUR_GUEST_NAME" /active:no
 
 # Block Microsoft accounts
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "NoConnectedUser" -Type DWord -Value 3
