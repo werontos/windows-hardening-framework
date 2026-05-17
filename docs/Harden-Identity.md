@@ -584,31 +584,4 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 ```
 <img width="1271" height="602" alt="image" src="https://github.com/user-attachments/assets/1b4e1284-0725-477c-85e0-53aead7e9c3c" />
 
----
-***Security Options	Accounts: Limit local account use of blank passwords to console logon only***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
-RegistryItem:  LimitBlankPasswordUse
-DefaultValue:      1
-RecommendedValue:  1
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "LimitBlankPasswordUse" -Type DWord -Value 1
-```
-<img width="1268" height="601" alt="image" src="https://github.com/user-attachments/assets/0013b44c-58dc-475f-8a99-82c4f4b7dae1" />
-
----
-***Security Options	Domain controller: Refuse machine account password changes (DC)***
-```
-Windows Server 2022 21H2
-RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
-RegistryItem:  LimitBlankPasswordUse
-DefaultValue:      1
-RecommendedValue:  0
-```
-```ps1
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "RefusePasswordChange" -Type DWord -Value 0
-```
-<img width="1268" height="601" alt="image" src="https://github.com/user-attachments/assets/5c59ea41-807f-41dc-862b-d1582791485f" />
 
