@@ -383,3 +383,258 @@ secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.c
 
 Remove-Item C:\secpol.cfg -Force
 ```
+---
+***Account Policies	Account lockout duration***
+```
+Windows Server 2022 21H2
+accountpolicy
+DefaultValue:      30
+RecommendedValue:  15
+```
+```ps1
+net accounts /lockoutduration:15
+```
+---
+***Account Policies	Account lockout threshold***
+```
+Windows Server 2022 21H2
+accountpolicy
+DefaultValue:      Never
+RecommendedValue:  5
+```
+```ps1
+net accounts /lockoutthreshold:5
+```
+---
+***Account Policies	Reset account lockout counter***
+```
+Windows Server 2022 21H2
+accountpolicy
+DefaultValue:      30
+RecommendedValue:  15
+```
+```ps1
+net accounts /lockoutwindow:15
+```
+---
+***User Rights Assignment	Add workstations to domain (DC)***
+```
+Windows Server 2022 21H2
+accesschk
+Method:            SeMachineAccountPrivilege
+DefaultValue:      NT AUTHORITY\Authenticated Users
+RecommendedValue:  BUILTIN\Administrators
+```
+```ps1
+secedit /export /cfg C:\secpol.cfg
+
+(Get-Content C:\secpol.cfg) `
+-replace 'SeMachineAccountPrivilege = .*', 'SeMachineAccountPrivilege = *S-1-5-32-544' |
+Set-Content C:\secpol.cfg
+
+secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
+
+Remove-Item C:\secpol.cfg -Force
+```
+<img width="838" height="176" alt="image" src="https://github.com/user-attachments/assets/c71df947-59c7-4465-a304-5eed49de3661" />
+
+---
+***User Rights Assignment	Deny access to this computer from the network (Member)***
+```
+Windows Server 2022 21H2
+accesschk
+Method:            SeDenyNetworkLogonRight
+DefaultValue:      BUILTIN\Guests
+RecommendedValue:  BUILTIN\Guests;NT AUTHORITY\Local account and member of Administrators group
+```
+```ps1
+secedit /export /cfg C:\secpol.cfg
+
+(Get-Content C:\secpol.cfg) `
+-replace 'SeDenyNetworkLogonRight = .*', 'SeDenyNetworkLogonRight = *S-1-5-32-546,*S-1-5-114' |
+Set-Content C:\secpol.cfg
+
+secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
+
+Remove-Item C:\secpol.cfg -Force
+```
+<img width="840" height="179" alt="image" src="https://github.com/user-attachments/assets/800a587b-191c-4c9d-b0fc-45d59da21be9" />
+
+---
+***User Rights Assignment	Deny log on through Remote Desktop Services (Member)***
+```
+Windows Server 2022 21H2
+accesschk
+Method:            SeDenyRemoteInteractiveLogonRight
+DefaultValue:      -
+RecommendedValue:  BUILTIN\Guests;NT AUTHORITY\Local account
+```
+```ps1
+secedit /export /cfg C:\secpol.cfg
+
+(Get-Content C:\secpol.cfg) `
+-replace 'SeDenyRemoteInteractiveLogonRight = .*', 'SeDenyRemoteInteractiveLogonRight = *S-1-5-32-546,*S-1-5-113' |
+Set-Content C:\secpol.cfg
+
+secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
+
+Remove-Item C:\secpol.cfg -Force
+```
+<img width="949" height="178" alt="image" src="https://github.com/user-attachments/assets/ee8e3ec5-0bfd-4b96-8f38-8a4cd00bee5a" />
+
+---
+***User Rights Assignment	Enable computer and user accounts to be trusted for delegation (DC)***
+```
+Windows Server 2022 21H2
+accesschk
+Method:            SeEnableDelegationPrivilege
+DefaultValue:      -
+RecommendedValue:  BUILTIN\Guests;NT AUTHORITY\Local account
+```
+```ps1
+secedit /export /cfg C:\secpol.cfg
+
+(Get-Content C:\secpol.cfg) `
+-replace 'SeEnableDelegationPrivilege = .*', 'SeEnableDelegationPrivilege = *S-1-5-32-544' |
+Set-Content C:\secpol.cfg
+
+secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
+
+Remove-Item C:\secpol.cfg -Force
+```
+<img width="836" height="176" alt="image" src="https://github.com/user-attachments/assets/1486628e-3c36-43f0-868e-2df5c193cdce" />
+
+---
+***User Rights Assignment	Enable computer and user accounts to be trusted for delegation (Member)***
+```
+Windows Server 2022 21H2
+accesschk
+Method:            SeEnableDelegationPrivilege
+DefaultValue:      -
+RecommendedValue:  -
+```
+```ps1
+secedit /export /cfg C:\secpol.cfg
+
+(Get-Content C:\secpol.cfg) `
+-replace 'SeEnableDelegationPrivilege = .*', 'SeEnableDelegationPrivilege =' |
+Set-Content C:\secpol.cfg
+
+secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
+
+Remove-Item C:\secpol.cfg -Force
+```
+<img width="837" height="172" alt="image" src="https://github.com/user-attachments/assets/aeb78b64-f541-4327-ae63-5ff39eee4a89" />
+
+---
+***Security Options	Accounts: Administrator account status (Member)***
+```
+Windows Server 2022 21H2
+Method:            localaccount
+DefaultValue:      True
+RecommendedValue:  False
+```
+```ps1
+net user Administrator /active:no
+```
+---
+***Security Options	Accounts: Guest account status (Member)***
+```
+Windows Server 2022 21H2
+Method:            localaccount
+DefaultValue:      False
+RecommendedValue:  False
+```
+```ps1
+net user Guest /active:no
+```
+---
+***Security Options	Accounts: Rename administrator account***
+```
+Windows Server 2022 21H2
+Method:            localaccount
+DefaultValue:      Administrator
+RecommendedValue:  PUT_NEW_ADMIN_NAME
+```
+```ps1
+Rename-LocalUser -Name "Administrator" -NewName "PUT_NEW_ADMIN_NAME"
+```
+---
+***Security Options	Accounts: Rename guest account***
+```
+Windows Server 2022 21H2
+Method:            localaccount
+DefaultValue:      Guest
+RecommendedValue:  PUT_YOUR_GUEST_NAME
+```
+```ps1
+Rename-LocalUser -Name "Guest" -NewName "PUT_YOUR_GUEST_NAME"
+```
+---
+***Security Options	Accounts: Block Microsoft accounts***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+RegistryItem:  NoConnectedUser
+DefaultValue:      0
+RecommendedValue:  3
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "NoConnectedUser" -Type DWord -Value 3
+```
+<img width="1271" height="602" alt="image" src="https://github.com/user-attachments/assets/1b4e1284-0725-477c-85e0-53aead7e9c3c" />
+
+---
+***Security Options	Accounts: Limit local account use of blank passwords to console logon only***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\System\CurrentControlSet\Control\Lsa
+RegistryItem:  LimitBlankPasswordUse
+DefaultValue:      1
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "LimitBlankPasswordUse" -Type DWord -Value 1
+```
+<img width="1268" height="601" alt="image" src="https://github.com/user-attachments/assets/0013b44c-58dc-475f-8a99-82c4f4b7dae1" />
+
+---
+***Security Options	Domain controller: Refuse machine account password changes (DC)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+RegistryItem:  LimitBlankPasswordUse
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "RefusePasswordChange" -Type DWord -Value 0
+```
+<img width="1268" height="601" alt="image" src="https://github.com/user-attachments/assets/5c59ea41-807f-41dc-862b-d1582791485f" />
+
+---
+***Security Options	Domain member: Disable machine account password changes***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+RegistryItem:  DisablePasswordChange
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "DisablePasswordChange" -Type DWord -Value 0
+```
+<img width="1269" height="605" alt="image" src="https://github.com/user-attachments/assets/c0e30d34-5ebb-4b04-ba7a-7257b2bb94da" />
+
+---
+***Security Options	Domain member: Maximum machine account password age***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+RegistryItem:  MaximumPasswordAge
+DefaultValue:      30
+RecommendedValue:  30
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "MaximumPasswordAge" -Type DWord -Value 30
+```
