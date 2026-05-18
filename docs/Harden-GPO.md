@@ -1,4 +1,4 @@
-<img width="1144" height="597" alt="image" src="https://github.com/user-attachments/assets/1fddf31a-b433-400b-9539-d5120d2b697e" /><img width="1143" height="601" alt="image" src="https://github.com/user-attachments/assets/2dd90171-ac08-474a-a618-6171e07c375d" /># Harden-GPO.ps1 — Implementation Documentation
+# Harden-GPO.ps1 — Implementation Documentation
 
 ***Administrative Templates: System	Credentials Delegation: Encryption Oracle Remediation***
 ```
