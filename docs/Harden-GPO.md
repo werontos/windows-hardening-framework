@@ -1,4 +1,4 @@
-<img width="1143" height="601" alt="image" src="https://github.com/user-attachments/assets/2dd90171-ac08-474a-a618-6171e07c375d" /># Harden-GPO.ps1 — Implementation Documentation
+<img width="1144" height="597" alt="image" src="https://github.com/user-attachments/assets/1fddf31a-b433-400b-9539-d5120d2b697e" /><img width="1143" height="601" alt="image" src="https://github.com/user-attachments/assets/2dd90171-ac08-474a-a618-6171e07c375d" /># Harden-GPO.ps1 — Implementation Documentation
 
 ***Administrative Templates: System	Credentials Delegation: Encryption Oracle Remediation***
 ```
@@ -1733,3 +1733,251 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" 
 <img width="1144" height="598" alt="image" src="https://github.com/user-attachments/assets/0623d519-0614-462d-b4f7-197966ab560e" />
 
 ---
+***Administrative Templates: Windows Components: WinRM Client: Allow unencrypted traffic***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client  
+RegistryItem:  AllowUnencryptedTraffic  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -Name "AllowUnencryptedTraffic" -Type DWord -Value 0
+```
+<img width="1144" height="601" alt="image" src="https://github.com/user-attachments/assets/c3fca726-c9c1-4c86-aac7-b7d022b85b76" />
+
+---
+***Administrative Templates: Windows Components: WinRM Client: Disallow Digest authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client  
+RegistryItem:  AllowDigest  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -Name "AllowDigest" -Type DWord -Value 0
+```
+<img width="1146" height="599" alt="image" src="https://github.com/user-attachments/assets/485c7a09-b29a-4e85-9ab1-7f748ae0ed24" />
+
+---
+***Administrative Templates: Windows Components: WinRM Service: Allow Basic authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service  
+RegistryItem:  AllowBasic  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Name "AllowBasic" -Type DWord -Value 0
+```
+<img width="1144" height="601" alt="image" src="https://github.com/user-attachments/assets/54a4c518-e2f4-4578-98b6-85a08b0eff02" />
+
+---
+***Administrative Templates: Windows Components: WinRM Service: Allow remote server management through WinRM***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service  
+RegistryItem:  AllowAutoConfig  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Name "AllowAutoConfig" -Type DWord -Value 0
+```
+<img width="1142" height="598" alt="image" src="https://github.com/user-attachments/assets/0922f5ba-0655-4065-a5a2-38c8f9a2bb57" />
+
+---
+***Administrative Templates: Windows Components: WinRM Service: Allow unencrypted traffic***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service  
+RegistryItem:  AllowUnencryptedTraffic  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Name "AllowUnencryptedTraffic" -Type DWord -Value 0
+```
+<img width="1143" height="597" alt="image" src="https://github.com/user-attachments/assets/376051cb-46f0-4b1d-9d50-a8592b8edec0" />
+
+---
+***Administrative Templates: Windows Components: WinRM Service: Disallow WinRM from storing RunAs credentials***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service  
+RegistryItem:  DisableRunAs  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" -Name "DisableRunAs" -Type DWord -Value 1
+```
+<img width="1148" height="600" alt="image" src="https://github.com/user-attachments/assets/f2fe57d7-f401-4b13-866b-cdc3a8975d53" />
+
+---
+***Administrative Templates: Windows Components: Windows Remote Shell: Allow Remote Shell Access***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service\WinRS  
+RegistryItem:  AllowRemoteShellAccess  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service\WinRS" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service\WinRS" -Name "AllowRemoteShellAccess" -Type DWord -Value 0
+```
+<img width="1144" height="597" alt="image" src="https://github.com/user-attachments/assets/4ec19be4-dce2-4cf5-a71d-9965f04c3cae" />
+
+---
+***Administrative Templates: Windows Components: App and browser protection: Prevent users from modifying settings***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection  
+RegistryItem:  DisallowExploitProtectionOverride  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" -Name "DisallowExploitProtectionOverride" -Type DWord -Value 1
+```
+<img width="1146" height="597" alt="image" src="https://github.com/user-attachments/assets/f7252d19-415e-420c-ad57-e9361a9f9216" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Legacy Policies: No auto-restart with logged on users for scheduled automatic updates installations***
+```
+Windows Server 2022 21H2
+
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU  
+RegistryItem:  NoAutoRebootWithLoggedOnUsers  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoRebootWithLoggedOnUsers" -Type DWord -Value 0
+```
+<img width="1143" height="600" alt="image" src="https://github.com/user-attachments/assets/e0ec8686-96a2-479a-90d7-eab23964a173" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Manage end user experience: Configure Automatic Updates***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU  
+RegistryItem:  NoAutoUpdate  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type DWord -Value 0
+```
+<img width="1146" height="597" alt="image" src="https://github.com/user-attachments/assets/9958e3d5-7465-4d57-94d9-7735ad6c0d3b" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Manage end user experience: Configure Automatic Updates: Scheduled install day***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU  
+RegistryItem:  ScheduledInstallDay  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "ScheduledInstallDay" -Type DWord -Value 0
+```
+<img width="1144" height="598" alt="image" src="https://github.com/user-attachments/assets/d8b3128b-bda0-43b5-b653-4f1d696f8c6b" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Manage updates offered from Windows Update: Manage preview builds (ManagePreviewBuilds)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate  
+RegistryItem:  ManagePreviewBuilds  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ManagePreviewBuilds" -Type DWord -Value 1
+```
+<img width="1140" height="597" alt="image" src="https://github.com/user-attachments/assets/7f0cbc15-ad62-4665-8d93-6fa21c3eff30" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Manage updates offered from Windows Update: Manage preview builds (ManagePreviewBuildsPolicyValue)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate  
+RegistryItem:  ManagePreviewBuildsPolicyValue  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "ManagePreviewBuildsPolicyValue" -Type DWord -Value 0
+```
+<img width="1142" height="599" alt="image" src="https://github.com/user-attachments/assets/0ff518c6-e520-498b-a283-4ee2d8c7b567" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Manage updates offered from Windows Update: Select when Preview Builds and Feature Updates are received (DeferFeatureUpdates)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate  
+RegistryItem:  DeferFeatureUpdates  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferFeatureUpdates" -Type DWord -Value 1
+```
+<img width="1143" height="598" alt="image" src="https://github.com/user-attachments/assets/49bfec81-c49a-4c50-81ee-eba15d9849fb" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Manage updates offered from Windows Update: Select when Preview Builds and Feature Updates are received (BranchReadinessLevel)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate  
+RegistryItem:  BranchReadinessLevel  
+RecommendedValue:  2  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "BranchReadinessLevel" -Type DWord -Value 2
+```
+<img width="1142" height="597" alt="image" src="https://github.com/user-attachments/assets/f4bdd0a4-d19d-42ce-8fda-5b469ee66bc2" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Select when Preview Builds and Feature Updates are received (DeferFeatureUpdatesPeriodInDays)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate  
+RegistryItem:  DeferFeatureUpdatesPeriodInDays  
+RecommendedValue:  180  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferFeatureUpdatesPeriodInDays" -Type DWord -Value 180
+```
+<img width="1144" height="600" alt="image" src="https://github.com/user-attachments/assets/bba95fdb-e9c0-46e7-a5cb-75ea5177a6ce" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Manage updates offered from Windows Update: Select when Quality Updates are received (DeferQualityUpdates)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate  
+RegistryItem:  DeferQualityUpdates  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferQualityUpdates" -Type DWord -Value 1
+```
+<img width="1144" height="597" alt="image" src="https://github.com/user-attachments/assets/9a1be40b-3755-47bc-a4c1-8f40ead56286" />
+
+---
+***Administrative Templates: Windows Components: Windows Update: Select when Quality Updates are received (DeferQualityUpdatesPeriodInDays)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate  
+RegistryItem:  DeferQualityUpdatesPeriodInDays  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferQualityUpdatesPeriodInDays" -Type DWord -Value 0
+```
+<img width="1142" height="600" alt="image" src="https://github.com/user-attachments/assets/e0877245-3172-4d29-9ab0-c14f93a2c962" />
