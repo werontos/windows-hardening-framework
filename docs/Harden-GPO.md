@@ -452,3 +452,202 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 <img width="1147" height="601" alt="image" src="https://github.com/user-attachments/assets/d497239e-4ab8-43a3-b3e5-96d932e5d6be" />
 
 ---
+***Administrative Templates: System	Kernel DMA Protection: Enumeration policy for external devices incompatible with Kernel DMA Protection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\Kernel DMA Protection
+RegistryItem:  DeviceEnumerationPolicy
+DefaultValue:      2
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Kernel DMA Protection" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Kernel DMA Protection" -Name "DeviceEnumerationPolicy" -Type DWord -Value 0
+```
+<img width="1141" height="601" alt="image" src="https://github.com/user-attachments/assets/48f4c2b2-3f95-4854-8985-3a13d456e764" />
+
+---
+***Administrative Templates: System	Locale Services: Disallow copying of user input methods to the system account for sign-in***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International
+RegistryItem:  BlockUserInputMethodsForSignIn
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" -Name "BlockUserInputMethodsForSignIn" -Type DWord -Value 1
+```
+<img width="1146" height="600" alt="image" src="https://github.com/user-attachments/assets/7159c6af-9d1e-4d53-9e10-b64de33db0d6" />
+
+---
+***Administrative Templates: System	Logon: Block user from showing account details on sign-in***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+RegistryItem:  BlockUserFromShowingAccountDetailsOnSignin
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" -Name "BlockUserFromShowingAccountDetailsOnSignin" -Type DWord -Value 1
+```
+<img width="1144" height="600" alt="image" src="https://github.com/user-attachments/assets/3a0c6674-6dac-4b9f-95e2-3ca3ee80953a" />
+
+---
+***Administrative Templates: System	Logon: Do not display network selection UI***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  DontDisplayNetworkSelectionUI
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "DontDisplayNetworkSelectionUI" -Type DWord -Value 1
+```
+<img width="1145" height="600" alt="image" src="https://github.com/user-attachments/assets/dd83e9e8-b633-4f9a-81f7-d276d0098ff0" />
+
+---
+***Administrative Templates: System	Logon: Do not enumerate connected users on domain-joined computers***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  DontEnumerateConnectedUsers
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "DontEnumerateConnectedUsers" -Type DWord -Value 1
+```
+<img width="1147" height="603" alt="image" src="https://github.com/user-attachments/assets/e5266dd2-e7a7-40b2-a7a8-bd08ce78a5b7" />
+
+---
+***Administrative Templates: System	Logon: Enumerate local users on domain-joined computers (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  EnumerateLocalUsers
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "EnumerateLocalUsers" -Type DWord -Value 0
+```
+<img width="1147" height="601" alt="image" src="https://github.com/user-attachments/assets/376a72fb-33dc-4885-87d8-fd20fac4dfb7" />
+
+---
+***Administrative Templates: System	Logon: Turn off app notifications on the lock screen***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  DisableLockScreenAppNotifications
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "DisableLockScreenAppNotifications" -Type DWord -Value 1
+```
+<img width="1141" height="595" alt="image" src="https://github.com/user-attachments/assets/f16077d9-e111-4535-ba3d-c258911a28d3" />
+
+---
+***Administrative Templates: System	Logon: Turn off picture password sign-in***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  BlockDomainPicturePassword
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "BlockDomainPicturePassword" -Type DWord -Value 1
+```
+<img width="1143" height="601" alt="image" src="https://github.com/user-attachments/assets/d4f2d17f-25ab-402f-9c81-5b3da0f809a9" />
+
+---
+***Administrative Templates: System	Logon: Turn on convenience PIN sign-in***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  AllowDomainPINLogon
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "AllowDomainPINLogon" -Type DWord -Value 0
+```
+<img width="1144" height="598" alt="image" src="https://github.com/user-attachments/assets/aca22962-d0b4-421f-8571-46755f3d9e66" />
+
+---
+***Administrative Templates: System	OS Policies: Allow Clipboard synchronization across devices***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  AllowCrossDeviceClipboard
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "AllowCrossDeviceClipboard" -Type DWord -Value 0
+```
+<img width="1146" height="605" alt="image" src="https://github.com/user-attachments/assets/2ba68f28-6343-4c8f-8a95-a9fcd0c1b7f3" />
+
+---
+***OS Policies: Allow upload of User Activities***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\System
+RegistryItem:  UploadUserActivities
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type DWord -Value 0
+```
+<img width="1144" height="600" alt="image" src="https://github.com/user-attachments/assets/c1754cee-f41a-4efa-b0ff-81ec3a64f2c7" />
+
+---
+***Administrative Templates: System	Sleep Settings: Allow network connectivity during connected-standby (on battery)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9
+RegistryItem:  DCSettingIndex
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9" -Name "DCSettingIndex" -Type DWord -Value 0
+```
+<img width="1146" height="600" alt="image" src="https://github.com/user-attachments/assets/1fb37845-7431-40b3-8cf1-7c1a33765207" />
+
+---
+***Administrative Templates: System	Sleep Settings: Allow network connectivity during connected-standby (plugged in)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9
+RegistryItem:  ACSettingIndex
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9" -Name "ACSettingIndex" -Type DWord -Value 0
+```
+<img width="1145" height="599" alt="image" src="https://github.com/user-attachments/assets/4f7359f4-709a-4387-8dd6-5546323d8b62" />
+
+---
+***Administrative Templates: System	Remote Assistance: Configure Offer Remote Assistance***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\policies\Microsoft\Windows NT\Terminal Services
+RegistryItem:  fAllowUnsolicited
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\policies\Microsoft\Windows NT\Terminal Services" -Name "fAllowUnsolicited" -Type DWord -Value 0
+```
+<img width="1146" height="600" alt="image" src="https://github.com/user-attachments/assets/d452fc1e-f67c-4fc5-9e1a-314a55ffd802" />
+
+---
