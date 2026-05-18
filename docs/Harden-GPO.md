@@ -1443,3 +1443,293 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Se
 <img width="1139" height="596" alt="image" src="https://github.com/user-attachments/assets/a87ad772-a08b-4ddb-a762-531c81181465" />
 
 ---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Security: Require use of specific security layer for remote (RDP) connections***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  SecurityLayer  
+DefaultValue:  0  
+RecommendedValue:  2  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "SecurityLayer" -Type DWord -Value 2
+```
+<img width="1145" height="597" alt="image" src="https://github.com/user-attachments/assets/e8710722-a54a-4573-ba7f-ed96b54dffff" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Security: Require user authentication for remote connections by using Network Level Authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  UserAuthentication  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "UserAuthentication" -Type DWord -Value 1
+```
+<img width="1143" height="597" alt="image" src="https://github.com/user-attachments/assets/e65a6a2d-8274-4fed-b0cd-c234ceb21332" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Security: Set client connection encryption level***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  MinEncryptionLevel  
+DefaultValue:  0  
+RecommendedValue:  3  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "MinEncryptionLevel" -Type DWord -Value 3
+```
+<img width="1141" height="599" alt="image" src="https://github.com/user-attachments/assets/e654893b-d1d7-4355-994c-1893d01fa5fa" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Session Time Limits: Set time limit for active but idle Remote Desktop Services sessions***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  MaxIdleTime  
+DefaultValue:  0  
+RecommendedValue:  900000  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "MaxIdleTime" -Type DWord -Value 900000
+```
+<img width="1143" height="601" alt="image" src="https://github.com/user-attachments/assets/5892bbd7-cbce-4505-bf72-5fe6a8071006" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Session Time Limits: Set time limit for disconnected sessions***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  MaxDisconnectionTime  
+DefaultValue:  0  
+RecommendedValue:  60000  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "MaxDisconnectionTime" -Type DWord -Value 60000
+```
+<img width="1145" height="598" alt="image" src="https://github.com/user-attachments/assets/7ab666ae-6370-4f1b-8efe-0a3804a1707d" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Temporary folders: Do not delete temp folders upon exit***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  DeleteTempDirsOnExit  
+DefaultValue:  1  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "DeleteTempDirsOnExit" -Type DWord -Value 1
+```
+<img width="1138" height="607" alt="image" src="https://github.com/user-attachments/assets/e9f9eece-25c8-410d-a801-ca89d73e0576" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Temporary folders: Do not use temporary folders per session***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  PerSessionTempDir  
+DefaultValue:  1  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "PerSessionTempDir" -Type DWord -Value 1
+```
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "PerSessionTempDir" -Type DWord -Value 1
+
+---
+***Administrative Templates: Windows Components: RSS Feeds: Prevent downloading of enclosures***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Internet Explorer\Feeds  
+RegistryItem:  DisableEnclosureDownload  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Internet Explorer\Feeds" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Internet Explorer\Feeds" -Name "DisableEnclosureDownload" -Type DWord -Value 1
+```
+<img width="1145" height="600" alt="image" src="https://github.com/user-attachments/assets/974c6d50-9411-4030-9444-84e762752e02" />
+
+---
+***Administrative Templates: Windows Components: Search: Allow Cloud Search***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search  
+RegistryItem:  AllowCloudSearch  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCloudSearch" -Type DWord -Value 0
+```
+<img width="1145" height="599" alt="image" src="https://github.com/user-attachments/assets/b8428490-b279-474a-be39-746d51cc97f8" />
+
+---
+***Administrative Templates: Windows Components: Search: Allow indexing of encrypted files***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search  
+RegistryItem:  AllowIndexingEncryptedStoresOrItems  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowIndexingEncryptedStoresOrItems" -Type DWord -Value 0
+```
+<img width="1142" height="601" alt="image" src="https://github.com/user-attachments/assets/8a390c01-7ac7-4f4e-ad85-00f77b3d12ec" />
+
+---
+***Administrative Templates: Windows Components: Software Protection Platform: Turn off KMS Client Online AVS Validation***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform  
+RegistryItem:  NoGenTicket  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" -Name "NoGenTicket" -Type DWord -Value 1
+```
+<img width="1146" height="599" alt="image" src="https://github.com/user-attachments/assets/838e9ddd-b26b-42af-83ff-68ef1d735b0e" />
+
+---
+***Administrative Templates: Windows Components: File Explorer: Configure Windows Defender SmartScreen***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\System  
+RegistryItem:  EnableSmartScreen  
+DefaultValue:  1  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableSmartScreen" -Type DWord -Value 1
+```
+<img width="1145" height="604" alt="image" src="https://github.com/user-attachments/assets/05865412-283a-4f96-ad6e-47f41abe3a0b" />
+
+---
+***Administrative Templates: Windows Components: File Explorer: Configure Windows Defender SmartScreen to warn and prevent bypass***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\System  
+RegistryItem:  ShellSmartScreenLevel  
+DefaultValue:  Warn  
+RecommendedValue:  Block  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "ShellSmartScreenLevel" -Type String -Value "Block"
+```
+<img width="1143" height="599" alt="image" src="https://github.com/user-attachments/assets/4ec00025-cfe2-4094-9781-c3ab58663de1" />
+
+---
+***Administrative Templates: Windows Components: Windows Ink Workspace: Allow suggested apps in Windows Ink Workspace***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace  
+RegistryItem:  AllowSuggestedAppsInWindowsInkWorkspace  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace" -Name "AllowSuggestedAppsInWindowsInkWorkspace" -Type DWord -Value 0
+```
+<img width="1142" height="599" alt="image" src="https://github.com/user-attachments/assets/270feb6f-3c63-413e-8e72-696de345ee6a" />
+
+---
+***Administrative Templates: Windows Components: Windows Ink Workspace: Allow Windows Ink Workspace***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace  
+RegistryItem:  AllowWindowsInkWorkspace  
+DefaultValue:  1  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace" -Name "AllowWindowsInkWorkspace" -Type DWord -Value 1
+```
+<img width="1146" height="602" alt="image" src="https://github.com/user-attachments/assets/df634cd4-e43d-495a-ba88-70e00e48ec9d" />
+
+---
+***Administrative Templates: Windows Components: Windows Installer: Allow user control over installs***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Installer  
+RegistryItem:  EnableUserControl  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\Installer" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Installer" -Name "EnableUserControl" -Type DWord -Value 0
+```
+<img width="1145" height="600" alt="image" src="https://github.com/user-attachments/assets/aa7c0f7c-1310-42ef-9ffa-46b9efec7d18" />
+
+---
+***Administrative Templates: Windows Components: Windows Installer: Always install with elevated privileges***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Installer  
+RegistryItem:  AlwaysInstallElevated  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\Installer" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Installer" -Name "AlwaysInstallElevated" -Type DWord -Value 0
+```
+<img width="1142" height="598" alt="image" src="https://github.com/user-attachments/assets/a427f381-d535-4e79-84dc-60df98d3cbc1" />
+
+---
+***Administrative Templates: Windows Components: Windows Installer: Prevent Internet Explorer security prompt for Windows Installer scripts***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Installer  
+RegistryItem:  SafeForScripting  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\Installer" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Installer" -Name "SafeForScripting" -Type DWord -Value 0
+```
+<img width="1146" height="600" alt="image" src="https://github.com/user-attachments/assets/99ea0cc8-de9d-419f-b653-112822aa5dc0" />
+
+---
+***Administrative Templates: Windows Components: Windows Logon Options: Sign-in and lock last interactive user automatically after a restart***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System  
+RegistryItem:  DisableAutomaticRestartSignOn  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableAutomaticRestartSignOn" -Type DWord -Value 1
+```
+<img width="1124" height="598" alt="image" src="https://github.com/user-attachments/assets/beb2153d-5c71-4613-bff4-fb4ad202c817" />
+
+---
+***Administrative Templates: Windows Components: WinRM Client: Allow Basic authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client  
+RegistryItem:  AllowBasic  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" -Name "AllowBasic" -Type DWord -Value 0
+```
+<img width="1144" height="598" alt="image" src="https://github.com/user-attachments/assets/0623d519-0614-462d-b4f7-197966ab560e" />
+
+---
