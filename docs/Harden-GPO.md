@@ -651,3 +651,133 @@ Set-ItemProperty -Path "HKLM:\Software\policies\Microsoft\Windows NT\Terminal Se
 <img width="1146" height="600" alt="image" src="https://github.com/user-attachments/assets/d452fc1e-f67c-4fc5-9e1a-314a55ffd802" />
 
 ---
+***Administrative Templates: System	Remote Assistance: Configure Solicited Remote Assistance***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\policies\Microsoft\Windows NT\Terminal Services
+RegistryItem:  fAllowToGetHelp
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\policies\Microsoft\Windows NT\Terminal Services" -Name "fAllowToGetHelp" -Type DWord -Value 0
+```
+<img width="1148" height="600" alt="image" src="https://github.com/user-attachments/assets/a5ed4749-919b-4587-bf6f-834662fb2ab5" />
+
+---
+***Administrative Templates: System	Remote Procedure Call: Enable RPC Endpoint Mapper Client Authentication (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows NT\Rpc
+RegistryItem:  EnableAuthEpResolution
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows NT\Rpc" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\Rpc" -Name "EnableAuthEpResolution" -Type DWord -Value 1
+```
+<img width="1144" height="603" alt="image" src="https://github.com/user-attachments/assets/a1e39b93-2eae-4723-b40c-5b4a2600e5c3" />
+
+---
+***Remote Procedure Call: Restrict Unauthenticated RPC clients (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows NT\Rpc
+RegistryItem:  RestrictRemoteClients
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\Rpc" -Name "RestrictRemoteClients" -Type DWord -Value 1
+```
+<img width="1145" height="600" alt="image" src="https://github.com/user-attachments/assets/e64ef4f8-83cc-4a2f-b5b9-128026bc4194" />
+
+---
+***Administrative Templates: System	Security Account Manager: Configure validation of ROCA-vulnerable WHfB keys during authentication (DC only)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM
+RegistryItem:  SamNGCKeyROCAValidation
+DefaultValue:      -
+RecommendedValue:  1
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM" -Name "SamNGCKeyROCAValidation" -Type DWord -Value 1
+```
+<img width="1149" height="602" alt="image" src="https://github.com/user-attachments/assets/b6ff282f-fb77-44d6-ba87-e07e7aa61291" />
+
+---
+***Administrative Templates: System	Troubleshooting and Diagnostics: Microsoft Support Diagnostic Tool: Turn on MSDT interactive communication with support provider***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\ScriptedDiagnosticsProvider\Policy
+RegistryItem:  DisableQueryRemoteServer
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\ScriptedDiagnosticsProvider\Policy" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\ScriptedDiagnosticsProvider\Policy" -Name "DisableQueryRemoteServer" -Type DWord -Value 0
+```
+<img width="1146" height="599" alt="image" src="https://github.com/user-attachments/assets/a47a6d2c-0be0-4107-9721-600aed12b661" />
+
+---
+***Administrative Templates: System	Windows Performance PerfTrack: Enable/Disable PerfTrack***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\WDI\{9c5a40da-b965-4fc3-8781-88dd50a6299d}
+RegistryItem:  ScenarioExecutionEnabled
+DefaultValue:      1
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WDI\{9c5a40da-b965-4fc3-8781-88dd50a6299d}" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WDI\{9c5a40da-b965-4fc3-8781-88dd50a6299d}" -Name "ScenarioExecutionEnabled" -Type DWord -Value 0
+```
+<img width="1148" height="601" alt="image" src="https://github.com/user-attachments/assets/2a27ef14-f3fa-45f4-bf73-4a22521ae314" />
+
+---
+***Administrative Templates: System	User Profiles: Turn off the advertising ID***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo
+RegistryItem:  DisabledByGroupPolicy
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Name "DisabledByGroupPolicy" -Type DWord -Value 1
+```
+<img width="1144" height="600" alt="image" src="https://github.com/user-attachments/assets/63ae3344-0ed0-4ae7-9b80-8c82ab3f6534" />
+
+---
+***Administrative Templates: System	Time Providers: Enable Windows NTP Client***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpClient
+RegistryItem:  Enabled
+DefaultValue:      0
+RecommendedValue:  1
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpClient" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpClient" -Name "Enabled" -Type DWord -Value 1
+```
+<img width="1144" height="608" alt="image" src="https://github.com/user-attachments/assets/67efd719-0b6b-46de-bd62-e53a3ff4ba63" />
+
+---
+***Administrative Templates: System	Time Providers: Enable Windows NTP Server (Member)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpServer
+RegistryItem:  Enabled
+DefaultValue:      0
+RecommendedValue:  0
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpServer" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpServer" -Name "Enabled" -Type DWord -Value 0
+```
+<img width="1149" height="605" alt="image" src="https://github.com/user-attachments/assets/52350620-7883-45a2-8951-b3247915de6a" />
