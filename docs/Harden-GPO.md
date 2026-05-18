@@ -1,4 +1,4 @@
-# Harden-GPO.ps1 — Implementation Documentation
+<img width="1143" height="601" alt="image" src="https://github.com/user-attachments/assets/2dd90171-ac08-474a-a618-6171e07c375d" /># Harden-GPO.ps1 — Implementation Documentation
 
 ***Administrative Templates: System	Credentials Delegation: Encryption Oracle Remediation***
 ```
@@ -781,3 +781,665 @@ New-Item -Path "HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpServe
 Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpServer" -Name "Enabled" -Type DWord -Value 0
 ```
 <img width="1149" height="605" alt="image" src="https://github.com/user-attachments/assets/52350620-7883-45a2-8951-b3247915de6a" />
+
+---
+***Administrative Templates: Windows Components: App Package Deployment: Allow a Windows app to share application data between users***
+```
+Windows Server 2022 21H2
+
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager  
+RegistryItem:  AllowSharedLocalAppData  
+DefaultValue:  1
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" -Name "AllowSharedLocalAppData" -Type DWord -Value 0
+```
+<img width="1147" height="602" alt="image" src="https://github.com/user-attachments/assets/dc13e457-bf8e-44d0-88f3-a2f89a5790b8" />
+
+---
+***Administrative Templates: Windows Components: App runtime: Allow Microsoft accounts to be optional***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System  
+RegistryItem:  MSAOptional  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "MSAOptional" -Type DWord -Value 1
+```
+<img width="1131" height="599" alt="image" src="https://github.com/user-attachments/assets/87cd0dd1-b597-4788-b019-960af85f1f26" />
+
+---
+***Administrative Templates: Windows Components: AutoPlay Policies: Disallow Autoplay for non-volume devices***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\Explorer  
+RegistryItem:  NoAutoplayfornonVolume  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Explorer" -Name "NoAutoplayfornonVolume" -Type DWord -Value 1
+```
+<img width="1147" height="599" alt="image" src="https://github.com/user-attachments/assets/8cc459d6-4126-469f-934a-c59658bbda87" />
+
+---
+***Administrative Templates: Windows Components: AutoPlay Policies: Set the default behavior for AutoRun***
+```
+Windows Server 2022 21H2
+
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer  
+RegistryItem:  NoAutorun  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoAutorun" -Type DWord -Value 1
+```
+<img width="1145" height="600" alt="image" src="https://github.com/user-attachments/assets/23b614ab-a5b6-40cc-8f52-a46dbdb2ac85" />
+
+---
+***Administrative Templates: Windows Components: AutoPlay Policies: Turn off Autoplay***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer  
+RegistryItem:  NoDriveTypeAutoRun  
+DefaultValue:  0  
+RecommendedValue:  255  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -Type DWord -Value 255
+```
+<img width="1148" height="597" alt="image" src="https://github.com/user-attachments/assets/9c247785-c448-49fc-89c4-82268cb2cfba" />
+
+---
+***Administrative Templates: Windows Components: Biometrics: Facial Features: Configure enhanced anti-spoofing***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures  
+RegistryItem:  EnhancedAntiSpoofing  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures" -Name "EnhancedAntiSpoofing" -Type DWord -Value 1
+```
+<img width="1148" height="603" alt="image" src="https://github.com/user-attachments/assets/762e4feb-f90e-4fe4-8548-237320f35d6b" />
+
+---
+***Administrative Templates: Windows Components: Camera: Allow Use of Camera***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Camera  
+RegistryItem:  AllowCamera  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Camera" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Camera" -Name "AllowCamera" -Type DWord -Value 0
+```
+<img width="1150" height="602" alt="image" src="https://github.com/user-attachments/assets/d4f49876-f583-4df5-aa1d-809a35b27386" />
+
+---
+***Administrative Templates: Windows Components: Cloud Content: Turn off cloud consumer account state content***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CloudContent  
+RegistryItem:  DisableConsumerAccountStateContent  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Name "DisableConsumerAccountStateContent" -Type DWord -Value 1
+```
+<img width="1147" height="604" alt="image" src="https://github.com/user-attachments/assets/bfb687ca-6b75-4145-8a5e-b95ffcc850cd" />
+
+---
+***Administrative Templates: Windows Components: Cloud Content: Turn off Microsoft consumer experiences***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CloudContent  
+RegistryItem:  DisableWindowsConsumerFeatures  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -Type DWord -Value 1
+```
+<img width="1146" height="599" alt="image" src="https://github.com/user-attachments/assets/a9c86eec-f925-4d7e-9e48-1430dae7177c" />
+
+---
+***Administrative Templates: Windows Components: Connect: Require pin for pairing***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\Connect  
+RegistryItem:  RequirePinForPairing  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Connect" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Connect" -Name "RequirePinForPairing" -Type DWord -Value 1
+```
+<img width="1145" height="605" alt="image" src="https://github.com/user-attachments/assets/d60b92a2-eff3-4ced-9324-ca81ed0ba7eb" />
+
+---
+***Administrative Templates: Windows Components: Credential User Interface: Do not display the password reveal button***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\CredUI  
+RegistryItem:  DisablePasswordReveal  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\CredUI" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CredUI" -Name "DisablePasswordReveal" -Type DWord -Value 1
+```
+<img width="1148" height="602" alt="image" src="https://github.com/user-attachments/assets/1310758f-1967-4504-835f-d641443c4dfd" />
+
+---
+***Administrative Templates: Windows Components: Credential User Interface: Enumerate administrator accounts on elevation***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI  
+RegistryItem:  EnumerateAdministrators  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI" -Name "EnumerateAdministrators" -Type DWord -Value 0
+```
+<img width="1144" height="598" alt="image" src="https://github.com/user-attachments/assets/bc78a978-dd4b-40dc-afab-aee9302e8052" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Allow Diagnostic Data***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\DataCollection  
+RegistryItem:  AllowTelemetry  
+DefaultValue:  2  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Type DWord -Value 1
+```
+<img width="1144" height="596" alt="image" src="https://github.com/user-attachments/assets/5bec3373-6049-4b1c-bffe-5ad6f4ae0ff1" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Configure Authenticated Proxy usage for the Connected User Experience and Telemetry service***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\DataCollection  
+RegistryItem:  DisableEnterpriseAuthProxy  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "DisableEnterpriseAuthProxy" -Type DWord -Value 1
+```
+<img width="1147" height="598" alt="image" src="https://github.com/user-attachments/assets/5571be4f-988a-4b3b-b4cf-88d6adb83136" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Disable OneSettings Downloads***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\DataCollection  
+RegistryItem:  DisableOneSettingsDownloads  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "DisableOneSettingsDownloads" -Type DWord -Value 1
+```
+<img width="1143" height="602" alt="image" src="https://github.com/user-attachments/assets/159fb167-e4f3-4d92-85ba-d755a3ca18c5" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Do not show feedback notifications***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\DataCollection  
+RegistryItem:  DoNotShowFeedbackNotifications  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -Type DWord -Value 1
+```
+<img width="1141" height="598" alt="image" src="https://github.com/user-attachments/assets/9440e29d-0305-4610-bc4d-c5fe80d332e9" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Enable OneSettings Auditing***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\DataCollection  
+RegistryItem:  EnableOneSettingsAuditing  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "EnableOneSettingsAuditing" -Type DWord -Value 1
+```
+<img width="1145" height="595" alt="image" src="https://github.com/user-attachments/assets/0e039471-7ad7-4941-80d3-02aca07c6078" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Limit Diagnostic Log Collection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\DataCollection  
+RegistryItem:  LimitDiagnosticLogCollection  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "LimitDiagnosticLogCollection" -Type DWord -Value 1
+```
+<img width="1143" height="599" alt="image" src="https://github.com/user-attachments/assets/7ae07afa-44ad-4252-a5e1-7ec80e6eb586" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Limit Dump Collection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\DataCollection  
+RegistryItem:  LimitDumpCollection  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "LimitDumpCollection" -Type DWord -Value 1
+```
+<img width="1140" height="599" alt="image" src="https://github.com/user-attachments/assets/501fa0db-2656-4beb-969e-3dd9cfc9421d" />
+
+---
+***Administrative Templates: Windows Components: Data Collection and Preview Builds: Toggle user control over Insider builds***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds  
+RegistryItem:  AllowBuildPreview  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Name "AllowBuildPreview" -Type DWord -Value 0
+```
+<img width="1141" height="603" alt="image" src="https://github.com/user-attachments/assets/7c5cb5c2-06d2-48d9-ba5c-4c565f343d56" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: Application: Control Event Log behavior when the log file reaches its maximum size***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\Application  
+RegistryItem:  Retention  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Application" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Application" -Name "Retention" -Type DWord -Value 0
+```
+<img width="1150" height="593" alt="image" src="https://github.com/user-attachments/assets/130fc062-0c6b-498a-9de1-2c51d056faa0" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: Application: Specify the maximum log file size (KB)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\Application  
+RegistryItem:  MaxSize  
+DefaultValue:  4096  
+RecommendedValue:  32768  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Application" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Application" -Name "MaxSize" -Type DWord -Value 32768
+```
+<img width="1143" height="601" alt="image" src="https://github.com/user-attachments/assets/e9fa40fe-f14c-48d1-a4d5-27f50b8033de" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: Security: Control Event Log behavior when the log file reaches its maximum size***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\Security  
+RegistryItem:  Retention  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Security" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Security" -Name "Retention" -Type DWord -Value 0
+```
+<img width="1145" height="600" alt="image" src="https://github.com/user-attachments/assets/87e8b014-89f2-495a-b9bb-5bad8af143ae" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: Security: Specify the maximum log file size (KB)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\Security  
+RegistryItem:  MaxSize  
+DefaultValue:  4096  
+RecommendedValue:  196608  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Security" -Name "MaxSize" -Type DWord -Value 196608
+```
+<img width="1144" height="598" alt="image" src="https://github.com/user-attachments/assets/be117d3c-f8e4-4c79-84c2-5feb10256dff" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: Setup: Control Event Log behavior when the log file reaches its maximum size***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\Setup  
+RegistryItem:  Retention  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Setup" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Setup" -Name "Retention" -Type DWord -Value 0
+```
+<img width="1144" height="604" alt="image" src="https://github.com/user-attachments/assets/f261030a-1056-47e0-8e87-c524f0d198db" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: Setup: Specify the maximum log file size (KB)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\Setup  
+RegistryItem:  MaxSize  
+DefaultValue:  4096  
+RecommendedValue:  32768  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\Setup" -Name "MaxSize" -Type DWord -Value 32768
+```
+<img width="1141" height="598" alt="image" src="https://github.com/user-attachments/assets/181a192f-2a04-4e54-8e80-af885808d3ee" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: System: Control Event Log behavior when the log file reaches its maximum size***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\System  
+RegistryItem:  Retention  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\System" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\System" -Name "Retention" -Type DWord -Value 0
+```
+<img width="1140" height="602" alt="image" src="https://github.com/user-attachments/assets/f99d518f-02e0-4465-ad39-c0097c4f6c56" />
+
+---
+***Administrative Templates: Windows Components: Event Log Service: System: Specify the maximum log file size (KB)***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\EventLog\System  
+RegistryItem:  MaxSize  
+DefaultValue:  4096  
+RecommendedValue:  32768  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\System" -Name "MaxSize" -Type DWord -Value 32768
+```
+<img width="1143" height="600" alt="image" src="https://github.com/user-attachments/assets/9f978c3c-0085-46f0-8360-989a3c68f2f5" />
+
+---
+***Administrative Templates: Windows Components: File Explorer: Turn off Data Execution Prevention for Explorer***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer  
+RegistryItem:  NoDataExecutionPrevention  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "NoDataExecutionPrevention" -Type DWord -Value 0
+```
+<img width="1145" height="599" alt="image" src="https://github.com/user-attachments/assets/2331c969-1105-4f2c-a0c2-82c8ec8ddec9" />
+
+---
+***Administrative Templates: Windows Components: File Explorer: Turn off heap termination on corruption***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer  
+RegistryItem:  NoHeapTerminationOnCorruption  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "NoHeapTerminationOnCorruption" -Type DWord -Value 0
+```
+<img width="1142" height="601" alt="image" src="https://github.com/user-attachments/assets/7652c642-3ae8-4271-ba6c-a5e2195ae5ca" />
+
+---
+***Administrative Templates: Windows Components: File Explorer: Turn off shell protocol protected mode***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer  
+RegistryItem:  PreXPSP2ShellProtocolBehavior  
+DefaultValue:  0  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "PreXPSP2ShellProtocolBehavior" -Type DWord -Value 0
+```
+<img width="1142" height="598" alt="image" src="https://github.com/user-attachments/assets/9c3113de-e666-4777-9dfa-a968756aeadd" />
+
+---
+***Administrative Templates: Windows Components: Location and Sensors: Turn off location***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors  
+RegistryItem:  DisableLocation  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocation" -Type DWord -Value 1
+```
+<img width="1146" height="602" alt="image" src="https://github.com/user-attachments/assets/6f34f975-b2d1-4155-8813-4f2d06b98e3a" />
+
+---
+***Administrative Templates: Windows Components: Messaging: Allow Message Service Cloud Sync***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows\Messaging  
+RegistryItem:  AllowMessageSync  
+DefaultValue:  1  
+RecommendedValue:  0  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Messaging" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Messaging" -Name "AllowMessageSync" -Type DWord -Value 0
+```
+<img width="1145" height="599" alt="image" src="https://github.com/user-attachments/assets/e209c243-7e81-43bb-82c2-a5bad8a0dc1f" />
+
+---
+***Administrative Templates: Windows Components: Microsoft account: Block all consumer Microsoft account user authentication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount  
+RegistryItem:  DisableUserAuth  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Name "DisableUserAuth" -Type DWord -Value 1
+```
+<img width="1144" height="600" alt="image" src="https://github.com/user-attachments/assets/a942c0f2-458a-46df-b614-1f2cff619880" />
+
+---
+***Administrative Templates: Windows Components: OneDrive: Prevent the usage of OneDrive for file storage***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\Software\Policies\Microsoft\Windows\OneDrive  
+RegistryItem:  DisableFileSyncNGSC  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\OneDrive" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type DWord -Value 1
+```
+<img width="1144" height="597" alt="image" src="https://github.com/user-attachments/assets/3e4961ba-d58d-4f84-a121-181b8f55bbe5" />
+
+---
+***Administrative Templates: Windows Components: Push To Install: Turn off Push To Install service***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\PushToInstall  
+RegistryItem:  DisablePushToInstall  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\PushToInstall" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\PushToInstall" -Name "DisablePushToInstall" -Type DWord -Value 1
+```
+<img width="1144" height="596" alt="image" src="https://github.com/user-attachments/assets/d806e5c4-d56b-4c94-a7b3-a3d327afe596" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Connection Client: Do not allow passwords to be saved***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  DisablePasswordSaving  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "DisablePasswordSaving" -Type DWord -Value 1
+```
+<img width="1143" height="595" alt="image" src="https://github.com/user-attachments/assets/433fc953-09a2-4d34-b015-7b530f65ac7c" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Connections: Restrict Remote Desktop Services users to a single Remote Desktop Services session***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fSingleSessionPerUser  
+DefaultValue:  1  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fSingleSessionPerUser" -Type DWord -Value 1
+```
+<img width="1145" height="594" alt="image" src="https://github.com/user-attachments/assets/d47f61ea-39b5-4f36-9866-8b3a8efb3f7c" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Device and Resource Redirection: Allow UI Automation redirection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  EnableUiaRedirection  
+RecommendedValue:  0  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "EnableUiaRedirection" -Type DWord -Value 0
+```
+<img width="1148" height="604" alt="image" src="https://github.com/user-attachments/assets/9295bb90-f636-4874-a18b-13aa533d4b49" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Device and Resource Redirection: Do not allow COM port redirection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fDisableCcm  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fDisableCcm" -Type DWord -Value 1
+```
+<img width="1142" height="597" alt="image" src="https://github.com/user-attachments/assets/c2b335eb-426f-4972-8992-2c8362533713" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Device and Resource Redirection: Do not allow drive redirection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fDisableCdm  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fDisableCdm" -Type DWord -Value 1
+```
+<img width="1145" height="595" alt="image" src="https://github.com/user-attachments/assets/54731450-bf5d-4038-a3e4-1fc2fca7f5bb" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Device and Resource Redirection: Do not allow location redirection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fDisableLocationRedir  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fDisableLocationRedir" -Type DWord -Value 1
+```
+<img width="1144" height="601" alt="image" src="https://github.com/user-attachments/assets/5484d8e6-8a80-4f5f-9591-ff09a91200d8" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Device and Resource Redirection: Do not allow LPT port redirection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fDisableLPT  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fDisableLPT" -Type DWord -Value 1
+```
+<img width="1138" height="597" alt="image" src="https://github.com/user-attachments/assets/a488b020-25af-46b3-bd96-699c7cf2e1a9" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Device and Resource Redirection: Do not allow supported Plug and Play device redirection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fDisablePNPRedir  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fDisablePNPRedir" -Type DWord -Value 1
+```
+<img width="1145" height="601" alt="image" src="https://github.com/user-attachments/assets/4ec3d345-de18-4580-8a10-0698a19e7bb0" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Security: Always prompt for password upon connection***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fPromptForPassword  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fPromptForPassword" -Type DWord -Value 1
+```
+<img width="1147" height="599" alt="image" src="https://github.com/user-attachments/assets/ee68bc71-a7a1-445d-8d6a-659299fe62b1" />
+
+---
+***Administrative Templates: Windows Components: Remote Desktop Session Host: Security: Require secure RPC communication***
+```
+Windows Server 2022 21H2
+RegistryPath:  HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services  
+RegistryItem:  fEncryptRPCTraffic  
+DefaultValue:  0  
+RecommendedValue:  1  
+```
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fEncryptRPCTraffic" -Type DWord -Value 1
+```
+<img width="1139" height="596" alt="image" src="https://github.com/user-attachments/assets/a87ad772-a08b-4ddb-a762-531c81181465" />
+
+---
