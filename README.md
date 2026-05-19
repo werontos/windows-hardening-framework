@@ -55,24 +55,6 @@ windows-hardening-framework/
 
 ---
 
-## Quick Start
-
-```powershell
-# 1. Clone the repository
-git clone https://github.com/werontos/windows-hardening-framework.git
-cd windows-hardening-framework
-
-# 2. Dry run — see what WILL be changed, touches nothing
-.\scripts\Harden-Logging.ps1 -WhatIf
-
-# 3. Apply logging hardening (run as Administrator)
-.\scripts\Harden-Logging.ps1
-```
-
-> **Always run as Administrator.** Test in a VM before applying to production.
-
----
-
 ## Coverage Status
 
 | Script | Controls | Status | MITRE Techniques |
