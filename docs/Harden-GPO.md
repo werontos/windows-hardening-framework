@@ -2089,3 +2089,183 @@ Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPo
 ```
 <img width="1267" height="603" alt="image" src="https://github.com/user-attachments/assets/90caebb5-0ee6-4f6e-8ad8-a3266ac64188" />
 
+-----------
+***MSS (Legacy) MSS: (AutoAdminLogon) Enable Automatic Logon (not recommended)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+RegistryItem:   AutoAdminLogon
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "AutoAdminLogon" -Type String -Value "0"
+```
+<img width="1249" height="594" alt="image" src="https://github.com/user-attachments/assets/01ca87dc-a289-4e28-a04e-eb8d213be7d9" />
+
+---
+***MSS (Legacy) MSS: (DisableIPSourceRouting IPv6) IP source routing protection level (protects against packet spoofing)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\System\CurrentControlSet\Services\Tcpip6\Parameters
+RegistryItem:   DisableIPSourceRouting
+DefaultValue:      0
+RecommendedValue:  2
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\Tcpip6\Parameters" -Name "DisableIPSourceRouting" -Type DWord -Value 2
+```
+<img width="1267" height="601" alt="image" src="https://github.com/user-attachments/assets/5f6d0b5b-078d-435f-9989-f4406cd56fe0" />
+
+---
+***MSS (Legacy) MSS: (DisableIPSourceRouting) IP source routing protection level (protects against packet spoofing)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\System\CurrentControlSet\Services\Tcpip\Parameters
+RegistryItem:   DisableIPSourceRouting
+DefaultValue:      1
+RecommendedValue:  2
+```
+
+```ps1
+New-Item -Path "HKLM:\System\CurrentControlSet\Services\Tcpip\Parameters" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\Tcpip\Parameters" -Name "DisableIPSourceRouting" -Type DWord -Value 2
+```
+<img width="1266" height="600" alt="image" src="https://github.com/user-attachments/assets/d9724d89-cb5c-4d9c-9968-c33fd945cecf" />
+
+---
+***MSS (Legacy) MSS: (EnableICMPRedirect) Allow ICMP redirects to override OSPF generated routes***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\System\CurrentControlSet\Services\Tcpip\Parameters
+RegistryItem:   EnableICMPRedirect
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\Tcpip\Parameters" -Name "EnableICMPRedirect" -Type DWord -Value 0
+```
+<img width="1262" height="601" alt="image" src="https://github.com/user-attachments/assets/5ed6c76e-9341-44f0-93ef-30605ea276a2" />
+
+---
+***MSS (Legacy) MSS: (KeepAliveTime) How often keep-alive packets are sent in milliseconds***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
+RegistryItem:   KeepAliveTime
+DefaultValue:      7200000
+RecommendedValue:  300000
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "KeepAliveTime" -Type DWord -Value 300000
+```
+<img width="1268" height="600" alt="image" src="https://github.com/user-attachments/assets/87818a7a-1805-4f9e-be56-16b7ace66012" />
+
+---
+***MSS (Legacy) MSS: (NoNameReleaseOnDemand) Allow the computer to ignore NetBIOS name release requests except from WINS servers***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\System\CurrentControlSet\Services\Netbt\Parameters
+RegistryItem:   NoNameReleaseOnDemand
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\Netbt\Parameters" -Name "NoNameReleaseOnDemand" -Type DWord -Value 1
+```
+<img width="1268" height="600" alt="image" src="https://github.com/user-attachments/assets/f365c9e5-5f92-442f-9183-166d4193c774" />
+
+---
+***MSS (Legacy) MSS: (PerformRouterDiscovery) Allow IRDP to detect and configure Default Gateway addresses (could lead to DoS)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
+RegistryItem:   PerformRouterDiscovery
+DefaultValue:      0
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "PerformRouterDiscovery" -Type DWord -Value 0
+```
+<img width="1268" height="601" alt="image" src="https://github.com/user-attachments/assets/80bb21fe-379e-4518-aac2-c3fb3e183e52" />
+
+---
+***MSS (Legacy) MSS: (SafeDllSearchMode) Enable Safe DLL search mode (recommended)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager
+RegistryItem:   SafeDLLSearchMode
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name "SafeDLLSearchMode" -Type DWord -Value 1
+```
+<img width="1261" height="598" alt="image" src="https://github.com/user-attachments/assets/3950c5fc-12f3-4c25-af80-e7472843ccd4" />
+
+---
+***MSS (Legacy) MSS: (ScreenSaverGracePeriod) The time in seconds before the screen saver grace period expires (0 recommended)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+RegistryItem:   ScreenSaverGracePeriod
+DefaultValue:      5
+RecommendedValue:  5
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "ScreenSaverGracePeriod" -Type String -Value "5"
+```
+<img width="1249" height="600" alt="image" src="https://github.com/user-attachments/assets/23f86c98-b1f3-47f0-8bcf-0b93fd185cff" />
+
+---
+***MSS (Legacy) MSS: (TcpMaxDataRetransmissions IPv6) How many times unacknowledged data is retransmitted***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\System\CurrentControlSet\Services\Tcpip6\Parameters
+RegistryItem:   TcpMaxDataRetransmissions
+DefaultValue:      5
+RecommendedValue:  3
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\Tcpip6\Parameters" -Name "TcpMaxDataRetransmissions" -Type DWord -Value 3
+```
+<img width="1267" height="600" alt="image" src="https://github.com/user-attachments/assets/e390b482-4f09-4b87-b2d3-c1c5afc24e27" />
+
+---
+***MSS (Legacy) MSS: (TcpMaxDataRetransmissions) How many times unacknowledged data is retransmitted***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\System\CurrentControlSet\Services\Tcpip\Parameters
+RegistryItem:   TcpMaxDataRetransmissions
+DefaultValue:      5
+RecommendedValue:  3
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\Tcpip\Parameters" -Name "TcpMaxDataRetransmissions" -Type DWord -Value 3
+```
+<img width="1265" height="598" alt="image" src="https://github.com/user-attachments/assets/ceb2ee75-8ce5-4ae6-8630-19d451a3fcb6" />
+
+---
+***MSS (Legacy) MSS: (WarningLevel) Percentage threshold for the security event log at which the system will generate a warning***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\Security
+RegistryItem:   WarningLevel
+DefaultValue:      0
+RecommendedValue:  90
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\Security" -Name "WarningLevel" -Type DWord -Value 90
+```
+<img width="1263" height="600" alt="image" src="https://github.com/user-attachments/assets/48382abe-c267-4b61-9f3f-30143c8deb06" />
