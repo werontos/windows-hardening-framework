@@ -1981,3 +1981,111 @@ New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Force 
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "DeferQualityUpdatesPeriodInDays" -Type DWord -Value 0
 ```
 <img width="1142" height="600" alt="image" src="https://github.com/user-attachments/assets/e0877245-3172-4d29-9ab0-c14f93a2c962" />
+
+---
+***Administrative Templates: Network Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableUPnPRegistrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableUPnPRegistrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableUPnPRegistrar" -Type DWord -Value 0
+```
+<img width="1267" height="602" alt="image" src="https://github.com/user-attachments/assets/a7674e50-6579-4982-934b-f0b2c554c2a9" />
+
+---
+***Administrative Templates: Network Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableInBand802DOT11Registrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableInBand802DOT11Registrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableInBand802DOT11Registrar" -Type DWord -Value 0
+```
+<img width="1267" height="596" alt="image" src="https://github.com/user-attachments/assets/e489c091-34bd-480e-bcec-bfa6b091cf4b" />
+
+---
+***Administrative Templates: Network Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableFlashConfigRegistrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableFlashConfigRegistrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableFlashConfigRegistrar" -Type DWord -Value 0
+```
+<img width="1265" height="598" alt="image" src="https://github.com/user-attachments/assets/23ffd019-df4b-4978-950b-d7268678a781" />
+
+---
+***Administrative Templates: Network Windows Connect Now: Configuration of wireless settings using Windows Connect Now (DisableWPDRegistrar)***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars
+RegistryItem:   DisableWPDRegistrar
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" -Name "DisableWPDRegistrar" -Type DWord -Value 0
+```
+<img width="1267" height="600" alt="image" src="https://github.com/user-attachments/assets/82dbb393-e5a9-4cef-9db5-3d271ebf0f94" />
+
+---
+***Administrative Templates: Network Windows Connect Now: Prohibit access of the Windows Connect Now wizards***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI
+RegistryItem:   DisableWcnUi
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" -Name "DisableWcnUi" -Type DWord -Value 1
+```
+<img width="1264" height="600" alt="image" src="https://github.com/user-attachments/assets/46a6d618-884e-41d3-8042-8f25370a5e4e" />
+
+---
+***Administrative Templates: Network Windows Connection Manager: Minimize the number of simultaneous connections to the Internet or a Windows Domain***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
+RegistryItem:   fMinimizeConnections
+DefaultValue:      1
+RecommendedValue:  3
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" -Name "fMinimizeConnections" -Type DWord -Value 3
+```
+<img width="1264" height="593" alt="image" src="https://github.com/user-attachments/assets/977c2279-9c83-4dbd-a55b-e48066700d4c" />
+
+---
+***Administrative Templates: Network Windows Connection Manager: Prohibit connection to non-domain networks when connected to domain authenticated network***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
+RegistryItem:   fBlockNonDomain
+DefaultValue:      0
+RecommendedValue:  1
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" -Name "fBlockNonDomain" -Type DWord -Value 1
+```
+<img width="1267" height="603" alt="image" src="https://github.com/user-attachments/assets/90caebb5-0ee6-4f6e-8ad8-a3266ac64188" />
+
