@@ -328,4 +328,8 @@ Set-RegistryValue -Path "HKLM:\Software\Policies\Microsoft\Windows NT\Rpc" -Name
 
 Set-RegistryValue -Path "HKLM:\Software\Policies\Microsoft\W32time\TimeProviders\NtpServer" -Name "Enabled" -Value 0 -Type "DWord"
 
+Stop-Service -Name Spooler -Force -ErrorAction SilentlyContinue
+
+Set-Service -Name Spooler -StartupType Disabled
+
 Write-Host "Hardening completed"
