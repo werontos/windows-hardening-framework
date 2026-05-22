@@ -40,7 +40,7 @@ Set-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" "Ld
 # Microsoft Defender Antivirus
 
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" "LocalSettingOverrideSpynetReporting" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" "SpynetReporting" 0
+Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" "SpynetReporting" 2
 
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" "EnableFileHashComputation" 1
 
@@ -48,8 +48,6 @@ Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Pro
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" "DisableRealtimeMonitoring" 0
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" "DisableBehaviorMonitoring" 0
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" "DisableScriptScanning" 0
-
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" "DisableGenericRePorts" 1
 
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" "DisableRemovableDriveScanning" 0
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" "DisableEmailScanning" 0
