@@ -167,7 +167,6 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Nam
 
 # Device Guard
 Ensure-RegistryPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
 
 # CTRL+ALT+DEL
 Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableCAD" -Type DWord -Value 0
