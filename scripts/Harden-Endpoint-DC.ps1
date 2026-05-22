@@ -31,6 +31,12 @@ function Set-DwordValue {
     Write-Host "[+] $Path -> $Name = $Value"
 }
 
+#LDAP
+
+Set-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" "LDAPServerIntegrity" 2
+
+Set-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" "LdapEnforceChannelBinding" 1
+
 # Microsoft Defender Antivirus
 
 Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" "LocalSettingOverrideSpynetReporting" 0
