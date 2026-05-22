@@ -102,7 +102,7 @@ Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "NTLMMinServerSec" D
 Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\pku2u" "AllowOnlineID" DWord 0
 Set-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters" "SupportedEncryptionTypes" DWord 2147483640
 Set-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" "LocalAccountTokenFilterPolicy" DWord 0
-Set-Reg "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" "DoHPolicy" DWord 2
+Set-Reg "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" "DoHPolicy" DWord 3
 Set-Reg "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" "EnableMulticast" DWord 0
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" "EnableFontProviders" DWord 0
 Set-Reg "HKLM:\Software\Policies\Microsoft\Windows\LanmanWorkstation" "AllowInsecureGuestAuth" DWord 0
