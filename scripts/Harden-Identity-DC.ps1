@@ -8,6 +8,10 @@ function Ensure-RegistryPath {
     }
 }
 
+# LDAP
+Ensure-RegistryPath "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters"
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" -Name "LdapEnforceChannelBinding" -Type DWord -Value 1
+
 # Account Policies
 net accounts /uniquepw:24
 net accounts /maxpwage:365
