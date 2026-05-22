@@ -92,7 +92,6 @@ Set-Reg "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" "SMBSe
 Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" "NullSessionPipes" MultiString @("netlogon","samr","lsarpc")
 Set-Reg "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" "RestrictNullSessAccess" DWord 1
 Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "RestrictAnonymous" DWord 1
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "DisableDomainCreds" DWord 1
 Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "RestrictRemoteSAM" String "O:BAG:BAD:(A;;RC;;;BA)"
 Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "UseMachineId" DWord 1
 Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "LmCompatibilityLevel" DWord 5
