@@ -92,7 +92,7 @@ Remove-Item C:\secpol.cfg -Force
 # Enable computer and user accounts to be trusted for delegation
 secedit /export /cfg C:\secpol.cfg
 (Get-Content C:\secpol.cfg) `
--replace 'SeEnableDelegationPrivilege = .*', 'SeEnableDelegationPrivilege = *S-1-5-32-544' |
+-replace 'SeEnableDelegationPrivilege = .*', 'SeEnableDelegationPrivilege = ' |
 Set-Content C:\secpol.cfg
 secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
 Remove-Item C:\secpol.cfg -Force
