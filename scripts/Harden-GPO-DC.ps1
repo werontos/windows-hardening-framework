@@ -322,4 +322,8 @@ Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" 
 
 Set-RegistryValue -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM" -Name "SamNGCKeyROCAValidation" -Value 1 -Type "DWord"
 
+Stop-Service -Name Spooler -Force -ErrorAction SilentlyContinue
+
+Set-Service -Name Spooler -StartupType Disabled
+
 Write-Host "Hardening completed"
