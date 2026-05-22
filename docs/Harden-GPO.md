@@ -2269,3 +2269,51 @@ RecommendedValue:  90
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\Security" -Name "WarningLevel" -Type DWord -Value 90
 ```
 <img width="1263" height="600" alt="image" src="https://github.com/user-attachments/assets/48382abe-c267-4b61-9f3f-30143c8deb06" />
+
+-----------
+---
+***Administrative Templates: Printers Configure Print Spooler service***
+```
+Windows Server 2022 21H2
+ServiceName:    Spooler
+DefaultValue:   Running / Automatic
+RecommendedValue:  Stopped / Disabled
+```
+
+```ps1
+Stop-Service -Name Spooler -Force
+Set-Service -Name Spooler -StartupType Disabled
+```
+
+---
+***Administrative Templates: Printers Point and Print Restrictions: NoWarningNoElevationOnInstall***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint
+RegistryItem:   NoWarningNoElevationOnInstall
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" -Force | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" -Name "NoWarningNoElevationOnInstall" -Type DWord -Value 0
+```
+<img width="1266" height="597" alt="image" src="https://github.com/user-attachments/assets/27c8177b-4399-4d9f-90e5-dab051dda82f" />
+
+---
+***Administrative Templates: Printers Point and Print Restrictions: UpdatePromptSettings***
+```
+Windows Server 2022 21H2
+RegistryPath:   HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint
+RegistryItem:   UpdatePromptSettings
+DefaultValue:      1
+RecommendedValue:  0
+```
+
+```ps1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" -Name "UpdatePromptSettings" -Type DWord -Value 0
+```
+<img width="1260" height="598" alt="image" src="https://github.com/user-attachments/assets/5c238461-1852-4697-8d5b-ffc0d0f38f25" />
+
+---
