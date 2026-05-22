@@ -123,7 +123,7 @@ Set-Reg $nc "NC_StdDomainUserSetLocation" DWord 1
 $unc = "HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
 Set-Reg $unc "\\*\NETLOGON" String "RequireMutualAuthentication=1, RequireIntegrity=1"
 Set-Reg $unc "\\*\SYSVOL" String "RequireMutualAuthentication=1, RequireIntegrity=1"
-Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters" "DisabledComponents" DWord 255
+Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters" "DisabledComponents" DWord 32
 $wcn = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars"
 Set-Reg $wcn "EnableRegistrars" DWord 0
 Set-Reg $wcn "DisableUPnPRegistrar" DWord 0
