@@ -74,8 +74,8 @@ Set-DwordValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SCENoApplyLegacyAud
 
 # Device Guard / Credential Guard
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "LsaCfgFlags" 0
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "LsaCfgFlags" 0
+Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "LsaCfgFlags" 1
+Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "LsaCfgFlags" 1
 #Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "DeployConfigCIPolicy" 1
 # WARNING: Requires signed WDAC policy — dangerous without proper CI policy configured
 
