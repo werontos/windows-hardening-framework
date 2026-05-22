@@ -1538,7 +1538,6 @@ RecommendedValue:  1
 ```ps1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "PerSessionTempDir" -Type DWord -Value 1
 ```
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "PerSessionTempDir" -Type DWord -Value 1
 
 ---
 ***Administrative Templates: Windows Components: RSS Feeds: Prevent downloading of enclosures***
