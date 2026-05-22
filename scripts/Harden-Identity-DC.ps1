@@ -41,9 +41,6 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 Ensure-RegistryPath "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters"
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "EnablePlainTextPassword" -Type DWord -Value 0
 
-# Network access: Do not allow storage of passwords and credentials for network authentication
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "DisableDomainCreds" -Type DWord -Value 1
-
 # Network security: Do not store LAN Manager hash value on next password change
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "NoLMHash" -Type DWord -Value 1
 
