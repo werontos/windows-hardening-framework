@@ -32,20 +32,20 @@ Each script is modular, idempotent (safe to run multiple times), supports `-What
 windows-hardening-framework/
 │
 ├── scripts/
-│   ├── Harden-Logging.ps1       ✅ Complete
-│   ├── Harden-Network.ps1       ✅ Complete
-│   ├── Harden-Identity.ps1      ✅ Complete
-│   ├── Harden-Endpoint.ps1      ✅ Complete
+│   ├── Harden-Logging.ps1       🟨 In progress
+│   ├── Harden-Network.ps1       🟨 In progress
+│   ├── Harden-Identity.ps1      🟨 In progress
+│   ├── Harden-Endpoint.ps1      🟨 In progress
 │   ├── Harden-GPO.ps1           ⏳ Planned
 │   ├── Master-Harden.ps1        ⏳ Planned
 │   ├── Audit-Compliance.ps1     ⏳ Planned
 │   └── Rollback.ps1             ⏳ Planned
 │
 ├── docs/
-│   ├── Harden-Logging.md        ✅ Full documentation with evidence
-│   ├── Harden-Network.md        ✅ Complete
-│   ├── Harden-Identity.md       ✅ Complete
-│   ├── Harden-Endpoint.md       ✅ Complete
+│   ├── Harden-Logging.md        🟨 In progress
+│   ├── Harden-Network.md        🟨 In progress
+│   ├── Harden-Identity.md       🟨 In progress
+│   ├── Harden-Endpoint.md       🟨 In progress
 │   ├── Harden-GPO.md            ⏳ Planned
 │   └── mitre-mapping.md         ⏳ Planned
 │
