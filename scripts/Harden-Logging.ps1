@@ -1,40 +1,153 @@
+[CmdletBinding(SupportsShouldProcess)]
+
+param(
+    [string]$LogPath = "C:\ProgramData\Hardening\Logs"
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Continue"
+
+
+# ROLE DETECTION
+
+
+$IsDC = $false
+
+try {
+    $IsDC = (Get-WindowsFeature AD-Domain-Services `
+        -ErrorAction SilentlyContinue).InstallState -eq "Installed"
+}
+catch {}
+
+
+# LOGGING / BACKUP
+
+
+New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
+New-Item -ItemType Directory -Path "C:\ProgramData\Hardening" -Force | Out-Null
+
+Start-Transcript `
+    -Path "$LogPath\Logging_$(Get-Date -f yyyyMMdd_HHmmss).log" `
+    -Append
+
+reg export HKLM `
+    "C:\ProgramData\Hardening\HKLM_Logging_Backup_$(Get-Date -f yyyyMMdd).reg" `
+    /y 2>$null
+
+# FUNCTIONS
+
+
 function Ensure-RegistryPath {
-    param (
+
+    param(
         [string]$Path
     )
 
-    if (-not (Test-Path $Path)) {
-        $parts = $Path -split '\\'
-        $current = $parts[0]
-
-        for ($i = 1; $i -lt $parts.Length; $i++) {
-            $current = "$current\$($parts[$i])"
-            if (-not (Test-Path $current)) {
-                New-Item -Path $current | Out-Null
-            }
-        }
+    if (!(Test-Path $Path)) {
+        New-Item -Path $Path -Force | Out-Null
     }
 }
 
-function Set-RegValue {
-    param (
+function Set-Reg {
+
+    param(
         [string]$Path,
         [string]$Name,
-        [int]$Value
+        [string]$Type,
+        $Value
     )
 
     Ensure-RegistryPath $Path
 
-    if (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue) {
-        Set-ItemProperty -Path $Path -Name $Name -Value $Value
-    } else {
-        New-ItemProperty -Path $Path -Name $Name -PropertyType DWord -Value $Value | Out-Null
-    }
+    try {
 
-    Write-Host "[OK] $Path -> $Name = $Value"
+        $current = (Get-ItemProperty `
+            -Path $Path `
+            -Name $Name `
+            -ErrorAction SilentlyContinue).$Name
+
+        if ($current -eq $Value) {
+
+            Write-Host "[SKIP] $Path -> $Name already configured"
+            return
+        }
+
+        switch ($Type) {
+
+            "DWord" {
+
+                Set-ItemProperty `
+                    -Path $Path `
+                    -Name $Name `
+                    -Type DWord `
+                    -Value $Value
+            }
+
+            "String" {
+
+                Set-ItemProperty `
+                    -Path $Path `
+                    -Name $Name `
+                    -Type String `
+                    -Value $Value
+            }
+
+            "MultiString" {
+
+                if ($null -ne $current) {
+
+                    Set-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -Value $Value
+                }
+                else {
+
+                    New-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -PropertyType MultiString `
+                        -Value $Value `
+                        -Force | Out-Null
+                }
+            }
+        }
+
+        Write-Host "[OK] $Path -> $Name = $Value"
+    }
+    catch {
+        Write-Warning "[FAILED] $Path -> $Name : $_"
+    }
 }
 
+function Set-AuditPolicy {
+
+    param(
+        [string]$Subcategory,
+        [string]$Success,
+        [string]$Failure
+    )
+
+    try {
+
+        auditpol /set `
+            /subcategory:$Subcategory `
+            /success:$Success `
+            /failure:$Failure | Out-Null
+
+        Write-Host "[OK] Audit -> $Subcategory"
+    }
+    catch {
+        Write-Warning "[FAILED] Audit -> $Subcategory"
+    }
+}
+
+
+# FIREWALL LOGGING
+
+
 $firewallPaths = @(
+
     "HKLM:\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging",
     "HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile\Logging",
 
@@ -46,63 +159,181 @@ $firewallPaths = @(
 )
 
 foreach ($path in $firewallPaths) {
-    Set-RegValue $path "LogFileSize" 16384
-    Set-RegValue $path "LogDroppedPackets" 1
-    Set-RegValue $path "LogSuccessfulConnections" 1
+
+    Set-Reg $path "LogFileSize" "DWord" 16384
+    Set-Reg $path "LogDroppedPackets" "DWord" 1
+    Set-Reg $path "LogSuccessfulConnections" "DWord" 1
 }
 
 
-Set-RegValue "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging" "EnableModuleLogging" 1
-Set-RegValue "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" "EnableScriptBlockLogging" 1
-Set-RegValue "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" "EnableScriptBlockInvocationLogging" 1
-Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ModuleLogging" "EnableModuleLogging" 1
-Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ModuleLogging" "UseWindowsPowerShellPolicySetting" 1
-Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "EnableScriptBlockLogging" 1
-Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "EnableScriptBlockInvocationLogging" 1
-Set-RegValue "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" "UseWindowsPowerShellPolicySetting" 1
-Set-RegValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SCENoApplyLegacyAuditPolicy" 1
-Set-RegValue "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "AuditReceivingNTLMTraffic" 2
-Set-RegValue "HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters" "AuditNTLMInDomain" 7
-Set-RegValue "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" "AuditLevel" 8
+# POWERSHELL LOGGING
 
-$auditSettings = @(
-    "{0CCE923F-69AE-11D9-BED3-505054503030}", # Credential Validation
-    "{0CCE9235-69AE-11D9-BED3-505054503030}", # User Account Management
-    "{0CCE922D-69AE-11D9-BED3-505054503030}", # DPAPI
-    "{0CCE922B-69AE-11D9-BED3-505054503030}", # Process Creation
-    "{0CCE9215-69AE-11D9-BED3-505054503030}", # Logon
-    "{0CCE921C-69AE-11D9-BED3-505054503030}", # Other Logon
-    "{0CCE921F-69AE-11D9-BED3-505054503030}", # Kernel Object
-    "{0CCE9227-69AE-11D9-BED3-505054503030}", # Other Object Access
-    "{0CCE9245-69AE-11D9-BED3-505054503030}", # Removable Storage
-    "{0CCE9220-69AE-11D9-BED3-505054503030}", # SAM
-    "{0CCE9232-69AE-11D9-BED3-505054503030}", # MPSSVC
-    "{0CCE9228-69AE-11D9-BED3-505054503030}", # Privilege Use
-    "{0CCE9214-69AE-11D9-BED3-505054503030}", # Other System
-    "{0CCE9212-69AE-11D9-BED3-505054503030}", # System Integrity
-    "{0CCE9224-69AE-11D9-BED3-505054503030}"  # File Share
+
+# Windows PowerShell
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging" `
+    "EnableModuleLogging" `
+    "DWord" `
+    1
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" `
+    "EnableScriptBlockLogging" `
+    "DWord" `
+    1
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" `
+    "EnableScriptBlockInvocationLogging" `
+    "DWord" `
+    1
+
+# REQUIRED by audit:
+# ModuleNames = *
+
+$modulePath = "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames"
+
+Ensure-RegistryPath $modulePath
+
+Set-Reg `
+    $modulePath `
+    "*" `
+    "String" `
+    "*"
+
+# PowerShell Core
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\PowerShellCore\ModuleLogging" `
+    "EnableModuleLogging" `
+    "DWord" `
+    1
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\PowerShellCore\ModuleLogging" `
+    "UseWindowsPowerShellPolicySetting" `
+    "DWord" `
+    1
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" `
+    "EnableScriptBlockLogging" `
+    "DWord" `
+    1
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" `
+    "EnableScriptBlockInvocationLogging" `
+    "DWord" `
+    1
+
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\PowerShellCore\ScriptBlockLogging" `
+    "UseWindowsPowerShellPolicySetting" `
+    "DWord" `
+    1
+
+
+# NTLM / LSASS AUDITING
+
+
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Control\Lsa" `
+    "SCENoApplyLegacyAuditPolicy" `
+    "DWord" `
+    1
+
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" `
+    "AuditReceivingNTLMTraffic" `
+    "DWord" `
+    2
+
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Services\Netlogon\Parameters" `
+    "AuditNTLMInDomain" `
+    "DWord" `
+    7
+
+Set-Reg `
+    "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" `
+    "AuditLevel" `
+    "DWord" `
+    8
+
+
+# AUDIT POLICIES
+
+
+$AuditPolicies = @(
+    "Credential Validation",
+    "User Account Management",
+    "DPAPI Activity",
+    "Process Creation",
+    "Logon",
+    "Other Logon/Logoff Events",
+    "Kernel Object",
+    "Other Object Access Events",
+    "Removable Storage",
+    "SAM",
+    "Filtering Platform Packet Drop",
+    "Sensitive Privilege Use",
+    "Other System Events",
+    "System Integrity",
+    "File Share"
 )
 
-foreach ($id in $auditSettings) {
-    auditpol /set /subcategory:$id /success:enable /failure:enable
+foreach ($policy in $AuditPolicies) {
+
+    Set-AuditPolicy `
+        -Subcategory $policy `
+        -Success enable `
+        -Failure enable
 }
 
-auditpol /set /subcategory:"{0CCE9217-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
-auditpol /set /subcategory:"{0CCE9237-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
-auditpol /set /subcategory:"{0CCE9248-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
-auditpol /set /subcategory:"{0CCE9249-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
-auditpol /set /subcategory:"{0CCE922F-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
-auditpol /set /subcategory:"{0CCE9230-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
-auditpol /set /subcategory:"{0CCE9234-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
-auditpol /set /subcategory:"{0CCE9210-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
-auditpol /set /subcategory:"{0CCE9211-69AE-11D9-BED3-505054503030}" /success:enable /failure:disable
-auditpol /set /subcategory:"{0CCE9244-69AE-11D9-BED3-505054503030}" /success:disable /failure:enable
+# DC REQUIRED BY AUDIT
 
-Set-RegValue "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit" "ProcessCreationIncludeCmdLine_Enabled" 1
+if ($IsDC) {
 
-wevtutil sl Security /ms:1073741824
-wevtutil sl System /ms:536870912
-wevtutil sl Application /ms:536870912
-wevtutil sl "Microsoft-Windows-PowerShell/Operational" /ms:104857600
+    Set-AuditPolicy `
+        -Subcategory "Directory Service Access" `
+        -Success enable `
+        -Failure enable
 
-Write-Host "`nLogging-Hardening DONE" -ForegroundColor Green
+    Set-AuditPolicy `
+        -Subcategory "Directory Service Changes" `
+        -Success enable `
+        -Failure enable
+}
+
+
+# PROCESS CREATION LOGGING
+
+
+Set-Reg `
+    "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit" `
+    "ProcessCreationIncludeCmdLine_Enabled" `
+    "DWord" `
+    1
+
+
+# EVENT LOG SIZES
+
+
+try {
+
+    wevtutil sl Security /ms:1073741824
+    wevtutil sl System /ms:536870912
+    wevtutil sl Application /ms:536870912
+    wevtutil sl "Microsoft-Windows-PowerShell/Operational" /ms:104857600
+
+    Write-Host "[OK] Event log sizes configured"
+}
+catch {
+    Write-Warning $_
+}
+
+Write-Host "`n[+] Logging Hardening COMPLETE" -ForegroundColor Green
+
+Stop-Transcript
