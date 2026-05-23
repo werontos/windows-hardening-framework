@@ -34,6 +34,7 @@ reg export HKLM `
     "C:\ProgramData\Hardening\HKLM_Logging_Backup_$(Get-Date -f yyyyMMdd).reg" `
     /y 2>$null
 
+
 # FUNCTIONS
 
 
@@ -61,61 +62,40 @@ function Set-Reg {
 
     try {
 
-        $current = (Get-ItemProperty `
+        $existing = Get-ItemProperty `
             -Path $Path `
             -Name $Name `
-            -ErrorAction SilentlyContinue).$Name
+            -ErrorAction SilentlyContinue
 
-        if ($current -eq $Value) {
+        if ($null -ne $existing) {
 
-            Write-Host "[SKIP] $Path -> $Name already configured"
-            return
+            $current = $existing.$Name
+
+            if ($current -eq $Value) {
+
+                Write-Host "[SKIP] $Path -> $Name already configured"
+                return
+            }
+
+            Set-ItemProperty `
+                -Path $Path `
+                -Name $Name `
+                -Value $Value
         }
+        else {
 
-        switch ($Type) {
-
-            "DWord" {
-
-                Set-ItemProperty `
-                    -Path $Path `
-                    -Name $Name `
-                    -Type DWord `
-                    -Value $Value
-            }
-
-            "String" {
-
-                Set-ItemProperty `
-                    -Path $Path `
-                    -Name $Name `
-                    -Type String `
-                    -Value $Value
-            }
-
-            "MultiString" {
-
-                if ($null -ne $current) {
-
-                    Set-ItemProperty `
-                        -Path $Path `
-                        -Name $Name `
-                        -Value $Value
-                }
-                else {
-
-                    New-ItemProperty `
-                        -Path $Path `
-                        -Name $Name `
-                        -PropertyType MultiString `
-                        -Value $Value `
-                        -Force | Out-Null
-                }
-            }
+            New-ItemProperty `
+                -Path $Path `
+                -Name $Name `
+                -PropertyType $Type `
+                -Value $Value `
+                -Force | Out-Null
         }
 
         Write-Host "[OK] $Path -> $Name = $Value"
     }
     catch {
+
         Write-Warning "[FAILED] $Path -> $Name : $_"
     }
 }
