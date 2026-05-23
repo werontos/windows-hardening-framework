@@ -1,163 +1,476 @@
-function Ensure-RegistryPath {
-    param (
-        [string]$Path
-    )
+[CmdletBinding(SupportsShouldProcess)]
 
-    if (-not (Test-Path $Path)) {
+param(
+    [string]$LogPath = "C:\ProgramData\Hardening\Logs"
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Continue"
+
+
+# VALIDATION
+
+
+$IsDC = (Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4
+
+if (-not $IsDC) {
+    Write-Error "This script is intended ONLY for Domain Controllers."
+    exit 1
+}
+
+
+# LOGGING / BACKUP
+
+
+New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
+New-Item -ItemType Directory -Path "C:\ProgramData\Hardening" -Force | Out-Null
+New-Item -ItemType Directory -Path "C:\Temp" -Force | Out-Null
+
+Start-Transcript `
+    -Path "$LogPath\Identity_DC_$(Get-Date -f yyyyMMdd_HHmmss).log" `
+    -Append
+
+reg export HKLM `
+    "C:\ProgramData\Hardening\HKLM_Backup_$(Get-Date -f yyyyMMdd_HHmmss).reg" `
+    /y 2>$null
+
+$tempPath = "C:\Temp"
+
+
+# FUNCTIONS
+
+
+function Ensure-RegistryPath {
+    param ([string]$Path)
+
+    if (!(Test-Path $Path)) {
         New-Item -Path $Path -Force | Out-Null
     }
 }
 
-# LDAP
-Ensure-RegistryPath "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters"
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" -Name "LdapEnforceChannelBinding" -Type DWord -Value 1
+function Set-Reg {
+    param (
+        [string]$Path,
+        [string]$Name,
+        [string]$Type,
+        $Value
+    )
 
-# Account Policies
-net accounts /uniquepw:24
-net accounts /maxpwage:365
-net accounts /minpwage:1
-net accounts /minpwlen:14
-net accounts /lockoutduration:30
-net accounts /lockoutthreshold:5
-net accounts /lockoutwindow:15
+    Ensure-RegistryPath $Path
 
-# Relax minimum password length limits
-Ensure-RegistryPath "HKLM:\System\CurrentControlSet\Control\SAM"
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\SAM" -Name "RelaxMinimumPasswordLengthLimits" -Type DWord -Value 1
+    try {
 
-# Accounts: Limit local account use of blank passwords to console logon only
-Ensure-RegistryPath "HKLM:\System\CurrentControlSet\Control\Lsa"
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "LimitBlankPasswordUse" -Type DWord -Value 1
+        $CurrentValue = $null
 
-# Domain controller: Refuse machine account password changes
-Ensure-RegistryPath "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters"
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" -Name "RefusePasswordChange" -Type DWord -Value 0
+        try {
+            $CurrentValue = (Get-ItemProperty -Path $Path -Name $Name -ErrorAction Stop).$Name
+        }
+        catch {}
 
-# Interactive logon: Prompt user to change password before expiration
-Ensure-RegistryPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PasswordExpiryWarning" -Type DWord -Value 14
+        if ($CurrentValue -eq $Value) {
+            Write-Host "[SKIP] $Path -> $Name already configured"
+            return
+        }
 
-# Microsoft network client: Send unencrypted password to third-party SMB servers
-Ensure-RegistryPath "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters"
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "EnablePlainTextPassword" -Type DWord -Value 0
+        switch ($Type) {
 
-# Network security: Do not store LAN Manager hash value on next password change
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "NoLMHash" -Type DWord -Value 1
+            "DWord" {
 
-# Turn off picture password sign-in
-Ensure-RegistryPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "BlockDomainPicturePassword" -Type DWord -Value 1
+                if ($null -eq $CurrentValue) {
 
-# Sleep Settings
-Ensure-RegistryPath "HKLM:\Software\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51"
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51" -Name "DCSettingIndex" -Type DWord -Value 1
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51" -Name "ACSettingIndex" -Type DWord -Value 1
+                    New-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -PropertyType DWord `
+                        -Value $Value `
+                        -Force | Out-Null
+                }
+                else {
 
-# Credential UI
-Ensure-RegistryPath "HKLM:\Software\Policies\Microsoft\Windows\CredUI"
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CredUI" -Name "DisablePasswordReveal" -Type DWord -Value 1
+                    Set-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -Type DWord `
+                        -Value $Value
+                }
+            }
 
-# RDP
-Ensure-RegistryPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "DisablePasswordSaving" -Type DWord -Value 1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -Name "fPromptForPassword" -Type DWord -Value 1
+            "String" {
 
-# Password complexity
-secedit /export /cfg C:\secpol.cfg
-(Get-Content C:\secpol.cfg) `
--replace "PasswordComplexity = 0", "PasswordComplexity = 1" |
-Set-Content C:\secpol.cfg
-secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas SECURITYPOLICY
-Remove-Item C:\secpol.cfg -Force
+                if ($null -eq $CurrentValue) {
 
-# Store passwords using reversible encryption
-secedit /export /cfg C:\secpol.cfg
-(Get-Content C:\secpol.cfg) `
--replace "ClearTextPassword = 1", "ClearTextPassword = 0" |
-Set-Content C:\secpol.cfg
-secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas SECURITYPOLICY
-Remove-Item C:\secpol.cfg -Force
+                    New-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -PropertyType String `
+                        -Value $Value `
+                        -Force | Out-Null
+                }
+                else {
 
-# Add workstations to domain
-secedit /export /cfg C:\secpol.cfg
-(Get-Content C:\secpol.cfg) `
--replace 'SeMachineAccountPrivilege = .*', 'SeMachineAccountPrivilege = *S-1-5-32-544' |
-Set-Content C:\secpol.cfg
-secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
-Remove-Item C:\secpol.cfg -Force
+                    Set-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -Type String `
+                        -Value $Value
+                }
+            }
 
-# Enable computer and user accounts to be trusted for delegation
-secedit /export /cfg C:\secpol.cfg
-(Get-Content C:\secpol.cfg) `
--replace 'SeEnableDelegationPrivilege = .*', 'SeEnableDelegationPrivilege = ' |
-Set-Content C:\secpol.cfg
-secedit /configure /db C:\Windows\Security\Database\secedit.sdb /cfg C:\secpol.cfg /areas USER_RIGHTS
-Remove-Item C:\secpol.cfg -Force
+            "MultiString" {
 
-# Block Microsoft accounts
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "NoConnectedUser" -Type DWord -Value 3
+                if ($null -eq $CurrentValue) {
+
+                    New-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -PropertyType MultiString `
+                        -Value $Value `
+                        -Force | Out-Null
+                }
+                else {
+
+                    Set-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -Value $Value
+                }
+            }
+        }
+
+        Write-Host "[OK] $Path -> $Name = $Value"
+    }
+    catch {
+        Write-Warning "[FAILED] $Path -> $Name : $_"
+    }
+}
+
+function Invoke-Secedit {
+    param(
+        [string]$Content,
+        [string]$Area
+    )
+
+    $guid = Get-Random
+
+    $infPath = "$tempPath\$guid.inf"
+    $dbPath  = "$tempPath\$guid.sdb"
+
+    try {
+
+        $Content | Out-File $infPath -Encoding Unicode
+
+        secedit /configure `
+            /db $dbPath `
+            /cfg $infPath `
+            /areas $Area `
+            /quiet
+
+        Write-Host "[OK] Secedit applied ($Area)"
+    }
+    catch {
+        Write-Warning "[SECEEDIT FAILED] $_"
+    }
+    finally {
+
+        Remove-Item $infPath -Force -ErrorAction SilentlyContinue
+        Remove-Item $dbPath -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Set-AuditPolicy {
+    param(
+        [string]$Subcategory,
+        [string]$Success,
+        [string]$Failure
+    )
+
+    try {
+
+        auditpol /set `
+            /subcategory:"$Subcategory" `
+            /success:$Success `
+            /failure:$Failure | Out-Null
+
+        Write-Host "[OK] Audit -> $Subcategory"
+    }
+    catch {
+        Write-Warning "[FAILED] Audit -> $Subcategory"
+    }
+}
+
+
+# LDAP HARDENING
+
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
+ "LDAPServerIntegrity" `
+ "DWord" `
+ 2
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
+ "LdapEnforceChannelBinding" `
+ "DWord" `
+ 2
+
+
+# PASSWORD / IDENTITY SETTINGS
+
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Control\SAM" `
+ "RelaxMinimumPasswordLengthLimits" `
+ "DWord" `
+ 1
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+ "LimitBlankPasswordUse" `
+ "DWord" `
+ 1
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" `
+ "RefusePasswordChange" `
+ "DWord" `
+ 0
+
+Set-Reg `
+ "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" `
+ "PasswordExpiryWarning" `
+ "DWord" `
+ 14
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" `
+ "EnablePlainTextPassword" `
+ "DWord" `
+ 0
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+ "NoLMHash" `
+ "DWord" `
+ 1
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+ "RestrictAnonymousSAM" `
+ "DWord" `
+ 1
+
+
+# NTLM HARDENING / AUDITING
+
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0" `
+ "AuditReceivingNTLMTraffic" `
+ "DWord" `
+ 2
+
+Set-Reg `
+ "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" `
+ "AuditNTLMInDomain" `
+ "DWord" `
+ 7
+
+
+# MICROSOFT ACCOUNT RESTRICTIONS
+
+
+Set-Reg `
+ "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" `
+ "NoConnectedUser" `
+ "DWord" `
+ 3
+
+Set-Reg `
+ "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" `
+ "MSAOptional" `
+ "DWord" `
+ 1
+
+Set-Reg `
+ "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" `
+ "DisableUserAuth" `
+ "DWord" `
+ 1
+
 
 # UAC
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "FilterAdministratorToken" -Type DWord -Value 1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 2
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorUser" -Type DWord -Value 0
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableInstallerDetection" -Type DWord -Value 1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableSecureUIAPaths" -Type DWord -Value 1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -Type DWord -Value 1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 1
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableVirtualization" -Type DWord -Value 1
 
-# Accounts
-Rename-LocalUser -Name "Guest" -NewName "PUT_YOUR_GUEST_NAME"
-net user "PUT_YOUR_GUEST_NAME" /active:no
 
-# Audit Policies
-auditpol /set /subcategory:"Computer Account Management" /success:enable /failure:disable
-auditpol /set /subcategory:"Other Account Management Events" /success:enable /failure:enable
-auditpol /set /subcategory:"User Account Management" /success:enable /failure:enable
-auditpol /set /subcategory:"Account Lockout" /success:disable /failure:enable
+$uac = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
 
-# Locale Services
-Ensure-RegistryPath "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" -Name "BlockUserInputMethodsForSignIn" -Type DWord -Value 1
+Set-Reg $uac "FilterAdministratorToken" DWord 1
+Set-Reg $uac "ConsentPromptBehaviorAdmin" DWord 2
+Set-Reg $uac "ConsentPromptBehaviorUser" DWord 0
+Set-Reg $uac "EnableInstallerDetection" DWord 1
+Set-Reg $uac "EnableSecureUIAPaths" DWord 1
+Set-Reg $uac "EnableLUA" DWord 1
+Set-Reg $uac "PromptOnSecureDesktop" DWord 1
+Set-Reg $uac "EnableVirtualization" DWord 1
+Set-Reg $uac "DisableCAD" DWord 0
+Set-Reg $uac "InactivityTimeoutSecs" DWord 900
+Set-Reg $uac "DontDisplayLastUserName" DWord 1
 
-# Logon
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "BlockUserFromShowingAccountDetailsOnSignin" -Type DWord -Value 1
 
-# ROCA validation
-Ensure-RegistryPath "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM"
-Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\SAM" -Name "SamNGCKeyROCAValidation" -Type DWord -Value 1
+# CREDENTIAL UI / LOGON
 
-# Microsoft Accounts Optional
-Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "MSAOptional" -Type DWord -Value 1
 
-# Cloud Content
-Ensure-RegistryPath "HKLM:\Software\Policies\Microsoft\Windows\CloudContent"
-Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Name "DisableConsumerAccountStateContent" -Type DWord -Value 1
+Set-Reg `
+ "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredUI" `
+ "DisablePasswordReveal" `
+ "DWord" `
+ 1
 
-# Enumerate administrator accounts on elevation
-Ensure-RegistryPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI" -Name "EnumerateAdministrators" -Type DWord -Value 0
+Set-Reg `
+ "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI" `
+ "EnumerateAdministrators" `
+ "DWord" `
+ 0
 
-# Block all consumer Microsoft account user authentication
-Ensure-RegistryPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount"
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Name "DisableUserAuth" -Type DWord -Value 1
+Set-Reg `
+ "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" `
+ "BlockDomainPicturePassword" `
+ "DWord" `
+ 1
 
-# Allow server operators to schedule tasks
-Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name "SubmitControl" -Type DWord -Value 0
+Set-Reg `
+ "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" `
+ "BlockUserFromShowingAccountDetailsOnSignin" `
+ "DWord" `
+ 1
 
-# Device Guard
-Ensure-RegistryPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard"
-# WARNING: Requires signed WDAC CI policy file configured before enabling
-#Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "DeployConfigCIPolicy" -Type DWord -Value 1
 
-# CTRL+ALT+DEL
-Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableCAD" -Type DWord -Value 0
+# RDP HARDENING
 
-# Machine inactivity limit
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "InactivityTimeoutSecs" -Type DWord -Value 900
 
-# Don't display last signed-in
-Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DontDisplayLastUserName" -Type DWord -Value 1
+$rdp = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
 
-Write-Host "Domain Controller hardening completed." -ForegroundColor Green
+Set-Reg $rdp "DisablePasswordSaving" DWord 1
+Set-Reg $rdp "fPromptForPassword" DWord 1
+
+
+# CLOUD / CONSUMER FEATURES
+
+
+Set-Reg `
+ "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" `
+ "DisableConsumerAccountStateContent" `
+ "DWord" `
+ 1
+
+
+# INTERNATIONAL / INPUT
+
+
+Set-Reg `
+ "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" `
+ "BlockUserInputMethodsForSignIn" `
+ "DWord" `
+ 1
+
+ 
+# ROCA PROTECTION
+
+
+Set-Reg `
+ "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\SAM" `
+ "SamNGCKeyROCAValidation" `
+ "DWord" `
+ 1
+
+
+# OPTIONAL LSASS PPL
+
+# TEST BEFORE ENTERPRISE ROLLOUT
+
+# Set-Reg `
+#  "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+#  "RunAsPPL" `
+#  "DWord" `
+#  1
+
+
+# USER RIGHTS HARDENING
+
+
+$UserRights = @"
+[Unicode]
+Unicode=yes
+[Version]
+signature="`$CHICAGO`$"
+Revision=1
+
+[Privilege Rights]
+
+SeMachineAccountPrivilege = *S-1-5-32-544
+SeEnableDelegationPrivilege = *S-1-5-32-544
+"@
+
+Invoke-Secedit `
+    -Content $UserRights `
+    -Area USER_RIGHTS
+
+
+# PASSWORD POLICY
+
+
+$PasswordPolicy = @"
+[Unicode]
+Unicode=yes
+[Version]
+signature="`$CHICAGO`$"
+Revision=1
+
+[System Access]
+
+PasswordComplexity = 1
+ClearTextPassword = 0
+"@
+
+Invoke-Secedit `
+    -Content $PasswordPolicy `
+    -Area SECURITYPOLICY
+
+
+# AUDIT POLICY
+
+
+Set-AuditPolicy "Computer Account Management" enable disable
+Set-AuditPolicy "Other Account Management Events" enable enable
+Set-AuditPolicy "User Account Management" enable enable
+Set-AuditPolicy "Account Lockout" disable enable
+
+
+# DEVICE GUARD PLACEHOLDER
+
+
+Ensure-RegistryPath `
+ "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard"
+
+# WDAC / CI deployment should be handled separately
+
+
+# EVENT LOG
+
+
+try {
+
+    wevtutil sl Security /ms:1073741824
+    wevtutil sl System /ms:536870912
+    wevtutil sl Application /ms:536870912
+
+    Write-Host "[OK] Event log sizes configured"
+}
+catch {
+    Write-Warning "[FAILED] Event log configuration"
+}
+
+Write-Host ""
+Write-Host "[+] Domain Controller Identity Hardening COMPLETE" -ForegroundColor Green
+
+Stop-Transcript
