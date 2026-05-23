@@ -385,6 +385,6 @@ Set-Reg $power "ACSettingIndex" DWord 0
 # DONE
 
 
-Write-Host "`n Network Hardening COMPLETE" -ForegroundColor Green
+Write-Host "`n[+] Network Hardening COMPLETE" -ForegroundColor Green
 
 Stop-Transcript
