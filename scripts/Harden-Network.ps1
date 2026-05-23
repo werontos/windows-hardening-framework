@@ -144,10 +144,10 @@ Set-Reg $unc "\\*\SYSVOL" String "RequireMutualAuthentication=1, RequireIntegrit
 Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters" "DisabledComponents" DWord 32
 $wcn = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars"
 Set-Reg $wcn "EnableRegistrars" DWord 0
-Set-Reg $wcn "DisableUPnPRegistrar" DWord 0
-Set-Reg $wcn "DisableInBand802DOT11Registrar" DWord 0
-Set-Reg $wcn "DisableFlashConfigRegistrar" DWord 0
-Set-Reg $wcn "DisableWPDRegistrar" DWord 0
+Set-Reg $wcn "DisableUPnPRegistrar" DWord 1
+Set-Reg $wcn "DisableInBand802DOT11Registrar" DWord 1
+Set-Reg $wcn "DisableFlashConfigRegistrar" DWord 1
+Set-Reg $wcn "DisableWPDRegistrar" DWord 1
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" "DisableWcnUi" DWord 1
 $wcm = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy"
 Set-Reg $wcm "fMinimizeConnections" DWord 3
