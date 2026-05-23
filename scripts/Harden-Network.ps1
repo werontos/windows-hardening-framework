@@ -1,6 +1,3 @@
-#Requires -RunAsAdministrator
-#Requires -Version 5.1
-
 [CmdletBinding(SupportsShouldProcess)]
 
 param(
@@ -10,9 +7,9 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Continue"
 
-# =========================
-# LOGGING / BACKUP
-# =========================
+
+# LOGGING BACKUP
+
 
 New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
 New-Item -ItemType Directory -Path "C:\Temp" -Force | Out-Null
@@ -28,9 +25,9 @@ reg export HKLM `
 
 $tempPath = "C:\Temp"
 
-# =========================
+
 # FUNCTIONS
-# =========================
+
 
 function Ensure-RegistryPath {
     param ([string]$Path)
@@ -131,9 +128,8 @@ function Invoke-Secedit {
     }
 }
 
-# =========================
 # TLS HARDENING
-# =========================
+
 
 $protocols = @("TLS 1.0","TLS 1.1")
 
@@ -186,9 +182,9 @@ foreach ($cipher in $weakCiphers) {
     Set-Reg $path "Enabled" "DWord" 0
 }
 
-# =========================
+
 # USER RIGHTS ASSIGNMENT
-# =========================
+
 
 $networkLogon = @"
 [Unicode]
@@ -226,9 +222,9 @@ ForceLogoffWhenHourExpire = 1
 
 Invoke-Secedit -Content $forceLogoff -Area SECURITYPOLICY
 
-# =========================
+
 # SMB HARDENING
-# =========================
+
 
 Set-Reg "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters" "RequireSecuritySignature" DWord 1
 
@@ -266,9 +262,9 @@ catch {
     Write-Warning $_
 }
 
-# =========================
+
 # NTLM / LSA HARDENING
-# =========================
+
 
 Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "RestrictAnonymous" DWord 1
 
@@ -286,15 +282,15 @@ Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "NTLMMinServerSec" D
 
 Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\pku2u" "AllowOnlineID" DWord 0
 
-# =========================
+
 # KERBEROS
-# =========================
+
 
 Set-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters" "SupportedEncryptionTypes" DWord 2147483640
 
-# =========================
+
 # DNS / NETWORK
-# =========================
+
 
 Set-Reg "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" "DoHPolicy" DWord 3
 
@@ -304,9 +300,8 @@ Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters" "DisabledCom
 
 Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters" "NodeType" DWord 2
 
-# =========================
 # LLMNR / PEERNET / LLTD
-# =========================
+
 
 $lltd = "HKLM:\Software\Policies\Microsoft\Windows\LLTD"
 
@@ -322,9 +317,9 @@ Set-Reg $lltd "ProhibitRspndrOnPrivateNet" DWord 0
 
 Set-Reg "HKLM:\Software\Policies\Microsoft\Peernet" "Disabled" DWord 1
 
-# =========================
+
 # WCN HARDENING
-# =========================
+
 
 $wcn = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars"
 
@@ -336,9 +331,9 @@ Set-Reg $wcn "DisableWPDRegistrar" DWord 1
 
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" "DisableWcnUi" DWord 1
 
-# =========================
+
 # NETWORK CONNECTIONS
-# =========================
+
 
 $nc = "HKLM:\Software\Policies\Microsoft\Windows\Network Connections"
 
@@ -346,9 +341,9 @@ Set-Reg $nc "NC_AllowNetBridge_NLA" DWord 0
 Set-Reg $nc "NC_ShowSharedAccessUI" DWord 0
 Set-Reg $nc "NC_StdDomainUserSetLocation" DWord 1
 
-# =========================
+
 # UNC HARDENING
-# =========================
+
 
 $unc = "HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
 
@@ -356,9 +351,9 @@ Set-Reg $unc "\\*\NETLOGON" String "RequireMutualAuthentication=1, RequireIntegr
 
 Set-Reg $unc "\\*\SYSVOL" String "RequireMutualAuthentication=1, RequireIntegrity=1"
 
-# =========================
+
 # OTHER HARDENING
-# =========================
+
 
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" "EnableFontProviders" DWord 0
 
@@ -378,19 +373,18 @@ Set-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad"
 
 Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "EnableAutoProxyResultCache" DWord 0
 
-# =========================
+
 # POWER SETTINGS
-# =========================
+
 
 $power = "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9"
 
 Set-Reg $power "DCSettingIndex" DWord 0
 Set-Reg $power "ACSettingIndex" DWord 0
 
-# =========================
 # DONE
-# =========================
 
-Write-Host "`n[+] Network Hardening COMPLETE" -ForegroundColor Green
+
+Write-Host "`n Network Hardening COMPLETE" -ForegroundColor Green
 
 Stop-Transcript
