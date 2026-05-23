@@ -42,6 +42,25 @@ function Set-Reg {
     }
 }
 
+# TLS
+
+$protocols = @("TLS 1.0","TLS 1.1")
+
+foreach ($proto in $protocols) {
+
+    $server = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\$proto\Server"
+    $client = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\$proto\Client"
+
+    New-Item -Path $server -Force | Out-Null
+    New-Item -Path $client -Force | Out-Null
+
+    Set-ItemProperty -Path $server -Name Enabled -Type DWord -Value 0
+    Set-ItemProperty -Path $server -Name DisabledByDefault -Type DWord -Value 1
+
+    Set-ItemProperty -Path $client -Name Enabled -Type DWord -Value 0
+    Set-ItemProperty -Path $client -Name DisabledByDefault -Type DWord -Value 1
+}
+
 # USER RIGHTS ASSIGNMENT
 
 $inf = @"
