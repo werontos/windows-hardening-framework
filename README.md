@@ -59,11 +59,11 @@ windows-hardening-framework/
 
 | Script | Controls | Status | MITRE Techniques |
 |--------|----------|--------|-----------------|
-| Harden-Logging.ps1 | 40+ | ✅ Complete | T1059, T1078, T1070, T1562 |
-| Harden-Network.ps1 | — | ✅ Complete | T1046, T1557, T1021 |
-| Harden-Identity.ps1 | — | ✅ Complete | T1078, T1110, T1548 |
-| Harden-Endpoint.ps1 | — | ✅ Complete | T1486, T1003, T1204 |
-| Harden-GPO.ps1 | — | ⏳ Planned | T1059, T1204, T1548 |
+| Harden-Logging.ps1 | 40+ | 🟨 In progress | T1059, T1078, T1070, T1562 |
+| Harden-Network.ps1 | — | 🟨 In progress | T1046, T1557, T1021 |
+| Harden-Identity.ps1 | — | 🟨 In progress | T1078, T1110, T1548 |
+| Harden-Endpoint.ps1 | — | 🟨 In progress | T1486, T1003, T1204 |
+| Harden-GPO.ps1 | — | 🟨 In progress | T1059, T1204, T1548 |
 
 ---
 
