@@ -7,9 +7,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Continue"
 
-
 # VALIDATION
-
 
 $IsDC = (Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4
 
@@ -18,9 +16,7 @@ if (-not $IsDC) {
     exit 1
 }
 
-
 # LOGGING / BACKUP
-
 
 New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
 New-Item -ItemType Directory -Path "C:\ProgramData\Hardening" -Force | Out-Null
@@ -36,12 +32,13 @@ reg export HKLM `
 
 $tempPath = "C:\Temp"
 
-
 # FUNCTIONS
 
-
 function Ensure-RegistryPath {
-    param ([string]$Path)
+
+    param (
+        [string]$Path
+    )
 
     if (!(Test-Path $Path)) {
         New-Item -Path $Path -Force | Out-Null
@@ -49,6 +46,7 @@ function Ensure-RegistryPath {
 }
 
 function Set-Reg {
+
     param (
         [string]$Path,
         [string]$Name,
@@ -63,11 +61,15 @@ function Set-Reg {
         $CurrentValue = $null
 
         try {
-            $CurrentValue = (Get-ItemProperty -Path $Path -Name $Name -ErrorAction Stop).$Name
+            $CurrentValue = (Get-ItemProperty `
+                -Path $Path `
+                -Name $Name `
+                -ErrorAction Stop).$Name
         }
         catch {}
 
         if ($CurrentValue -eq $Value) {
+
             Write-Host "[SKIP] $Path -> $Name already configured"
             return
         }
@@ -90,7 +92,6 @@ function Set-Reg {
                     Set-ItemProperty `
                         -Path $Path `
                         -Name $Name `
-                        -Type DWord `
                         -Value $Value
                 }
             }
@@ -111,7 +112,6 @@ function Set-Reg {
                     Set-ItemProperty `
                         -Path $Path `
                         -Name $Name `
-                        -Type String `
                         -Value $Value
                 }
             }
@@ -140,11 +140,13 @@ function Set-Reg {
         Write-Host "[OK] $Path -> $Name = $Value"
     }
     catch {
+
         Write-Warning "[FAILED] $Path -> $Name : $_"
     }
 }
 
 function Invoke-Secedit {
+
     param(
         [string]$Content,
         [string]$Area
@@ -168,6 +170,7 @@ function Invoke-Secedit {
         Write-Host "[OK] Secedit applied ($Area)"
     }
     catch {
+
         Write-Warning "[SECEEDIT FAILED] $_"
     }
     finally {
@@ -178,6 +181,7 @@ function Invoke-Secedit {
 }
 
 function Set-AuditPolicy {
+
     param(
         [string]$Subcategory,
         [string]$Success,
@@ -194,13 +198,15 @@ function Set-AuditPolicy {
         Write-Host "[OK] Audit -> $Subcategory"
     }
     catch {
+
         Write-Warning "[FAILED] Audit -> $Subcategory"
     }
 }
 
-
 # LDAP HARDENING
 
+# Require LDAP signing
+# Generally safe in modern environments
 
 Set-Reg `
  "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
@@ -208,15 +214,17 @@ Set-Reg `
  "DWord" `
  2
 
+# SAFE production value
+# 1 = compatibility mode
+# 2 = strict enforcement (may break legacy apps)
+
 Set-Reg `
  "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
  "LdapEnforceChannelBinding" `
  "DWord" `
- 2
-
+ 1
 
 # PASSWORD / IDENTITY SETTINGS
-
 
 Set-Reg `
  "HKLM:\SYSTEM\CurrentControlSet\Control\SAM" `
@@ -254,15 +262,15 @@ Set-Reg `
  "DWord" `
  1
 
+# May affect legacy inventory/scanning tools
+
 Set-Reg `
  "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
  "RestrictAnonymousSAM" `
  "DWord" `
  1
 
-
-# NTLM HARDENING / AUDITING
-
+# NTLM AUDITING
 
 Set-Reg `
  "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0" `
@@ -276,9 +284,9 @@ Set-Reg `
  "DWord" `
  7
 
-
 # MICROSOFT ACCOUNT RESTRICTIONS
 
+# Safe on DCs
 
 Set-Reg `
  "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" `
@@ -298,9 +306,7 @@ Set-Reg `
  "DWord" `
  1
 
-
-# UAC
-
+# UAC HARDENING
 
 $uac = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
 
@@ -316,9 +322,7 @@ Set-Reg $uac "DisableCAD" DWord 0
 Set-Reg $uac "InactivityTimeoutSecs" DWord 900
 Set-Reg $uac "DontDisplayLastUserName" DWord 1
 
-
 # CREDENTIAL UI / LOGON
-
 
 Set-Reg `
  "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredUI" `
@@ -344,18 +348,14 @@ Set-Reg `
  "DWord" `
  1
 
-
 # RDP HARDENING
-
 
 $rdp = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
 
 Set-Reg $rdp "DisablePasswordSaving" DWord 1
 Set-Reg $rdp "fPromptForPassword" DWord 1
 
-
 # CLOUD / CONSUMER FEATURES
-
 
 Set-Reg `
  "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" `
@@ -363,19 +363,7 @@ Set-Reg `
  "DWord" `
  1
 
-
-# INTERNATIONAL / INPUT
-
-
-Set-Reg `
- "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" `
- "BlockUserInputMethodsForSignIn" `
- "DWord" `
- 1
-
- 
 # ROCA PROTECTION
-
 
 Set-Reg `
  "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\SAM" `
@@ -383,10 +371,14 @@ Set-Reg `
  "DWord" `
  1
 
-
 # OPTIONAL LSASS PPL
 
 # TEST BEFORE ENTERPRISE ROLLOUT
+# Can break:
+# - EDR products
+# - AV products
+# - Identity agents
+# - Password filter DLLs
 
 # Set-Reg `
 #  "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
@@ -394,10 +386,19 @@ Set-Reg `
 #  "DWord" `
 #  1
 
-
 # USER RIGHTS HARDENING
 
+# WARNING:
+# Restricts domain join rights to Administrators only.
+# Can break:
+# - Autopilot
+# - Imaging systems
+# - Helpdesk provisioning
+# - Automated domain join workflows
 
+# Uncomment ONLY if intentional
+
+<#
 $UserRights = @"
 [Unicode]
 Unicode=yes
@@ -414,10 +415,9 @@ SeEnableDelegationPrivilege = *S-1-5-32-544
 Invoke-Secedit `
     -Content $UserRights `
     -Area USER_RIGHTS
-
+#>
 
 # PASSWORD POLICY
-
 
 $PasswordPolicy = @"
 [Unicode]
@@ -436,27 +436,21 @@ Invoke-Secedit `
     -Content $PasswordPolicy `
     -Area SECURITYPOLICY
 
-
 # AUDIT POLICY
-
 
 Set-AuditPolicy "Computer Account Management" enable disable
 Set-AuditPolicy "Other Account Management Events" enable enable
 Set-AuditPolicy "User Account Management" enable enable
 Set-AuditPolicy "Account Lockout" disable enable
 
-
 # DEVICE GUARD PLACEHOLDER
-
 
 Ensure-RegistryPath `
  "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard"
 
 # WDAC / CI deployment should be handled separately
 
-
-# EVENT LOG
-
+# EVENT LOGS
 
 try {
 
@@ -467,10 +461,14 @@ try {
     Write-Host "[OK] Event log sizes configured"
 }
 catch {
+
     Write-Warning "[FAILED] Event log configuration"
 }
 
+# DONE
+
 Write-Host ""
 Write-Host "[+] Domain Controller Identity Hardening COMPLETE" -ForegroundColor Green
+Write-Host "[!] Reboot recommended." -ForegroundColor Yellow
 
 Stop-Transcript
