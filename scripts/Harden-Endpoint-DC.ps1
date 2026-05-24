@@ -1,173 +1,454 @@
-#Requires -RunAsAdministrator
+[CmdletBinding()]
+param(
+    [switch]$StrictMode,
+    [switch]$EnableCredentialGuard,
+    [switch]$EnableControlledFolderAccess,
+    [switch]$DisableWinRM
+)
 
-Write-Host "[*] Starting endpoint hardening..." -ForegroundColor Cyan
+# GLOBALS
+
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+
+$LogPath = "C:\ProgramData\Hardening\Logs"
+
+if (-not (Test-Path $LogPath)) {
+
+    New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
+}
+
+$Transcript = Join-Path $LogPath "Endpoint_DC_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+
+Start-Transcript -Path $Transcript -Append
+
+
+Write-Host " Enterprise Endpoint Hardening - DOMAIN CONTROLLER" -ForegroundColor Cyan
+
+
+# LOGGING
+
+function Write-Log {
+
+    param(
+        [string]$Message,
+
+        [ValidateSet('INFO','OK','WARN','ERROR','SKIP')]
+        [string]$Level = 'INFO'
+    )
+
+    $Color = switch ($Level) {
+        'INFO'  { 'Cyan' }
+        'OK'    { 'Green' }
+        'WARN'  { 'Yellow' }
+        'ERROR' { 'Red' }
+        'SKIP'  { 'DarkYellow' }
+    }
+
+    Write-Host "[$Level] $Message" -ForegroundColor $Color
+}
+
+# ADMIN CHECK
+
+$Identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+$Principal = New-Object Security.Principal.WindowsPrincipal($Identity)
+
+if (-not $Principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+
+    Write-Host "[ERROR] Administrator privileges required." -ForegroundColor Red
+    Stop-Transcript
+    exit 1
+}
+
+# REGISTRY FUNCTIONS
 
 function Ensure-RegistryPath {
-    param (
+
+    param(
+        [Parameter(Mandatory)]
         [string]$Path
     )
 
     if (-not (Test-Path $Path)) {
+
         New-Item -Path $Path -Force | Out-Null
+        Write-Log "Created registry path: $Path" "INFO"
     }
 }
 
-function Set-DwordValue {
-    param (
-        [string]$Path,
-        [string]$Name,
-        [int]$Value
+function Set-RegistryValue {
+
+    param(
+        [Parameter(Mandatory)][string]$Path,
+        [Parameter(Mandatory)][string]$Name,
+        [Parameter(Mandatory)]$Value,
+
+        [ValidateSet('String','ExpandString','Binary','DWord','MultiString','QWord')]
+        [string]$Type = 'DWord'
     )
 
-    Ensure-RegistryPath -Path $Path
+    try {
 
-    New-ItemProperty `
-        -Path $Path `
-        -Name $Name `
-        -PropertyType DWord `
-        -Value $Value `
-        -Force | Out-Null
+        Ensure-RegistryPath $Path
 
-    Write-Host "[+] $Path -> $Name = $Value"
+        $Existing = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue
+
+        if ($null -ne $Existing) {
+
+            $CurrentValue = (Get-ItemProperty -Path $Path -Name $Name).$Name
+
+            if ($CurrentValue -eq $Value) {
+
+                Write-Log "$Path -> $Name already configured" "SKIP"
+                return
+            }
+
+            Set-ItemProperty `
+                -Path $Path `
+                -Name $Name `
+                -Value $Value `
+                -Force
+        }
+        else {
+
+            New-ItemProperty `
+                -Path $Path `
+                -Name $Name `
+                -PropertyType $Type `
+                -Value $Value `
+                -Force | Out-Null
+        }
+
+        Write-Log "$Path -> $Name = $Value" "OK"
+    }
+    catch {
+
+        Write-Log "$Path -> $Name failed : $_" "ERROR"
+    }
 }
 
-#LDAP
+# LDAP HARDENING
 
-Set-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" "LDAPServerIntegrity" 2
+Write-Log "Configuring LDAP hardening..." "INFO"
 
-Set-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" "LdapEnforceChannelBinding" 1
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
+    -Name "LDAPServerIntegrity" `
+    -Value 2
 
-# Microsoft Defender Antivirus
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
+    -Name "LdapEnforceChannelBinding" `
+    -Value 1
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" "LocalSettingOverrideSpynetReporting" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" "SpynetReporting" 2
+# MICROSOFT DEFENDER HARDENING
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" "EnableFileHashComputation" 1
+Write-Log "Configuring Microsoft Defender..." "INFO"
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" "DisableIOAVProtection" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" "DisableRealtimeMonitoring" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" "DisableBehaviorMonitoring" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" "DisableScriptScanning" 0
+# MAPS / Cloud Protection
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" "DisableRemovableDriveScanning" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" "DisableEmailScanning" 0
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" `
+    -Name "LocalSettingOverrideSpynetReporting" `
+    -Value 0
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" "PUAProtection" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" "DisableAntiSpyware" 0
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" `
+    -Name "SpynetReporting" `
+    -Value 2
 
-# Microsoft Defender Exploit Guard
+# Engine
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" "ExploitGuard_ASR_Rules" 1
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" `
+    -Name "EnableFileHashComputation" `
+    -Value 1
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "d4f940ab-401b-4efc-aadc-ad5f3c50688a" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "3b576869-a4ec-4529-8536-b80a7769e899" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "5beb7efe-fd9a-4556-801d-275e5ffc04cc" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "d3e037e1-3eb8-44c8-a917-57927947596d" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "26190899-1602-49e8-8b27-eb1d0a1ce869" 1
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\rules" "e6db77e5-3df2-4cf1-b95a-636979351e5b" 1
+# RTP
 
-# Security Options
+$RTP = "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection"
 
-Set-DwordValue "HKLM:\System\CurrentControlSet\Control\Lsa" "SCENoApplyLegacyAuditPolicy" 1
+Set-RegistryValue -Path $RTP -Name "DisableIOAVProtection" -Value 0
+Set-RegistryValue -Path $RTP -Name "DisableRealtimeMonitoring" -Value 0
+Set-RegistryValue -Path $RTP -Name "DisableBehaviorMonitoring" -Value 0
+Set-RegistryValue -Path $RTP -Name "DisableScriptScanning" -Value 0
 
-# Device Guard / Credential Guard
+# Scan
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "LsaCfgFlags" 1
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "LsaCfgFlags" 1
-#Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "DeployConfigCIPolicy" 1
-# WARNING: Requires signed WDAC policy — dangerous without proper CI policy configured
+$Scan = "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Scan"
 
-# SEHOP / Kernel Protections
+Set-RegistryValue -Path $Scan -Name "DisableRemovableDriveScanning" -Value 0
+Set-RegistryValue -Path $Scan -Name "DisableEmailScanning" -Value 0
 
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" "DisableExceptionChainValidation" 0
+# PUA
 
-# AppModel
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" `
+    -Name "PUAProtection" `
+    -Value 1
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" "AllowSharedLocalAppData" 0
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" `
+    -Name "DisableAntiSpyware" `
+    -Value 0
 
-# LSA Protection
+# ASR RULES
 
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" "RunAsPPL" 1
+Write-Log "Configuring ASR rules..." "INFO"
 
-# PowerShell Constrained Language Mode
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" `
+    -Name "ExploitGuard_ASR_Rules" `
+    -Value 1
 
-Ensure-RegistryPath "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
-New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "__PSLockdownPolicy" -PropertyType String -Value "4" -Force | Out-Null
+$ASRRules = @(
+    "d4f940ab-401b-4efc-aadc-ad5f3c50688a"
+    "3b576869-a4ec-4529-8536-b80a7769e899"
+    "5beb7efe-fd9a-4556-801d-275e5ffc04cc"
+    "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84"
+    "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c"
+    "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b"
+    "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"
+    "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4"
+    "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550"
+    "d3e037e1-3eb8-44c8-a917-57927947596d"
+    "26190899-1602-49e8-8b27-eb1d0a1ce869"
+    "e6db77e5-3df2-4cf1-b95a-636979351e5b"
+)
 
-# AutoPlay Hardening
+foreach ($Rule in $ASRRules) {
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" "NoAutoplayfornonVolume" 1
-Set-DwordValue "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoDriveTypeAutoRun" 255
+    Set-RegistryValue `
+        -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
+        -Name $Rule `
+        -Value 1
+}
 
-# WinRM Hardening
+# SECURITY OPTIONS
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" "AllowBasic" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" "AllowBasic" 0
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+    -Name "SCENoApplyLegacyAuditPolicy" `
+    -Value 1
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" "AllowUnencryptedTraffic" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" "AllowUnencryptedTraffic" 0
+# DEVICE GUARD / CREDENTIAL GUARD
 
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" "AllowDigest" 0
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" "DisableRunAs" 1
-
-# DLL Search Mode
-
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" "SafeDllSearchMode" 1
-
-# Network Protection
-
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" "EnableNetworkProtection" 1
-
-# Controlled Folder Access
-
-Set-DwordValue "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" "EnableControlledFolderAccess" 1
-
-# Windows Script Host
-
-Set-DwordValue "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" "Enabled" 0
-
-# Process Mitigations
-
-Write-Host "[*] Applying process mitigations..." -ForegroundColor Cyan
-
-Set-ProcessMitigation -System -Enable DEP
-Set-ProcessMitigation -System -Enable SEHOP
-Set-ProcessMitigation -System -Disable SEHOPTelemetry
-Set-ProcessMitigation -System -Disable SEHOPOverrideSEHOP
-Set-ProcessMitigation -System -Enable ForceRelocateImages
-Set-ProcessMitigation -System -Disable OverrideForceRelocateImages
-Set-ProcessMitigation -System -Disable OverrideBottomUp
-Set-ProcessMitigation -System -Enable BottomUp
-Set-ProcessMitigation -System -Enable HighEntropy
-
-# DEP AlwaysOn
-
-Write-Host "[*] Enabling DEP AlwaysOn..." -ForegroundColor Cyan
-bcdedit /set {current} nx AlwaysOn
-
-# WDigest Authentication
-
-Set-DwordValue "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" "UseLogonCredential" 0
-
-# Microsoft Defender Tamper Protection
-# NOTE:
-# Requires Tamper Protection management through Microsoft Defender portal,
-# Intune, or manual enablement in Windows Security.
-# Direct registry modification is often blocked by Windows.
+Write-Log "Configuring Device Guard / Credential Guard..." "INFO"
 
 try {
-    Set-DwordValue "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" "TamperProtection" 5
+
+    $CPU = Get-CimInstance Win32_Processor
+
+    if ($CPU.VirtualizationFirmwareEnabled) {
+
+        if ($EnableCredentialGuard) {
+
+            Set-RegistryValue `
+                -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
+                -Name "EnableVirtualizationBasedSecurity" `
+                -Value 1
+
+            Set-RegistryValue `
+                -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
+                -Name "RequirePlatformSecurityFeatures" `
+                -Value 3
+
+            Set-RegistryValue `
+                -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
+                -Name "LsaCfgFlags" `
+                -Value 1
+
+            Set-RegistryValue `
+                -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+                -Name "LsaCfgFlags" `
+                -Value 1
+
+            Write-Log "Credential Guard configured" "OK"
+        }
+        else {
+
+            Write-Log "Credential Guard skipped" "WARN"
+        }
+    }
+    else {
+
+        Write-Log "Virtualization not supported - Credential Guard skipped" "WARN"
+    }
 }
 catch {
-    Write-Host "[!] Tamper Protection registry change blocked by Windows." -ForegroundColor Yellow
+
+    Write-Log "Credential Guard configuration failed: $_" "ERROR"
 }
 
-Write-Host ""
-Write-Host "[+] Endpoint hardening completed successfully." -ForegroundColor Green
-Write-Host "[!] Reboot is recommended." -ForegroundColor Yellow
+# WDAC WARNING
+
+Write-Log "WDAC deployment intentionally skipped" "WARN"
+Write-Log "Deploy signed WDAC CI policy separately before enabling enforcement" "WARN"
+
+# KERNEL / SEHOP
+
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" `
+    -Name "DisableExceptionChainValidation" `
+    -Value 0
+
+# APPMODEL
+
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\AppModel\StateManager" `
+    -Name "AllowSharedLocalAppData" `
+    -Value 0
+
+# LSA PROTECTION
+
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+    -Name "RunAsPPL" `
+    -Value 1
+
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+    -Name "RunAsPPLBoot" `
+    -Value 1
+
+# AUTORUN / USB
+
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" `
+    -Name "NoAutoplayfornonVolume" `
+    -Value 1
+
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
+    -Name "NoDriveTypeAutoRun" `
+    -Value 255
+
+# WINRM HARDENING
+
+if ($DisableWinRM) {
+
+    Write-Log "Hardening WinRM..." "INFO"
+
+    $WinRMClient = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client"
+    $WinRMService = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service"
+
+    Set-RegistryValue -Path $WinRMClient -Name "AllowBasic" -Value 0
+    Set-RegistryValue -Path $WinRMClient -Name "AllowUnencryptedTraffic" -Value 0
+    Set-RegistryValue -Path $WinRMClient -Name "AllowDigest" -Value 0
+
+    Set-RegistryValue -Path $WinRMService -Name "AllowBasic" -Value 0
+    Set-RegistryValue -Path $WinRMService -Name "AllowUnencryptedTraffic" -Value 0
+    Set-RegistryValue -Path $WinRMService -Name "DisableRunAs" -Value 1
+
+    Set-RegistryValue `
+        -Path "$WinRMService\WinRS" `
+        -Name "AllowRemoteShellAccess" `
+        -Value 0
+
+    Write-Log "WinRM hardened" "OK"
+}
+else {
+
+    Write-Log "WinRM hardening skipped" "WARN"
+}
+
+# DLL SEARCH MODE
+
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" `
+    -Name "SafeDllSearchMode" `
+    -Value 1
+
+# EXPLOIT GUARD
+
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" `
+    -Name "EnableNetworkProtection" `
+    -Value 1
+
+if ($EnableControlledFolderAccess) {
+
+    Set-RegistryValue `
+        -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" `
+        -Name "EnableControlledFolderAccess" `
+        -Value 1
+
+    Write-Log "Controlled Folder Access enabled" "OK"
+}
+else {
+
+    Write-Log "Controlled Folder Access skipped" "WARN"
+}
+
+# WINDOWS SCRIPT HOST
+
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" `
+    -Name "Enabled" `
+    -Value 0
+
+# PROCESS MITIGATIONS
+
+Write-Log "Applying process mitigations..." "INFO"
+
+try {
+
+    Set-ProcessMitigation -System -Enable DEP
+    Set-ProcessMitigation -System -Enable SEHOP
+    Set-ProcessMitigation -System -Disable SEHOPTelemetry
+    Set-ProcessMitigation -System -Disable SEHOPOverrideSEHOP
+    Set-ProcessMitigation -System -Enable ForceRelocateImages
+    Set-ProcessMitigation -System -Disable OverrideForceRelocateImages
+    Set-ProcessMitigation -System -Disable OverrideBottomUp
+    Set-ProcessMitigation -System -Enable BottomUp
+    Set-ProcessMitigation -System -Enable HighEntropy
+
+    Write-Log "Process mitigations configured" "OK"
+}
+catch {
+
+    Write-Log "Process mitigations failed: $_" "ERROR"
+}
+
+# DEP ALWAYS ON
+
+try {
+
+    bcdedit /set {current} nx AlwaysOn | Out-Null
+
+    Write-Log "DEP AlwaysOn configured" "OK"
+}
+catch {
+
+    Write-Log "DEP configuration failed: $_" "ERROR"
+}
+
+# WDIGEST
+
+Set-RegistryValue `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" `
+    -Name "UseLogonCredential" `
+    -Value 0
+
+# TAMPER PROTECTION
+
+try {
+
+    Set-RegistryValue `
+        -Path "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" `
+        -Name "TamperProtection" `
+        -Value 5
+
+    Write-Log "Tamper Protection registry value applied" "OK"
+}
+catch {
+
+    Write-Log "Tamper Protection protected by Windows/platform management" "WARN"
+}
+
+# COMPLETION
+
+Write-Host " DOMAIN CONTROLLER endpoint hardening completed" -ForegroundColor Green
+Write-Host " Reboot strongly recommended" -ForegroundColor Yellow
+
+Stop-Transcript
