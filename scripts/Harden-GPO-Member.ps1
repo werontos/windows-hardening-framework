@@ -1,27 +1,52 @@
 [CmdletBinding()]
 param(
-    [switch]$StrictMode,
+    [switch]$StrictModeMode,
     [switch]$DisableWinRM,
     [switch]$DisableCamera,
-    [switch]$DisableOneDrive
+    [switch]$DisableOneDrive,
+    [switch]$DisableSpooler
 )
 
-# GLOBALS
-
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = "Continue"
 Set-StrictMode -Version Latest
 
-$LogPath = "C:\ProgramData\Hardening\Logs"
+# ROLE VALIDATION
 
-if (-not (Test-Path $LogPath)) {
-    New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
+try {
+
+    $IsDC = (
+        Get-CimInstance Win32_ComputerSystem
+    ).DomainRole -ge 4
+
+    if ($IsDC) {
+
+        Write-Error "Do NOT run Harden-GPO-Member.ps1 on Domain Controllers."
+        exit 1
+    }
 }
-
-Start-Transcript -Path "$LogPath\GPO_Member_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+catch {}
 
 # LOGGING
 
+$LogPath = "C:\ProgramData\Hardening\Logs"
+
+New-Item `
+    -ItemType Directory `
+    -Path $LogPath `
+    -Force | Out-Null
+
+New-Item `
+    -ItemType Directory `
+    -Path "C:\ProgramData\Hardening" `
+    -Force | Out-Null
+
+Start-Transcript `
+    -Path "$LogPath\GPO_Member_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+
+# FUNCTIONS
+
 function Write-Log {
+
     param(
         [string]$Message,
 
@@ -30,6 +55,7 @@ function Write-Log {
     )
 
     $Color = switch ($Level) {
+
         'INFO'  { 'Cyan' }
         'OK'    { 'Green' }
         'WARN'  { 'Yellow' }
@@ -37,10 +63,9 @@ function Write-Log {
         'SKIP'  { 'DarkYellow' }
     }
 
-    Write-Host "[$Level] $Message" -ForegroundColor $Color
+    Write-Host "[$Level] $Message" `
+        -ForegroundColor $Color
 }
-
-# REGISTRY FUNCTION
 
 function Set-RegistryValue {
 
@@ -49,29 +74,50 @@ function Set-RegistryValue {
         [Parameter(Mandatory)][string]$Name,
         [Parameter(Mandatory)]$Value,
 
-        [ValidateSet('String','ExpandString','Binary','DWord','MultiString','QWord')]
+        [ValidateSet(
+            'String',
+            'ExpandString',
+            'Binary',
+            'DWord',
+            'MultiString',
+            'QWord'
+        )]
+
         [string]$Type = 'DWord'
     )
 
     try {
 
         if (-not (Test-Path $Path)) {
-            New-Item -Path $Path -Force | Out-Null
-            Write-Log "Created registry path: $Path" "INFO"
+
+            New-Item `
+                -Path $Path `
+                -Force | Out-Null
         }
 
-        $Existing = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue
+        $Existing = Get-ItemProperty `
+            -Path $Path `
+            -Name $Name `
+            -ErrorAction SilentlyContinue
 
         if ($null -ne $Existing) {
 
-            $CurrentValue = (Get-ItemProperty -Path $Path -Name $Name).$Name
+            $CurrentValue = (
+                Get-ItemProperty `
+                    -Path $Path `
+                    -Name $Name
+            ).$Name
 
             if ($CurrentValue -eq $Value) {
+
                 Write-Log "$Path -> $Name already configured" "SKIP"
                 return
             }
 
-            Set-ItemProperty -Path $Path -Name $Name -Value $Value
+            Set-ItemProperty `
+                -Path $Path `
+                -Name $Name `
+                -Value $Value
         }
         else {
 
@@ -86,11 +132,14 @@ function Set-RegistryValue {
         Write-Log "$Path -> $Name = $Value" "OK"
     }
     catch {
+
         Write-Log "$Path -> $Name failed : $_" "ERROR"
     }
 }
 
 # DEVICE GUARD / VBS
+# SAFE:
+# only enabled if virtualization supported
 
 try {
 
@@ -106,30 +155,22 @@ try {
         Set-RegistryValue `
             -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
             -Name "RequirePlatformSecurityFeatures" `
-            -Value 3
+            -Value 1
 
         Set-RegistryValue `
             -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
             -Name "HypervisorEnforcedCodeIntegrity" `
             -Value 1
 
-        Set-RegistryValue `
-            -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
-            -Name "HVCIMATRequired" `
-            -Value 1
-
-        Set-RegistryValue `
-            -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
-            -Name "LsaCfgFlags" `
-            -Value 1
-
         Write-Log "VBS/HVCI configured" "OK"
     }
     else {
+
         Write-Log "Virtualization unsupported, VBS skipped" "WARN"
     }
 }
 catch {
+
     Write-Log "VBS configuration failed: $_" "ERROR"
 }
 
@@ -186,6 +227,8 @@ Set-RegistryValue `
     -Value 255
 
 # WINDOWS UPDATE
+# SAFE:
+# does NOT disable updates
 
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" `
@@ -195,7 +238,7 @@ Set-RegistryValue `
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" `
     -Name "NoAutoRebootWithLoggedOnUsers" `
-    -Value 0
+    -Value 1
 
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" `
@@ -216,20 +259,16 @@ Set-RegistryValue `
 
 Set-RegistryValue `
     -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" `
-    -Name "DisableEnterpriseAuthProxy" `
-    -Value 1
-
-Set-RegistryValue `
-    -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" `
-    -Name "DisableOneSettingsDownloads" `
-    -Value 1
-
-Set-RegistryValue `
-    -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" `
     -Name "DoNotShowFeedbackNotifications" `
     -Value 1
 
 # WINRM
+# OPTIONAL
+# CAN BREAK:
+# - remote management
+# - ansible
+# - powershell remoting
+# - RMM systems
 
 if ($DisableWinRM) {
 
@@ -244,11 +283,6 @@ if ($DisableWinRM) {
         -Value 0
 
     Set-RegistryValue `
-        -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" `
-        -Name "AllowDigest" `
-        -Value 0
-
-    Set-RegistryValue `
         -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service" `
         -Name "AllowBasic" `
         -Value 0
@@ -258,33 +292,67 @@ if ($DisableWinRM) {
         -Name "AllowUnencryptedTraffic" `
         -Value 0
 
-    Set-RegistryValue `
-        -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service\WinRS" `
-        -Name "AllowRemoteShellAccess" `
-        -Value 0
-
     Write-Log "WinRM hardened" "OK"
 }
 else {
-    Write-Log "WinRM hardening skipped (enterprise compatibility)" "WARN"
+
+    Write-Log "WinRM left enabled for enterprise compatibility" "WARN"
 }
 
 # RDP HARDENING
 
 $RDP = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
 
-Set-RegistryValue -Path $RDP -Name "DisablePasswordSaving" -Value 1
-Set-RegistryValue -Path $RDP -Name "fPromptForPassword" -Value 1
-Set-RegistryValue -Path $RDP -Name "SecurityLayer" -Value 2
-Set-RegistryValue -Path $RDP -Name "UserAuthentication" -Value 1
-Set-RegistryValue -Path $RDP -Name "MinEncryptionLevel" -Value 3
-Set-RegistryValue -Path $RDP -Name "fEncryptRPCTraffic" -Value 1
-Set-RegistryValue -Path $RDP -Name "fDisableCdm" -Value 1
-Set-RegistryValue -Path $RDP -Name "fDisableLPT" -Value 1
-Set-RegistryValue -Path $RDP -Name "fDisablePNPRedir" -Value 1
-Set-RegistryValue -Path $RDP -Name "fDisableLocationRedir" -Value 1
-Set-RegistryValue -Path $RDP -Name "DeleteTempDirsOnExit" -Value 1
-Set-RegistryValue -Path $RDP -Name "PerSessionTempDir" -Value 1
+Set-RegistryValue `
+    -Path $RDP `
+    -Name "DisablePasswordSaving" `
+    -Value 1
+
+Set-RegistryValue `
+    -Path $RDP `
+    -Name "fPromptForPassword" `
+    -Value 1
+
+Set-RegistryValue `
+    -Path $RDP `
+    -Name "SecurityLayer" `
+    -Value 2
+
+Set-RegistryValue `
+    -Path $RDP `
+    -Name "UserAuthentication" `
+    -Value 1
+
+Set-RegistryValue `
+    -Path $RDP `
+    -Name "MinEncryptionLevel" `
+    -Value 3
+
+Set-RegistryValue `
+    -Path $RDP `
+    -Name "fEncryptRPCTraffic" `
+    -Value 1
+
+# OPTIONAL REDIRECTION BLOCKS
+# CAN BREAK:
+# - printer redirection
+# - clipboard sharing
+# - usb passthrough
+
+#Set-RegistryValue `
+#    -Path $RDP `
+#    -Name "fDisableCdm" `
+#    -Value 1
+
+#Set-RegistryValue `
+#    -Path $RDP `
+#    -Name "fDisableLPT" `
+#    -Value 1
+
+#Set-RegistryValue `
+#    -Path $RDP `
+#    -Name "fDisablePNPRedir" `
+#    -Value 1
 
 # NETWORK HARDENING
 
@@ -307,6 +375,11 @@ Set-RegistryValue `
     -Path "HKLM:\System\CurrentControlSet\Services\Netbt\Parameters" `
     -Name "NoNameReleaseOnDemand" `
     -Value 1
+
+# RPC HARDENING
+# SAFE MODE ONLY
+# RestrictRemoteClients = 1
+# 2 CAN BREAK OLD SOFTWARE
 
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc" `
@@ -366,10 +439,16 @@ Set-RegistryValue `
     -Name "DisableWindowsConsumerFeatures" `
     -Value 1
 
-Set-RegistryValue `
-    -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" `
-    -Name "DisableUserAuth" `
-    -Value 1
+# OPTIONAL MICROSOFT ACCOUNT BLOCK
+# CAN BREAK:
+# - Microsoft Store
+# - OneDrive sign-in
+# - consumer apps
+
+#Set-RegistryValue `
+#    -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" `
+#    -Name "DisableUserAuth" `
+#    -Value 1
 
 # OPTIONAL CAMERA DISABLE
 
@@ -395,22 +474,51 @@ if ($DisableOneDrive) {
     Write-Log "OneDrive disabled" "OK"
 }
 
-# PRINT SPOOLER
+# OPTIONAL PRINT SPOOLER DISABLE
+# CAN BREAK:
+# - printing
+# - PDF printers
+# - printer discovery
 
-try {
+if ($DisableSpooler) {
 
-    $Spooler = Get-Service Spooler -ErrorAction SilentlyContinue
+    try {
 
-    if ($Spooler) {
+        $Spooler = Get-Service `
+            Spooler `
+            -ErrorAction SilentlyContinue
 
-        Stop-Service -Name Spooler -Force -ErrorAction SilentlyContinue
-        Set-Service -Name Spooler -StartupType Disabled
+        if ($Spooler) {
 
-        Write-Log "Print Spooler disabled" "OK"
+            Stop-Service `
+                -Name Spooler `
+                -Force `
+                -ErrorAction SilentlyContinue
+
+            Set-Service `
+                -Name Spooler `
+                -StartupType Disabled
+
+            Write-Log "Print Spooler disabled" "OK"
+        }
+    }
+    catch {
+
+        Write-Log "Failed to disable Print Spooler: $_" "ERROR"
     }
 }
-catch {
-    Write-Log "Failed to disable Print Spooler: $_" "ERROR"
+
+# OPTIONAL STRICT MODE
+# CAN BREAK:
+# - legacy software
+# - old SMB/RPC apps
+# - unmanaged endpoints
+
+if ($StrictModeMode) {
+
+    Write-Log "Strict enterprise mode enabled" "WARN"
+
+    # OPTIONAL SETTINGS HERE
 }
 
 # COMPLETION
