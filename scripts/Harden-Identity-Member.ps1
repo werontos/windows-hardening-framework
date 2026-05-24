@@ -171,7 +171,7 @@ function Set-AuditPolicy {
     try {
 
         auditpol /set `
-            /subcategory:$Subcategory `
+            /subcategory:"$Subcategory" `
             /success:$Success `
             /failure:$Failure | Out-Null
 
@@ -212,9 +212,19 @@ PasswordComplexity = 1
 ClearTextPassword = 0
 
 [Privilege Rights]
+
+# Deny network logon to Guests + Local Accounts
 SeDenyNetworkLogonRight = *S-1-5-32-546,*S-1-5-114
-SeDenyRemoteInteractiveLogonRight = *S-1-5-32-546,*S-1-5-113
-SeEnableDelegationPrivilege =
+
+# OPTIONAL
+# May affect local helpdesk RDP workflows
+# SeDenyRemoteInteractiveLogonRight = *S-1-5-32-546,*S-1-5-113
+
+# Prevent non-admin machine joins
+SeMachineAccountPrivilege = *S-1-5-32-544
+
+# Prevent delegation abuse
+SeEnableDelegationPrivilege = *S-1-5-32-544
 "@
 
 Invoke-Secedit `
@@ -267,13 +277,13 @@ Set-Reg `
 
 Set-Reg `
     "HKLM:\System\CurrentControlSet\Control\Lsa" `
-    "DisableDomainCreds" `
+    "NoLMHash" `
     "DWord" `
     1
 
 Set-Reg `
     "HKLM:\System\CurrentControlSet\Control\Lsa" `
-    "NoLMHash" `
+    "RestrictAnonymousSAM" `
     "DWord" `
     1
 
@@ -340,42 +350,39 @@ Set-Reg $uac "EnableSecureUIAPaths" "DWord" 1
 Set-Reg $uac "EnableLUA" "DWord" 1
 Set-Reg $uac "PromptOnSecureDesktop" "DWord" 1
 Set-Reg $uac "EnableVirtualization" "DWord" 1
+
+# Harden remote admin token filtering
+# May affect some legacy remote admin tools
 Set-Reg $uac "LocalAccountTokenFilterPolicy" "DWord" 0
-Set-Reg $uac "NoConnectedUser" "DWord" 3
-Set-Reg $uac "MSAOptional" "DWord" 1
+
+# OPTIONAL - blocks Microsoft Accounts
+# Recommended only for fully managed enterprise environments
+# Set-Reg $uac "NoConnectedUser" "DWord" 3
+# Set-Reg $uac "MSAOptional" "DWord" 1
+
 Set-Reg $uac "DisableCAD" "DWord" 0
 Set-Reg $uac "InactivityTimeoutSecs" "DWord" 900
 Set-Reg $uac "DontDisplayLastUserName" "DWord" 1
 
 
-# LSA / SAM
+# MICROSOFT ACCOUNT RESTRICTIONS
+# OPTIONAL - may affect hybrid/cloud workflows
 
-
-Set-Reg `
-    "HKLM:\System\CurrentControlSet\Control\Lsa" `
-    "RestrictAnonymousSAM" `
-    "DWord" `
-    1
-
-
-# MICROSOFT ACCOUNTS
-
-
-Set-Reg `
-    "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" `
-    "DisableUserAuth" `
-    "DWord" `
-    1
+# Set-Reg `
+#     "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" `
+#     "DisableUserAuth" `
+#     "DWord" `
+#     1
 
 
 # LOCALE / SIGN-IN
+# OPTIONAL - may affect multilingual environments
 
-
-Set-Reg `
-    "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" `
-    "BlockUserInputMethodsForSignIn" `
-    "DWord" `
-    1
+# Set-Reg `
+#     "HKLM:\SOFTWARE\Policies\Microsoft\Control Panel\International" `
+#     "BlockUserInputMethodsForSignIn" `
+#     "DWord" `
+#     1
 
 Set-Reg `
     "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" `
@@ -445,7 +452,7 @@ catch {
 }
 
 
-# DEVICE GUARD PATH
+# DEVICE GUARD PLACEHOLDER
 
 
 Ensure-RegistryPath `
@@ -455,7 +462,8 @@ Ensure-RegistryPath `
 # DONE
 
 
-Write-Host "`n[+] Identity Member Hardening COMPLETE" `
+Write-Host ""
+Write-Host "[+] Identity Member Hardening COMPLETE" `
     -ForegroundColor Green
 
 Stop-Transcript
