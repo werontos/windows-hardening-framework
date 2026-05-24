@@ -4,10 +4,18 @@ param(
     [switch]$DisableWinRM
 )
 
-# GLOBALS
+# Harden-GPO-DC.ps1
+# SAFE ENTERPRISE DOMAIN CONTROLLER HARDENING
+#
+# Dangerous / compatibility-risk settings are COMMENTED
+# and marked clearly.
+#
+# Test before enterprise rollout.
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+
+# LOGGING
 
 $LogPath = "C:\ProgramData\Hardening\Logs"
 
@@ -15,9 +23,10 @@ if (-not (Test-Path $LogPath)) {
     New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
 }
 
-Start-Transcript -Path "$LogPath\GPO_DC_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+Start-Transcript `
+    -Path "$LogPath\GPO_DC_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 
-# LOGGING
+# FUNCTIONS
 
 function Write-Log {
 
@@ -39,8 +48,6 @@ function Write-Log {
     Write-Host "[$Level] $Message" -ForegroundColor $Color
 }
 
-# REGISTRY FUNCTION
-
 function Set-RegistryValue {
 
     param(
@@ -55,22 +62,37 @@ function Set-RegistryValue {
     try {
 
         if (-not (Test-Path $Path)) {
-            New-Item -Path $Path -Force | Out-Null
+
+            New-Item `
+                -Path $Path `
+                -Force | Out-Null
+
             Write-Log "Created registry path: $Path" "INFO"
         }
 
-        $Existing = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue
+        $Existing = Get-ItemProperty `
+            -Path $Path `
+            -Name $Name `
+            -ErrorAction SilentlyContinue
 
         if ($null -ne $Existing) {
 
-            $CurrentValue = (Get-ItemProperty -Path $Path -Name $Name).$Name
+            $CurrentValue = (
+                Get-ItemProperty `
+                    -Path $Path `
+                    -Name $Name
+            ).$Name
 
             if ($CurrentValue -eq $Value) {
+
                 Write-Log "$Path -> $Name already configured" "SKIP"
                 return
             }
 
-            Set-ItemProperty -Path $Path -Name $Name -Value $Value
+            Set-ItemProperty `
+                -Path $Path `
+                -Name $Name `
+                -Value $Value
         }
         else {
 
@@ -85,6 +107,7 @@ function Set-RegistryValue {
         Write-Log "$Path -> $Name = $Value" "OK"
     }
     catch {
+
         Write-Log "$Path -> $Name failed : $_" "ERROR"
     }
 }
@@ -96,13 +119,16 @@ try {
     $ComputerSystem = Get-CimInstance Win32_ComputerSystem
 
     if ($ComputerSystem.DomainRole -lt 4) {
+
         throw "This system is NOT a Domain Controller."
     }
 
     Write-Log "Domain Controller detected" "OK"
 }
 catch {
+
     Write-Log $_ "ERROR"
+
     Stop-Transcript
     exit 1
 }
@@ -111,58 +137,82 @@ catch {
 
 Set-RegistryValue `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
-    -Name "LdapEnforceChannelBinding" `
-    -Value 1
-
-Set-RegistryValue `
-    -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
     -Name "LDAPServerIntegrity" `
     -Value 2
 
-Write-Log "LDAP signing and channel binding configured" "OK"
+# MAY BREAK LEGACY LDAP CLIENTS / NAS / PRINTERS
+# TEST BEFORE ENFORCING
+#
+# Set-RegistryValue `
+#     -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
+#     -Name "LdapEnforceChannelBinding" `
+#     -Value 1
 
-# DEVICE GUARD / VBS
+Write-Log "LDAP signing configured" "OK"
 
-try {
+# DEVICE GUARD / VBS / HVCI
 
-    $CPU = Get-CimInstance Win32_Processor
+# OPTIONAL
+# MAY BREAK:
+# - old drivers
+# - EDR
+# - backup agents
+# - VMware tools
+# - monitoring software
+#
+# TEST BEFORE ENTERPRISE ROLLOUT
 
-    if ($CPU.VirtualizationFirmwareEnabled) {
+# try {
+#
+#     $CPU = Get-CimInstance Win32_Processor
+#
+#     if ($CPU.VirtualizationFirmwareEnabled) {
+#
+#         Set-RegistryValue `
+#             -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
+#             -Name "EnableVirtualizationBasedSecurity" `
+#             -Value 1
+#
+#         Set-RegistryValue `
+#             -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
+#             -Name "RequirePlatformSecurityFeatures" `
+#             -Value 3
+#
+#         Set-RegistryValue `
+#             -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
+#             -Name "HypervisorEnforcedCodeIntegrity" `
+#             -Value 1
+#
+#         Set-RegistryValue `
+#             -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
+#             -Name "HVCIMATRequired" `
+#             -Value 1
+#
+#         Write-Log "VBS/HVCI configured" "OK"
+#     }
+#     else {
+#
+#         Write-Log "Virtualization unsupported, VBS skipped" "WARN"
+#     }
+# }
+# catch {
+#
+#     Write-Log "VBS configuration failed: $_" "ERROR"
+# }
 
-        Set-RegistryValue `
-            -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
-            -Name "EnableVirtualizationBasedSecurity" `
-            -Value 1
+# OPTIONAL LSASS PROTECTION
 
-        Set-RegistryValue `
-            -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
-            -Name "RequirePlatformSecurityFeatures" `
-            -Value 3
+# MAY BREAK:
+# - legacy EDR
+# - credential providers
+# - smartcard middleware
+#
+# TEST BEFORE ENABLE
 
-        Set-RegistryValue `
-            -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
-            -Name "HypervisorEnforcedCodeIntegrity" `
-            -Value 1
-
-        Set-RegistryValue `
-            -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
-            -Name "HVCIMATRequired" `
-            -Value 1
-
-        Set-RegistryValue `
-            -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
-            -Name "LsaCfgFlags" `
-            -Value 1
-
-        Write-Log "VBS/HVCI configured" "OK"
-    }
-    else {
-        Write-Log "Virtualization unsupported, VBS skipped" "WARN"
-    }
-}
-catch {
-    Write-Log "VBS configuration failed: $_" "ERROR"
-}
+# Set-RegistryValue `
+#     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
+#     -Name "LsaCfgFlags" `
+#     -Value 1
 
 # CREDENTIAL HARDENING
 
@@ -245,10 +295,12 @@ Set-RegistryValue `
 
 # TELEMETRY
 
+# SAFE VALUE FOR DEFENDER / MDE COMPATIBILITY
+
 Set-RegistryValue `
     -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" `
     -Name "AllowTelemetry" `
-    -Value 0
+    -Value 1
 
 Set-RegistryValue `
     -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" `
@@ -268,6 +320,8 @@ Set-RegistryValue `
 # WINRM
 
 if ($DisableWinRM) {
+
+    Write-Log "WinRM hardening ENABLED" "WARN"
 
     Set-RegistryValue `
         -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Client" `
@@ -298,11 +352,10 @@ if ($DisableWinRM) {
         -Path "HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service\WinRS" `
         -Name "AllowRemoteShellAccess" `
         -Value 0
-
-    Write-Log "WinRM hardened" "OK"
 }
 else {
-    Write-Log "WinRM hardening skipped" "WARN"
+
+    Write-Log "WinRM hardening skipped (recommended for enterprise management)" "WARN"
 }
 
 # RDP HARDENING
@@ -349,10 +402,13 @@ Set-RegistryValue `
     -Name "EnableAuthEpResolution" `
     -Value 1
 
-Set-RegistryValue `
-    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc" `
-    -Name "RestrictRemoteClients" `
-    -Value 1
+# MAY BREAK LEGACY RPC/DCOM APPS
+# TEST BEFORE ENFORCING
+#
+# Set-RegistryValue `
+#     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc" `
+#     -Name "RestrictRemoteClients" `
+#     -Value 1
 
 # PRINTNIGHTMARE
 
@@ -382,11 +438,6 @@ Set-RegistryValue `
     -Path "HKLM:\Software\Policies\Microsoft\Windows\EventLog\System" `
     -Name "MaxSize" `
     -Value 65536
-
-Set-RegistryValue `
-    -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\Security" `
-    -Name "WarningLevel" `
-    -Value 90
 
 # DEFENDER
 
@@ -436,23 +487,26 @@ Set-RegistryValue `
 
 # PRINT SPOOLER
 
-try {
 
-    $Spooler = Get-Service Spooler -ErrorAction SilentlyContinue
 
-    if ($Spooler) {
+ try {
 
-        Stop-Service -Name Spooler -Force -ErrorAction SilentlyContinue
-        Set-Service -Name Spooler -StartupType Disabled
+     $Spooler = Get-Service Spooler -ErrorAction SilentlyContinue
 
-        Write-Log "Print Spooler disabled" "OK"
-    }
-}
-catch {
-    Write-Log "Failed to disable Print Spooler: $_" "ERROR"
-}
+     if ($Spooler) {
 
-# FINAL
+         Stop-Service -Name Spooler -Force -ErrorAction SilentlyContinue
+         Set-Service -Name Spooler -StartupType Disabled
+
+         Write-Log "Print Spooler disabled" "OK"
+     }
+ }
+ catch {
+
+     Write-Log "Failed to disable Print Spooler: $_" "ERROR"
+ }
+
+# COMPLETE
 
 Write-Log "Enterprise DC GPO hardening completed" "OK"
 Write-Log "Reboot recommended" "WARN"
