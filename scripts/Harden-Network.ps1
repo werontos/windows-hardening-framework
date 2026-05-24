@@ -7,29 +7,30 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Continue"
 
-
-# LOGGING BACKUP
-
+# LOGGING / BACKUP
 
 New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
 New-Item -ItemType Directory -Path "C:\Temp" -Force | Out-Null
 New-Item -ItemType Directory -Path "C:\ProgramData\Hardening" -Force | Out-Null
 
 Start-Transcript `
-    -Path "$LogPath\Network_$(Get-Date -f yyyyMMdd_HHmmss).log" `
+    -Path "$LogPath\Network_DC_$(Get-Date -Format yyyyMMdd_HHmmss).log" `
     -Append
 
-reg export HKLM `
-    "C:\ProgramData\Hardening\HKLM_Backup_$(Get-Date -f yyyyMMdd).reg" `
-    /y 2>$null
+try {
+
+    reg export HKLM `
+        "C:\ProgramData\Hardening\HKLM_Backup_$(Get-Date -Format yyyyMMdd).reg" `
+        /y 2>$null
+}
+catch {}
 
 $tempPath = "C:\Temp"
 
-
 # FUNCTIONS
 
-
 function Ensure-RegistryPath {
+
     param ([string]$Path)
 
     if (!(Test-Path $Path)) {
@@ -38,9 +39,11 @@ function Ensure-RegistryPath {
 }
 
 function Set-Reg {
+
     param (
         [string]$Path,
         [string]$Name,
+        [ValidateSet("DWord","String","MultiString")]
         [string]$Type,
         $Value
     )
@@ -52,19 +55,43 @@ function Set-Reg {
         switch ($Type) {
 
             "DWord" {
-                Set-ItemProperty `
-                    -Path $Path `
-                    -Name $Name `
-                    -Type DWord `
-                    -Value $Value
+
+                if (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue) {
+
+                    Set-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -Value $Value
+                }
+                else {
+
+                    New-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -PropertyType DWord `
+                        -Value $Value `
+                        -Force | Out-Null
+                }
             }
 
             "String" {
-                Set-ItemProperty `
-                    -Path $Path `
-                    -Name $Name `
-                    -Type String `
-                    -Value $Value
+
+                if (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue) {
+
+                    Set-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -Value $Value
+                }
+                else {
+
+                    New-ItemProperty `
+                        -Path $Path `
+                        -Name $Name `
+                        -PropertyType String `
+                        -Value $Value `
+                        -Force | Out-Null
+                }
             }
 
             "MultiString" {
@@ -88,14 +115,16 @@ function Set-Reg {
             }
         }
 
-        Write-Host "[OK] $Path -> $Name = $Value"
+        Write-Host "[OK] $Path -> $Name = $Value" -ForegroundColor Green
     }
     catch {
+
         Write-Warning "[FAILED] $Path -> $Name : $_"
     }
 }
 
 function Invoke-Secedit {
+
     param(
         [string]$Content,
         [string]$Area
@@ -116,9 +145,10 @@ function Invoke-Secedit {
             /areas $Area `
             /quiet
 
-        Write-Host "[OK] Secedit applied ($Area)"
+        Write-Host "[OK] Secedit applied ($Area)" -ForegroundColor Green
     }
     catch {
+
         Write-Warning "[SECEEDIT FAILED] $_"
     }
     finally {
@@ -130,6 +160,7 @@ function Invoke-Secedit {
 
 # TLS HARDENING
 
+Write-Host "`n[*] TLS Hardening" -ForegroundColor Cyan
 
 $protocols = @("TLS 1.0","TLS 1.1")
 
@@ -148,7 +179,7 @@ foreach ($proto in $protocols) {
     Set-Reg $client "DisabledByDefault" "DWord" 1
 }
 
-# TLS 1.2 Explicit Enable
+# TLS 1.2
 
 $tls12 = @(
     "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server",
@@ -163,7 +194,9 @@ foreach ($path in $tls12) {
     Set-Reg $path "DisabledByDefault" "DWord" 0
 }
 
-# Disable Weak Ciphers
+# DISABLE WEAK CIPHERS
+
+Write-Host "`n[*] Cipher Hardening" -ForegroundColor Cyan
 
 $weakCiphers = @(
     "RC4 128/128",
@@ -182,144 +215,161 @@ foreach ($cipher in $weakCiphers) {
     Set-Reg $path "Enabled" "DWord" 0
 }
 
-
-# USER RIGHTS ASSIGNMENT
-
-
-$networkLogon = @"
-[Unicode]
-Unicode=yes
-[Version]
-signature="`$CHICAGO`$"
-Revision=1
-[Privilege Rights]
-SeNetworkLogonRight = *S-1-5-9,*S-1-5-32-544,*S-1-5-11
-"@
-
-Invoke-Secedit -Content $networkLogon -Area USER_RIGHTS
-
-$denyNetworkLogon = @"
-[Unicode]
-Unicode=yes
-[Version]
-signature="`$CHICAGO`$"
-Revision=1
-[Privilege Rights]
-SeDenyNetworkLogonRight = *S-1-5-32-546,*S-1-5-114
-"@
-
-Invoke-Secedit -Content $denyNetworkLogon -Area USER_RIGHTS
-
-$forceLogoff = @"
-[Unicode]
-Unicode=yes
-[Version]
-signature="`$CHICAGO`$"
-Revision=1
-[System Access]
-ForceLogoffWhenHourExpire = 1
-"@
-
-Invoke-Secedit -Content $forceLogoff -Area SECURITYPOLICY
-
-
 # SMB HARDENING
 
+Write-Host "`n[*] SMB Hardening" -ForegroundColor Cyan
 
-Set-Reg "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters" "RequireSecuritySignature" DWord 1
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Services\LanmanWorkstation\Parameters" `
+    "RequireSecuritySignature" `
+    DWord `
+    1
 
-Set-Reg "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" "RequireSecuritySignature" DWord 1
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" `
+    "RequireSecuritySignature" `
+    DWord `
+    1
 
-Set-Reg "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" "EnableSecuritySignature" DWord 1
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" `
+    "EnableSecuritySignature" `
+    DWord `
+    1
 
-Set-Reg "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" "SMBServerNameHardeningLevel" DWord 1
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" `
+    "SMBServerNameHardeningLevel" `
+    DWord `
+    1
 
-Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" "NullSessionPipes" MultiString @("netlogon","samr","lsarpc")
+# SAFE for Active Directory
 
-Set-Reg "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" "RestrictNullSessAccess" DWord 1
+Set-Reg `
+    "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
+    "NullSessionPipes" `
+    MultiString `
+    @("netlogon","samr","lsarpc")
 
-Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\MrxSmb10" "Start" DWord 4
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Services\LanManServer\Parameters" `
+    "RestrictNullSessAccess" `
+    DWord `
+    1
 
-Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" "SMB1" DWord 0
+# SMBv1 Disable
+# Legacy devices may fail
+
+Set-Reg `
+    "HKLM:\SYSTEM\CurrentControlSet\Services\MrxSmb10" `
+    "Start" `
+    DWord `
+    4
+
+Set-Reg `
+    "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
+    "SMB1" `
+    DWord `
+    0
 
 try {
+
     Disable-WindowsOptionalFeature `
         -Online `
         -FeatureName SMB1Protocol `
         -NoRestart `
         -ErrorAction SilentlyContinue
 }
-catch {
-    Write-Warning $_
-}
-
-try {
-    Set-SmbServerConfiguration `
-        -EncryptData $true `
-        -Force
-}
-catch {
-    Write-Warning $_
-}
-
+catch {}
 
 # NTLM / LSA HARDENING
 
+Write-Host "`n[*] LSA / NTLM Hardening" -ForegroundColor Cyan
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "RestrictAnonymous" DWord 1
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Control\Lsa" `
+    "RestrictAnonymous" `
+    DWord `
+    1
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "RestrictRemoteSAM" String "O:BAG:BAD:(A;;RC;;;BA)"
+# May affect some inventory/RMM tools
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "UseMachineId" DWord 1
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Control\Lsa" `
+    "RestrictRemoteSAM" `
+    String `
+    "O:BAG:BAD:(A;;RC;;;BA)"
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa" "LmCompatibilityLevel" DWord 5
+# NTLMv2 only
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "allownullsessionfallback" DWord 0
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Control\Lsa" `
+    "LmCompatibilityLevel" `
+    DWord `
+    5
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "NTLMMinClientSec" DWord 537395200
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" `
+    "allownullsessionfallback" `
+    DWord `
+    0
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\MSV1_0" "NTLMMinServerSec" DWord 537395200
+Set-Reg `
+    "HKLM:\System\CurrentControlSet\Control\Lsa\pku2u" `
+    "AllowOnlineID" `
+    DWord `
+    0
 
-Set-Reg "HKLM:\System\CurrentControlSet\Control\Lsa\pku2u" "AllowOnlineID" DWord 0
+# DNS / LLMNR
 
+Write-Host "`n[*] DNS / LLMNR Hardening" -ForegroundColor Cyan
 
-# KERBEROS
+# Disable LLMNR
 
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" `
+    "EnableMulticast" `
+    DWord `
+    0
 
-Set-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters" "SupportedEncryptionTypes" DWord 2147483640
+# NetBIOS node type
 
+Set-Reg `
+    "HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters" `
+    "NodeType" `
+    DWord `
+    2
 
-# DNS / NETWORK
+# UNC HARDENING
 
+Write-Host "`n[*] UNC Hardening" -ForegroundColor Cyan
 
-Set-Reg "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" "DoHPolicy" DWord 3
+# SAFE for modern domains
+# Test legacy systems first
 
-Set-Reg "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient" "EnableMulticast" DWord 0
+$unc = "HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
 
-Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters" "DisabledComponents" DWord 32
+Set-Reg `
+    $unc `
+    "\\*\NETLOGON" `
+    String `
+    "RequireMutualAuthentication=1,RequireIntegrity=1"
 
-Set-Reg "HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters" "NodeType" DWord 2
+Set-Reg `
+    $unc `
+    "\\*\SYSVOL" `
+    String `
+    "RequireMutualAuthentication=1,RequireIntegrity=1"
 
-# LLMNR / PEERNET / LLTD
+# WCN / PEERNET
 
+Write-Host "`n[*] WCN / Peernet Hardening" -ForegroundColor Cyan
 
-$lltd = "HKLM:\Software\Policies\Microsoft\Windows\LLTD"
-
-Set-Reg $lltd "AllowLLTDIOOndomain" DWord 0
-Set-Reg $lltd "AllowLLTDIOOnPublicNet" DWord 0
-Set-Reg $lltd "EnableLLTDIO" DWord 0
-Set-Reg $lltd "ProhibitLLTDIOOnPrivateNet" DWord 0
-
-Set-Reg $lltd "AllowRspndrOnDomain" DWord 0
-Set-Reg $lltd "AllowRspndrOnPublicNet" DWord 0
-Set-Reg $lltd "EnableRspndr" DWord 0
-Set-Reg $lltd "ProhibitRspndrOnPrivateNet" DWord 0
-
-Set-Reg "HKLM:\Software\Policies\Microsoft\Peernet" "Disabled" DWord 1
-
-
-# WCN HARDENING
-
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\Peernet" `
+    "Disabled" `
+    DWord `
+    1
 
 $wcn = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars"
 
@@ -329,11 +379,9 @@ Set-Reg $wcn "DisableInBand802DOT11Registrar" DWord 1
 Set-Reg $wcn "DisableFlashConfigRegistrar" DWord 1
 Set-Reg $wcn "DisableWPDRegistrar" DWord 1
 
-Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" "DisableWcnUi" DWord 1
-
-
 # NETWORK CONNECTIONS
 
+Write-Host "`n[*] Network Connections Hardening" -ForegroundColor Cyan
 
 $nc = "HKLM:\Software\Policies\Microsoft\Windows\Network Connections"
 
@@ -341,50 +389,38 @@ Set-Reg $nc "NC_AllowNetBridge_NLA" DWord 0
 Set-Reg $nc "NC_ShowSharedAccessUI" DWord 0
 Set-Reg $nc "NC_StdDomainUserSetLocation" DWord 1
 
+# OTHER SAFE HARDENING
 
-# UNC HARDENING
+Write-Host "`n[*] Additional Hardening" -ForegroundColor Cyan
 
+Set-Reg `
+    "HKLM:\Software\Policies\Microsoft\Windows\LanmanWorkstation" `
+    "AllowInsecureGuestAuth" `
+    DWord `
+    0
 
-$unc = "HKLM:\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths"
+Set-Reg `
+    "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" `
+    "UserAuthentication" `
+    DWord `
+    1
 
-Set-Reg $unc "\\*\NETLOGON" String "RequireMutualAuthentication=1, RequireIntegrity=1"
+Set-Reg `
+    "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" `
+    "PreventDeviceMetadataFromNetwork" `
+    DWord `
+    1
 
-Set-Reg $unc "\\*\SYSVOL" String "RequireMutualAuthentication=1, RequireIntegrity=1"
+Set-Reg `
+    "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad" `
+    "WpadOverride" `
+    DWord `
+    1
 
+# COMPLETION
 
-# OTHER HARDENING
-
-
-Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" "EnableFontProviders" DWord 0
-
-Set-Reg "HKLM:\Software\Policies\Microsoft\Windows\LanmanWorkstation" "AllowInsecureGuestAuth" DWord 0
-
-Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" "EnableNetworkProtection" DWord 1
-
-Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" "UserAuthentication" DWord 1
-
-Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" "NoCloudApplicationNotification" DWord 1
-
-Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" "PreventDeviceMetadataFromNetwork" DWord 1
-
-Set-Reg "HKLM:\Software\Policies\Microsoft\Windows\System" "DontDisplayNetworkSelectionUI" DWord 1
-
-Set-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad" "WpadOverride" DWord 1
-
-Set-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "EnableAutoProxyResultCache" DWord 0
-
-
-# POWER SETTINGS
-
-
-$power = "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\f15576e8-98b7-4186-b944-eafa664402d9"
-
-Set-Reg $power "DCSettingIndex" DWord 0
-Set-Reg $power "ACSettingIndex" DWord 0
-
-# DONE
-
-
-Write-Host "`n[+] Network Hardening COMPLETE" -ForegroundColor Green
+Write-Host ""
+Write-Host "[+] SAFE DC Network Hardening Complete" -ForegroundColor Green
+Write-Host "[!] Reboot Recommended" -ForegroundColor Yellow
 
 Stop-Transcript
