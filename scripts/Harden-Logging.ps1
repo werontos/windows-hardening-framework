@@ -236,11 +236,13 @@ Set-Reg `
     "DWord" `
     7
 
-Set-Reg `
-    "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" `
-    "AuditLevel" `
-    "DWord" `
-    8
+# ADVANCED LSASS AUDIT
+# May cause compatibility issues with some EDR products
+#Set-Reg `
+#    "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe" `
+#    "AuditLevel" `
+#    "DWord" `
+#    8
 
 
 # AUDIT POLICIES
@@ -253,8 +255,9 @@ $AuditPolicies = @(
     "Process Creation",
     "Logon",
     "Other Logon/Logoff Events",
-    "Kernel Object",
-    "Other Object Access Events",
+# OPTIONAL - noisy on servers
+#    "Kernel Object",
+#    "Other Object Access Events",
     "Removable Storage",
     "SAM",
     "Filtering Platform Packet Drop",
