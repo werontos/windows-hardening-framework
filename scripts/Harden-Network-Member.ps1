@@ -30,9 +30,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Continue"
 
-# =========================================================
 # LOGGING / BACKUP
-# =========================================================
 
 New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
 New-Item -ItemType Directory -Path "C:\Temp" -Force | Out-Null
@@ -52,9 +50,7 @@ catch {}
 
 $tempPath = "C:\Temp"
 
-# =========================================================
 # FUNCTIONS
-# =========================================================
 
 function Ensure-RegistryPath {
 
@@ -153,9 +149,7 @@ function Set-Reg {
     }
 }
 
-# =========================================================
 # TLS HARDENING
-# =========================================================
 
 Write-Host "`n[*] TLS Hardening" -ForegroundColor Cyan
 
@@ -191,9 +185,7 @@ foreach ($path in $tls12) {
     Set-Reg $path "DisabledByDefault" "DWord" 0
 }
 
-# =========================================================
 # WEAK CIPHERS
-# =========================================================
 
 Write-Host "`n[*] Cipher Hardening" -ForegroundColor Cyan
 
@@ -214,9 +206,7 @@ foreach ($cipher in $weakCiphers) {
     Set-Reg $path "Enabled" "DWord" 0
 }
 
-# =========================================================
 # SMB HARDENING
-# =========================================================
 
 Write-Host "`n[*] SMB Hardening" -ForegroundColor Cyan
 
@@ -263,9 +253,7 @@ try {
 }
 catch {}
 
-# =========================================================
 # NTLM / LSA HARDENING
-# =========================================================
 
 Write-Host "`n[*] NTLM / LSA Hardening" -ForegroundColor Cyan
 
@@ -303,9 +291,7 @@ Set-Reg `
     DWord `
     0
 
-# =========================================================
 # DNS / LLMNR
-# =========================================================
 
 Write-Host "`n[*] DNS / LLMNR Hardening" -ForegroundColor Cyan
 
@@ -325,9 +311,7 @@ Set-Reg `
     DWord `
     2
 
-# =========================================================
 # WCN / PEERNET
-# =========================================================
 
 Write-Host "`n[*] WCN / Peernet Hardening" -ForegroundColor Cyan
 
@@ -345,9 +329,7 @@ Set-Reg $wcn "DisableInBand802DOT11Registrar" DWord 1
 Set-Reg $wcn "DisableFlashConfigRegistrar" DWord 1
 Set-Reg $wcn "DisableWPDRegistrar" DWord 1
 
-# =========================================================
 # NETWORK CONNECTIONS
-# =========================================================
 
 Write-Host "`n[*] Network Connections Hardening" -ForegroundColor Cyan
 
@@ -357,9 +339,7 @@ Set-Reg $nc "NC_AllowNetBridge_NLA" DWord 0
 Set-Reg $nc "NC_ShowSharedAccessUI" DWord 0
 Set-Reg $nc "NC_StdDomainUserSetLocation" DWord 1
 
-# =========================================================
 # UNC HARDENING
-# =========================================================
 
 Write-Host "`n[*] UNC Hardening" -ForegroundColor Cyan
 
@@ -379,9 +359,7 @@ Set-Reg `
     String `
     "RequireMutualAuthentication=1,RequireIntegrity=1"
 
-# =========================================================
 # WINRM SAFE HARDENING
-# =========================================================
 
 Write-Host "`n[*] WinRM Safe Hardening" -ForegroundColor Cyan
 
@@ -413,9 +391,7 @@ Set-Reg `
     DWord `
     0
 
-# =========================================================
 # OTHER SAFE HARDENING
-# =========================================================
 
 Write-Host "`n[*] Additional Hardening" -ForegroundColor Cyan
 
@@ -443,9 +419,7 @@ Set-Reg `
     DWord `
     1
 
-# =========================================================
 # COMPLETION
-# =========================================================
 
 Write-Host ""
 Write-Host "[+] SAFE MEMBER Network Hardening Complete" -ForegroundColor Green
