@@ -7,6 +7,14 @@ param(
     [switch]$EnableCredentialGuard
 )
 
+# HARDEN-ENDPOINT-MEMBER.PS1
+# Enterprise Endpoint Hardening - MEMBER WORKSTATION / SERVER
+# SAFE DEFAULTS:
+# - Dangerous settings are COMMENTED OUT
+# - Compatibility-sensitive settings are OPTIONAL
+# - Logging/transcript enabled
+# - Idempotent registry handling
+
 # GLOBALS
 
 $ErrorActionPreference = 'Stop'
@@ -15,6 +23,7 @@ Set-StrictMode -Version Latest
 $LogPath = "C:\ProgramData\Hardening\Logs"
 
 if (-not (Test-Path $LogPath)) {
+
     New-Item -ItemType Directory -Path $LogPath -Force | Out-Null
 }
 
@@ -23,7 +32,6 @@ $Transcript = Join-Path $LogPath "Endpoint_Member_$(Get-Date -Format 'yyyyMMdd_H
 Start-Transcript -Path $Transcript -Append
 
 Write-Host " Enterprise Endpoint Hardening - MEMBER" -ForegroundColor Cyan
-
 
 # LOGGING
 
@@ -130,7 +138,7 @@ function Set-RegistryValue {
 
 Write-Log "Configuring Microsoft Defender..." "INFO"
 
-# MAPS / Cloud Protection
+# Cloud protection / MAPS
 
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" `
@@ -141,6 +149,11 @@ Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" `
     -Name "SpynetReporting" `
     -Value 2
+
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" `
+    -Name "SubmitSamplesConsent" `
+    -Value 1
 
 # Engine
 
@@ -153,26 +166,29 @@ Set-RegistryValue `
 
 $RTP = "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection"
 
-Set-RegistryValue -Path $RTP -Name "DisableIOAVProtection" -Value 0
 Set-RegistryValue -Path $RTP -Name "DisableRealtimeMonitoring" -Value 0
 Set-RegistryValue -Path $RTP -Name "DisableBehaviorMonitoring" -Value 0
+Set-RegistryValue -Path $RTP -Name "DisableIOAVProtection" -Value 0
 Set-RegistryValue -Path $RTP -Name "DisableScriptScanning" -Value 0
+Set-RegistryValue -Path $RTP -Name "DisableArchiveScanning" -Value 0
+Set-RegistryValue -Path $RTP -Name "DisableIntrusionPreventionSystem" -Value 0
 
-# Scan
+# Scan settings
 
 $Scan = "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Scan"
 
-Set-RegistryValue -Path $Scan -Name "DisableRemovableDriveScanning" -Value 0
 Set-RegistryValue -Path $Scan -Name "DisableEmailScanning" -Value 0
+Set-RegistryValue -Path $Scan -Name "DisableRemovableDriveScanning" -Value 0
+Set-RegistryValue -Path $Scan -Name "CheckForSignaturesBeforeRunningScan" -Value 1
 
-# PUA
+# PUA protection
 
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" `
     -Name "PUAProtection" `
     -Value 1
 
-# Legacy compatibility
+# Legacy Defender compatibility
 
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" `
@@ -183,30 +199,30 @@ Set-RegistryValue `
 
 Write-Log "Configuring ASR rules..." "INFO"
 
-Set-RegistryValue `
-    -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" `
-    -Name "ExploitGuard_ASR_Rules" `
-    -Value 1
+$ASRPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
 
 $ASRRules = @(
-    "d4f940ab-401b-4efc-aadc-ad5f3c50688a" # Block Office child processes
-    "3b576869-a4ec-4529-8536-b80a7769e899" # Block Office executable content
-    "5beb7efe-fd9a-4556-801d-275e5ffc04cc" # Block obfuscated scripts
-    "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84" # Block Office code injection
-    "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c" # Block Adobe child processes
-    "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b" # Block Win32 API calls from Office
-    "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2" # Block credential stealing
-    "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4" # Block PSExec/WMI persistence
-    "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550" # Block executable email content
-    "d3e037e1-3eb8-44c8-a917-57927947596d" # Block JS/VBS launch
-    "26190899-1602-49e8-8b27-eb1d0a1ce869" # Block Office communication child
-    "e6db77e5-3df2-4cf1-b95a-636979351e5b"  # Block LSASS credential theft
+    "d4f940ab-401b-4efc-aadc-ad5f3c50688a" # Office child processes
+    "3b576869-a4ec-4529-8536-b80a7769e899" # Office executable content
+    "5beb7efe-fd9a-4556-801d-275e5ffc04cc" # Obfuscated scripts
+    "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84" # Office code injection
+    "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c" # Adobe child processes
+    "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b" # Win32 API from Office
+    "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2" # Credential stealing
+    "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4" # PSExec/WMI persistence
+    "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550" # Executable email content
+    "d3e037e1-3eb8-44c8-a917-57927947596d" # JS/VBS launch
+    "26190899-1602-49e8-8b27-eb1d0a1ce869" # Office communication apps
+    "e6db77e5-3df2-4cf1-b95a-636979351e5b" # LSASS credential theft
 )
 
 foreach ($Rule in $ASRRules) {
 
+    # 1 = BLOCK MODE
+    # 2 = AUDIT MODE
+
     Set-RegistryValue `
-        -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
+        -Path $ASRPath `
         -Name $Rule `
         -Value 1
 }
@@ -222,6 +238,10 @@ Set-RegistryValue `
 
 if ($EnableControlledFolderAccess) {
 
+    # WARNING:
+    # Controlled Folder Access can break applications,
+    # installers, developer tools, games, scripts, etc.
+
     Set-RegistryValue `
         -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" `
         -Name "EnableControlledFolderAccess" `
@@ -231,7 +251,7 @@ if ($EnableControlledFolderAccess) {
 }
 else {
 
-    Write-Log "Controlled Folder Access skipped (compatibility mode)" "WARN"
+    Write-Log "Controlled Folder Access skipped" "WARN"
 }
 
 # DEVICE GUARD / CREDENTIAL GUARD
@@ -258,7 +278,7 @@ try {
 
             Set-RegistryValue `
                 -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" `
-                -Name "LsaCfgFlags" `
+                -Name "HypervisorEnforcedCodeIntegrity" `
                 -Value 1
 
             Set-RegistryValue `
@@ -275,7 +295,7 @@ try {
     }
     else {
 
-        Write-Log "Virtualization not supported - Credential Guard skipped" "WARN"
+        Write-Log "Virtualization not supported" "WARN"
     }
 }
 catch {
@@ -287,7 +307,8 @@ catch {
 
 if ($EnableLSAProtection) {
 
-    Write-Log "Enabling LSASS Protected Process Light..." "INFO"
+    # WARNING:
+    # Some EDR/AV/legacy auth software may fail.
 
     Set-RegistryValue `
         -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
@@ -298,38 +319,54 @@ if ($EnableLSAProtection) {
         -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
         -Name "RunAsPPLBoot" `
         -Value 1
+
+    Write-Log "LSASS PPL enabled" "OK"
 }
 else {
 
     Write-Log "LSASS PPL skipped" "WARN"
 }
 
-# POWERSHELL LOCKDOWN
-
-Write-Log "Configuring PowerShell lockdown..." "INFO"
-
-Ensure-RegistryPath "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+# WDIGEST
 
 Set-RegistryValue `
-    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" `
-    -Name "__PSLockdownPolicy" `
-    -Value "4" `
-    -Type String
-
-# SCRIPT HOST
-
-Set-RegistryValue `
-    -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" `
-    -Name "Enabled" `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" `
+    -Name "UseLogonCredential" `
     -Value 0
 
-# AUTORUN / USB
+# POWERSHELL / SCRIPT HOST
 
-Write-Log "Configuring USB / Autorun protections..." "INFO"
+# WARNING:
+# __PSLockdownPolicy is NOT a security boundary.
+# Can break scripts/dev tools.
+# Leaving COMMENTED intentionally.
+
+# Set-RegistryValue `
+#     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" `
+#     -Name "__PSLockdownPolicy" `
+#     -Value "4" `
+#     -Type String
+
+# WARNING:
+# Disables ALL VBS/VBE/WSF scripts system-wide.
+
+# Set-RegistryValue `
+#     -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" `
+#     -Name "Enabled" `
+#     -Value 0
+
+# USB / AUTORUN
+
+Write-Log "Configuring Autorun protections..." "INFO"
 
 Set-RegistryValue `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" `
     -Name "NoAutoplayfornonVolume" `
+    -Value 1
+
+Set-RegistryValue `
+    -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
+    -Name "NoAutorun" `
     -Value 1
 
 Set-RegistryValue `
@@ -340,6 +377,14 @@ Set-RegistryValue `
 # WINRM HARDENING
 
 if ($DisableWinRM) {
+
+    # WARNING:
+    # Can break:
+    # - Windows Admin Center
+    # - Remote PowerShell
+    # - SCCM
+    # - RMM tools
+    # - Enterprise automation
 
     Write-Log "Hardening WinRM..." "INFO"
 
@@ -366,7 +411,7 @@ else {
     Write-Log "WinRM hardening skipped" "WARN"
 }
 
-# SESSION MANAGER
+# DLL / SESSION MANAGER
 
 Set-RegistryValue `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" `
@@ -385,15 +430,6 @@ Set-RegistryValue `
     -Name "AllowSharedLocalAppData" `
     -Value 0
 
-# WDIGEST
-
-Write-Log "Disabling WDigest credential caching..." "INFO"
-
-Set-RegistryValue `
-    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" `
-    -Name "UseLogonCredential" `
-    -Value 0
-
 # ADVANCED AUDIT
 
 Set-RegistryValue `
@@ -409,13 +445,9 @@ try {
 
     Set-ProcessMitigation -System -Enable DEP
     Set-ProcessMitigation -System -Enable SEHOP
-    Set-ProcessMitigation -System -Disable SEHOPTelemetry
-    Set-ProcessMitigation -System -Disable SEHOPOverrideSEHOP
-    Set-ProcessMitigation -System -Enable ForceRelocateImages
-    Set-ProcessMitigation -System -Disable OverrideForceRelocateImages
-    Set-ProcessMitigation -System -Disable OverrideBottomUp
     Set-ProcessMitigation -System -Enable BottomUp
     Set-ProcessMitigation -System -Enable HighEntropy
+    Set-ProcessMitigation -System -Enable ForceRelocateImages
 
     Write-Log "Process mitigations configured" "OK"
 }
@@ -430,16 +462,14 @@ try {
 
     bcdedit /set {current} nx AlwaysOn | Out-Null
 
-    Write-Log "DEP boot configuration applied" "OK"
+    Write-Log "DEP AlwaysOn configured" "OK"
 }
 catch {
 
-    Write-Log "Failed to configure DEP boot policy: $_" "ERROR"
+    Write-Log "DEP configuration failed: $_" "ERROR"
 }
 
 # TAMPER PROTECTION
-
-Write-Log "Attempting Defender Tamper Protection configuration..." "INFO"
 
 try {
 
@@ -452,21 +482,35 @@ try {
 }
 catch {
 
-    Write-Log "Tamper Protection is protected by Windows/platform management" "WARN"
+    Write-Log "Tamper Protection protected by platform management" "WARN"
 }
 
 # WDAC WARNING
 
 Write-Log "WDAC deployment intentionally skipped" "WARN"
-Write-Log "Deploy signed WDAC policy separately before enabling CI enforcement" "WARN"
+Write-Log "Deploy signed WDAC policy separately before enabling enforcement" "WARN"
+
+# OPTIONAL SMB HARDENING
+
+# WARNING:
+# Legacy devices/NAS/printers may break.
+
+# Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force
+# Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart
+
+# OPTIONAL SPOOLER HARDENING
+
+# WARNING:
+# Breaks printing.
+
+# Stop-Service -Name Spooler -Force
+# Set-Service -Name Spooler -StartupType Disabled
 
 # COMPLETION
 
-Write-Host ""
-Write-Host "===================================================" -ForegroundColor Green
+
 Write-Host " MEMBER endpoint hardening completed" -ForegroundColor Green
-Write-Host " Reboot is strongly recommended" -ForegroundColor Yellow
-Write-Host "===================================================" -ForegroundColor Green
-Write-Host ""
+Write-Host " Reboot strongly recommended" -ForegroundColor Yellow
+
 
 Stop-Transcript
